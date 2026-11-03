@@ -1,0 +1,340 @@
+\otazka{2. Operační systémy}{Architektura operačního systému, architektura jádra, základní režimy procesoru. Programovací rozhraní, knihovny. Uživatel, přístupová práva, virtualizace. Virtuální paměť, proces a stránkové tabulky. Vlákno, plánování vláken a procesů. Souběžnost, uváznutí, přidělování zdrojů. Vznik procesu a spuštění programu v systémech POSIX, copy-on-write.}{PB152, PV004}
+
+\subsection*{2. Operační systémy -- stručněji}
+Operační systém je správce prostředků a ochranná vrstva mezi aplikacemi a hardwarem. U zkoušky je nejlepší vést odpověď od jádra a režimů procesoru přes procesy, paměť, plánování a souběžnost až k POSIX vzniku procesu.
+
+\textbf{1. Co OS dělá}
+\begin{itemize}
+  \item OS poskytuje aplikacím abstrakce: proces místo holého CPU, soubor místo bloků na disku, virtuální paměť místo fyzické RAM, socket místo síťové karty.
+  \item Zároveň chrání systém: běžný program nesmí libovolně zapisovat do paměti jádra, číst cizí paměť nebo přímo ovládat zařízení.
+\end{itemize}
+
+\textbf{2. Jádro, režimy a rozhraní}
+\begin{itemize}
+  \item Jádro běží v privilegovaném režimu procesoru. Aplikace běží v user mode a o služby žádají přes systémová volání, například \texttt{read}, \texttt{write}, \texttt{fork}, \texttt{exec}.
+  \item Knihovna není totéž co systémové volání: knihovna poskytuje pohodlné API, ale při přístupu k chráněnému zdroji musí nakonec přejít do jádra.
+  \item Monolitické jádro má mnoho služeb přímo v kernel mode, mikrojádro přesouvá více služeb do user space. Typicky se řeší kompromis výkonu, izolace a složitosti.
+\end{itemize}
+
+\textbf{3. Proces, vlákno a plánování}
+\begin{itemize}
+  \item Proces je běžící program s vlastním adresním prostorem, prostředky a stavem. Vlákno je jednotka běhu uvnitř procesu; vlákna sdílejí paměť procesu, ale mají vlastní zásobník a registry.
+  \item Plánovač rozhoduje, co poběží na CPU. Řeší férovost, odezvu, propustnost a priority. Přepnutí kontextu uloží stav jednoho běhu a obnoví stav jiného.
+\end{itemize}
+
+\textbf{4. Virtuální paměť}
+\begin{itemize}
+  \item Virtuální paměť dává procesu iluzi vlastního souvislého prostoru adres. MMU a stránkové tabulky překládají virtuální adresy na fyzické rámce.
+  \item Výhody jsou ochrana procesů, pohodlnější alokace, sdílení knihoven, memory mapping a možnost odkládat stránky na disk. Nevýhodou je režie a page fault.
+\end{itemize}
+
+\textbf{5. Souběžnost a deadlock}
+\begin{itemize}
+  \item Souběžnost znamená, že více výpočtů pracuje nad sdílenými prostředky. Riziko je race condition, kdy výsledek závisí na načasování.
+  \item Synchronizace se řeší mutexy, semafory, podmínkovými proměnnými nebo monitory. Deadlock vzniká, když procesy čekají cyklicky na prostředky, které drží někdo jiný.
+  \item Deadlock se řeší prevencí, vyhýbáním, detekcí a zotavením. Starvation je jiný problém: proces se sice může teoreticky dostat na řadu, ale prakticky pořád čeká.
+\end{itemize}
+
+\textbf{6. POSIX fork, exec a copy-on-write}
+\begin{itemize}
+  \item \texttt{fork} vytvoří potomka jako kopii procesu, \texttt{exec} nahradí obraz procesu novým programem a \texttt{wait} umožní rodiči počkat na potomka.
+  \item Copy-on-write šetří paměť: po \texttt{fork} se stránky fyzicky nekopírují hned, ale sdílí se, dokud do nich jeden proces nezačne zapisovat.
+\end{itemize}
+
+Architektura OS, jádro, režimy procesoru, API, práva, virtualizace, \textbf{virtuální paměť}, procesy, vlákna, plánování, souběžnost, \textbf{deadlock} a POSIX \textbf{fork}/\textbf{exec}/COW
+
+\subsection*{1. Celkový obraz: co je operační systém}
+
+Operační systém je dobré u státnic nezačít jako seznam definic, ale jako příběh o tom, kdo v počítači komu dovoluje přístup ke zdrojům. Počítač má procesor, paměť, disk, síťovou kartu, klávesnici, grafiku a další zařízení. Běžná aplikace nemá smět s tímto hardwarem zacházet přímo, protože by mohla poškodit celý systém, číst paměť jiných programů nebo obejít přístupová práva.
+
+Operační systém proto stojí mezi aplikacemi a hardwarem. Spravuje procesorový čas, paměť, soubory, zařízení, uživatele a oprávnění a poskytuje programům jednotné rozhraní.
+
+V užším smyslu je operační systém hlavně jádro, tedy \textbf{kernel}. V širším smyslu k OS patří i systémové knihovny, démoni a služby, uživatelské rozhraní a systémové utility. Kernel je privilegovaná část systému. Běží v \textbf{kernel mode} a má právo nastavovat stránkové tabulky, obsluhovat \textbf{přerušení}, komunikovat s hardwarem, plánovat vlákna a vynucovat ochranu paměti.
+
+Systémové knihovny, například libc, typicky běží v user space, ale poskytují programátorovi pohodlné funkce. Démoni a služby, například systemd, sshd, cron, NetworkManager nebo tisková služba, jsou běžné procesy v user space, které běží na pozadí a poskytují systémové služby.
+
+Při odpovědi je užitečné držet osu: firmware nastartuje počítač, bootloader načte kernel, kernel nastaví paměť, přerušení, ovladače a plánovač, vytvoří první \textbf{proces} PID 1, a teprve potom systém spouští další služby a uživatelské procesy.
+
+Tento obraz pak propojí skoro celou otázku: procesy a vlákna běží v \textbf{user mode}, do kernelu vstupují přes systémová volání, \textbf{scheduler} vybírá vlákna na CPU, \textbf{MMU} překládá virtuální adresy podle stránkových tabulek a synchronizace brání nekontrolovanému souběhu vláken.
+
+\subsection*{2. Architektura jádra a ovladače}
+
+Typ jádra určuje, kolik systémových komponent běží přímo v kernel mode. U monolitického jádra, typicky Linux, je v privilegovaném prostoru velká část systému: plánovač, správa paměti, síťový stack, souborové systémy i mnoho ovladačů. Výhodou je výkon, protože komponenty spolu komunikují přímým voláním funkcí a nemusí pořád posílat zprávy mezi user space a kernel space.
+
+Nevýhodou je horší \textbf{izolace}: chyba v ovladači může shodit celé jádro, protože ovladač běží se stejnými privilegii jako zbytek kernelu.
+
+Mikrojádro se snaží nechat v kernel mode pouze minimum: základní plánování, přepínání kontextu, nejnižší správu paměti, přerušení a meziprocesní komunikaci. Ovladače, souborové systémy nebo služby mohou běžet v user space jako oddělené servery. Výhodou je lepší izolace, bezpečnost a robustnost; když spadne ovladač v user space, nemusí nutně spadnout celé jádro. Nevýhodou je režie komunikace mezi komponentami.
+
+Hybridní jádra kombinují oba přístupy a snaží se dosáhnout praktického kompromisu.
+
+Ovladač zařízení je systémový software, který ví, jak mluvit s konkrétním hardwarem. Aplikace obvykle nechce znát registry síťové karty nebo řadiče disku. Zavolá obecnou službu OS, například čtení ze souboru nebo odeslání dat po síti, a kernel přes příslušné vrstvy a ovladač předá požadavek zařízení. U monolitického jádra je ovladač součástí jádra nebo kernelový modul. U mikrojádra může běžet jako proces v user space.
+
+Ovladač není totéž co firmware. Firmware je nízkoúrovňový kód uložený přímo v zařízení nebo na desce, například UEFI nebo firmware \textbf{SSD}. Ovladač je kód na straně operačního systému, který s firmwarem nebo hardwarem komunikuje.
+
+\subsection*{3. User space, kernel space a režimy procesoru}
+
+Základní bezpečnostní hranice je mezi user mode a kernel mode. User mode je neprivilegovaný režim procesoru. Běžná aplikace v něm nesmí provádět privilegované instrukce, přímo ovládat hardware, měnit stránkové tabulky ani číst kernelovou paměť. Kernel mode, někdy supervisor mode, je privilegovaný režim, ve kterém běží jádro. Na \textbf{x86} se běžně zjednodušeně říká, že user programy běží v ring 3 a kernel v ring 0.
+
+Přepnutí do kernel mode neznamená, že uživatelský program najednou běží s privilegii. Znamená to, že CPU přejde do privilegovaného režimu a začne vykonávat kód jádra na předem definovaném vstupním bodě. K tomu dochází typicky při systémovém volání, přerušení nebo výjimce. Systémové volání je úmyslný požadavek programu na službu OS, například read, write, open, fork nebo exec.
+
+Přerušení často vyvolá hardware, například časovač, síťová karta nebo disk. Výjimka vznikne při vykonávání instrukce, například \textbf{page fault}, dělení nulou nebo neplatná instrukce.
+
+Při systémovém volání program obvykle zavolá knihovní funkci, třeba read(). Knihovna připraví argumenty podle ABI, provede speciální instrukci pro syscall, CPU uloží návratový stav, přepne se na kernel stack a skočí na handler v jádře. Kernel pak požadavek obsluhuje v kontextu volajícího vlákna.
+
+To neznamená, že se vykonává user kód v kernel mode; vykonává se kernelový kód, ale kernel ví, že obsluhuje konkrétní proces, má jeho file descriptory, práva a adresní prostor. Po dokončení se vrátí do user mode, nebo se \textbf{vlákno} zablokuje a scheduler vybere jiné vlákno.
+
+\subsection*{4. API, knihovny, systémová volání a přerušení}
+
+Programovací rozhraní, API, je to, co vidí programátor. Například POSIX API obsahuje funkce jako open, read, write, fork, exec, wait nebo pthread\_create. Win32 API je zase rozhraní typické pro Windows. API není totéž co \textbf{systémové volání}. Některé knihovní funkce jsou čistě uživatelský kód a kernel nepotřebují. Jiné funkce jsou obaly nad systémovým voláním. Libc běží v user space, ale umí připravit syscall podle ABI.
+
+ABI je binární dohoda: číslo systémového volání, registry pro argumenty, konvence návratových hodnot a konkrétní instrukce pro vstup do kernelu.
+
+Přerušení je mechanismus, kterým se kernel dostane ke slovu i bez toho, aby program dobrovolně volal syscall. Například běží uživatelské vlákno, síťová karta přijme \textbf{paket} a vyvolá interrupt. CPU uloží část kontextu, přepne se do kernel mode, podle tabulky přerušení skočí na handler a ovladač síťové karty událost obslouží.
+
+Handler má udělat rychlou nutnou práci, například potvrdit přerušení, převzít data nebo probudit čekající vlákno. Delší práce se často odkládá, aby se systém nezasekl v obsluze přerušení.
+
+Timer interrupt je zásadní pro preemptivní plánování. Kdyby kernel nikdy nedostal kontrolu, běžící vlákno by mohlo používat CPU tak dlouho, dokud samo nezavolá syscall nebo neskončí. Časovač pravidelně vyvolá přerušení, kernel zkontroluje časové kvantum a případně zavolá scheduler. Scheduler pak může obnovit stejné vlákno, nebo provést \textbf{context switch} na jiné připravené vlákno.
+
+\subsection*{5. Uživatel, práva a bezpečnostní kontroly}
+
+Uživatel v OS není jen osoba za klávesnicí, ale identita, pod kterou běží procesy a podle které kernel kontroluje oprávnění. Proces má vlastníka, skupiny, případně schopnosti nebo jiné bezpečnostní atributy. Když proces volá open na soubor, kernel zkontroluje, kdo proces je, jaká jsou práva souboru, vlastník, skupina, \textbf{ACL} a případně \textbf{MAC} pravidla typu \textbf{SELinux} nebo AppArmor.
+
+Pokud proces nemá oprávnění, systémové volání selže.
+
+Rozlišujeme \textbf{DAC} a MAC. DAC, discretionary access control, je model, kde vlastník objektu typicky rozhoduje o přístupu, například unixová práva rwx pro vlastníka, skupinu a ostatní. MAC, mandatory access control, je přísnější bezpečnostní \textbf{politika} vynucená systémem, kterou běžný vlastník nemůže libovolně obejít. Praktická pointa ke zkoušce je, že práva nevynucuje aplikace, ale kernel při systémových voláních.
+
+Aplikace může ukázat chybovou hlášku, ale skutečná ochrana musí být v jádře a v mechanismech OS.
+
+Princip \textbf{least privilege} říká, že proces má mít jen ta oprávnění, která opravdu potřebuje. Proto existují systémoví uživatelé a služby běžící pod speciálními účty. Například webový server nemusí běžet jako root po celou dobu. Pokud by byl kompromitován, útočník by měl jen omezená práva daného procesu.
+
+\subsection*{6. Virtualizace a kontejnery}
+
+Virtualizace znamená, že mezi hardwarem a běžícím systémem vytvoříme další vrstvu, která poskytuje iluzi samostatného stroje. Hypervisor typu 1 běží přímo na hardware, například v serverovém prostředí. Nad ním běží virtuální stroje, každý s vlastním hostovaným OS a vlastním kernelem. Hypervisor přiděluje CPU, paměť a zařízení, izoluje virtuální stroje a zachytává privilegované operace hostovaných systémů.
+
+Hypervisor typu 2 běží jako program nad hostitelským operačním systémem. Příkladem může být desktopová virtualizace. Cesta k hardwaru je delší: guest OS komunikuje s virtuálním zařízením, \textbf{hypervisor} to zprostředkuje hostitelskému OS a ten teprve s hardwarem. Výhodou je jednoduchost a pohodlné použití, nevýhodou vyšší režie proti typu 1.
+
+Kontejnery nejsou plné virtuální stroje. Kontejner nemá vlastní kernel; všechny kontejnery sdílejí kernel hostitelského OS. Izolace se vytváří pomocí \textbf{namespace} a omezení zdrojů pomocí \textbf{cgroups}. Kontejner může mít vlastní pohled na procesy, síť, mounty nebo uživatele, ale systémová volání nakonec obsluhuje hostitelský kernel. Proto jsou kontejnery lehčí než VM, ale izolace je jiného typu a závisí silně na správnosti host kernelu.
+
+\subsection*{7. Program, proces, vlákno a kontext}
+
+Program je statický spustitelný soubor na disku, například /bin/ls. Proces je běžící instance programu. Když program spustím, kernel vytvoří proces, přidělí mu PID, virtuální adresní prostor, tabulku file descriptorů, pracovní adresář, oprávnění a alespoň jedno vlákno. Jeden program může být spuštěn víckrát, takže z jednoho souboru na disku vznikne více procesů.
+
+Vlákno je jednotka vykonávání. CPU reálně vykonává konkrétní vlákno, ne proces jako abstraktní celek. Proces je spíš \textbf{kontejner} zdrojů. Vlákna jednoho procesu sdílejí adresní prostor, kód, \textbf{heap}, globální proměnné, mapované knihovny a často otevřené soubory. Každé vlákno má vlastní registry, program counter, stack pointer, zásobník, stav plánování, prioritu a obvykle i kernel stack pro vstupy do jádra.
+
+Kontext vlákna je stav potřebný k tomu, aby se vlákno dalo zastavit a později obnovit: registry, instruction pointer, stack pointer a plánovací stav. Kontext procesu zahrnuje širší zdroje: adresní prostor, stránkové tabulky, file descriptory, práva a další kernelové struktury. Proto je přepnutí mezi vlákny stejného procesu levnější než přepnutí mezi procesy, protože se nemusí měnit adresní prostor.
+
+Při přepnutí mezi procesy musí CPU/MMU používat jiné stránkové tabulky a obvykle se řeší i \textbf{dopad} na \textbf{TLB}.
+
+\subsection*{8. Plánování: co se plánuje a proč}
+
+U státnic je důležité neříct jen mechanicky, že se plánují procesy. Přesnější je, že scheduler typicky přiděluje CPU vláknům, tedy prováděcím jednotkám. Pokud má proces jen jedno vlákno, vypadá to jako plánování procesů. U vícevláknových programů je ale jasné, že běžet může například jedno konkrétní vlákno Firefoxu, zatímco jiné vlákno stejného procesu čeká na I/O nebo zámek.
+
+Plánování potřebujeme proto, že připravených vláken může být víc než CPU jader. Scheduler je část jádra, která vybírá, které ready vlákno poběží. Vlákno může být running, ready nebo blocked. Running právě běží na CPU. Ready je připravené a čeká ve frontě. Blocked čeká na událost, například dokončení I/O, \textbf{mutex}, \textbf{semafor}, sleep nebo signál.
+
+Scheduler se spouští, když je potřeba učinit plánovací rozhodnutí, typicky při timer interruptu, při zablokování nebo probuzení vlákna nebo při jeho ukončení. Samotné systémové volání sice vždy přivede CPU do kernelu, ale scheduler se kvůli němu volá jen tehdy, když to dává smysl, například když se volající vlákno zablokuje; po běžném syscallu se často vrátí stejné vlákno bez přeplánování.
+
+Stavy vlákna je užitečné vidět jako přechodový diagram. Nově vytvořené vlákno je ve stavu new. Jakmile je připravené běžet, přejde do stavu ready a čeká ve frontě připravených. Když ho scheduler vybere, dostane se do stavu running a běží na CPU. Pokud začne čekat na událost, přejde do stavu blocked a po jejím dokončení se vrací zpět do ready, nikoli rovnou do running. Po dokončení práce přejde do stavu terminated.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+new -> ready <-> running -> terminated
+         ^        |
+         |        v
+         +----- blocked
+\end{verbatim}
+\end{codebox}
+
+Jednotlivé přechody mají konkrétní příčiny. Přechod ready $\rightarrow$ running provede scheduler tím, že vlákno vybere, a \textbf{dispatcher} tím, že mu skutečně předá CPU. Přechod running $\rightarrow$ ready nastane při preempci, kdy vláknu vyprší časové kvantum nebo se objeví důležitější vlákno. Přechod running $\rightarrow$ blocked nastane, když vlákno začne na něco čekat, například na I/O, zámek nebo časovač.
+
+Přechod blocked $\rightarrow$ ready nastane, až čekaná událost proběhne; vlákno tím ještě není spuštěno, jen se zařadí mezi připravená.
+
+S tím souvisí tři pojmy, které se snadno pletou. Scheduler je část jádra, která rozhoduje, které ready vlákno poběží jako další. Dispatcher je mechanismus, který toto rozhodnutí provede: uloží stav předchozího vlákna, obnoví stav vybraného a předá mu procesor.
+
+Context \textbf{switch} je samotné přepnutí kontextu, tedy uložení registrů, instruction pointeru a stavu jednoho vlákna a obnovení druhého; jde-li o vlákna různých procesů, mění se navíc i adresní prostor a stránkové tabulky.
+
+Preemptivní plánování znamená, že OS může vláknu odebrat CPU bez jeho souhlasu. Typicky vyprší časové kvantum, přijde timer interrupt a kernel rozhodne, zda bude pokračovat stejné vlákno, nebo jiné. Kooperativní plánování znamená, že vlákno se musí procesoru vzdát samo, například voláním yield, sleep, nebo tím, že začne čekat na I/O.
+
+Volání yield obvykle vede přes syscall nebo knihovní mechanismus do kernelu a předá rozhodnutí scheduleru. Neznamená ale jistě, že poběží jiné vlákno; pokud žádné vhodné není, scheduler může vrátit CPU stejnému vláknu. Sleep je silnější v tom, že vlákno přejde do blocked stavu do určitého času nebo události.
+
+Z jednoduchých plánovacích algoritmů je \textbf{FIFO} nejjednodušší: úlohy se obsluhují v pořadí příchodu.
+
+Je snadné, ale krátké úlohy mohou čekat za dlouhou. \textbf{Round Robin} dává každému vláknu časové kvantum a po jeho vypršení ho zařadí zpět do fronty; zlepšuje odezvu, ale příliš malé kvantum vede k velké režii. \textbf{SJF} vybírá nejkratší úlohu a minimalizuje průměrnou dobu čekání, ale vyžaduje odhad délky běhu a může vést ke starvation dlouhých úloh. Prioritní plánování vybírá podle priority.
+
+Prioritu může nastavit OS, program, uživatel nebo administrátor a scheduler ji může dynamicky měnit. Starvation nízkoprioritních úloh se dá omezit agingem, tedy postupným zvyšováním priority dlouho čekajících vláken.
+
+\subsection*{Plánování v reálném čase a inverze priorit}
+
+Plánování se dělí na statické a dynamické. Statické plánování rozhodne o pořadí nebo prioritách předem, ještě před během, a za chodu se už nemění. Dynamické plánování rozhoduje až za běhu podle aktuální situace, například podle toho, jak blízko má která úloha ke svému termínu. Statické je předvídatelnější a jednodušší na analýzu, dynamické se lépe přizpůsobí měnící se zátěži.
+
+V systémech reálného času nejde jen o průměrnou rychlost, ale o dodržení termínu, kterému se říká \textbf{deadline}. Rozlišuje se hard real-time a soft real-time. U hard real-time je nedodržení termínu chápáno jako selhání, například u řízení brzd nebo airbagu. U soft real-time chceme termín dodržet a jeho občasné překročení zhorší kvalitu, ale není to katastrofa, například u přehrávání videa, kde se nanejvýš zasekne obraz.
+
+Pro periodické úlohy existují dva klasické algoritmy. \textbf{Rate Monotonic Scheduling} (\textbf{RMS}) je statický: čím kratší periodu úloha má, tím vyšší dostane pevnou prioritu, protože častější úlohy je potřeba obsloužit dříve. \textbf{Earliest Deadline First} (\textbf{EDF}) je dynamický: v každém okamžiku běží ta úloha, která má nejbližší termín dokončení.
+
+EDF dokáže využít procesor lépe než RMS, ale je náročnější na implementaci a hůře se chová při přetížení.
+
+Běžný Round Robin se pro reálný čas nehodí, protože vůbec nepracuje s termíny. Snaží se jen spravedlivě rozdělit procesor mezi vlákna po časových kvantech, takže časově kritické vlákno může čekat, až se na něj ve frontě dostane řada, a svůj deadline tím zmešká. Pro garantování termínů potřebujeme plánování, které termíny zná, jako RMS nebo EDF.
+
+Specifickým problémem prioritního plánování je \textbf{priority inversion}, tedy inverze priorit. Nastane, když vysokoprioritní vlákno čeká na zámek, který drží nízkoprioritní vlákno, a to mezitím nemůže běžet, protože ho předbíhá nějaké středněprioritní vlákno. Vysoká priorita je tak fakticky blokovaná nízkou.
+
+Řešením je \textbf{priority inheritance}, tedy dědění priorit: vlákno, které drží zámek potřebný vysokoprioritnímu vláknu, dočasně získá jeho vysokou prioritu, rychle kritickou sekci dokončí a zámek uvolní.
+
+\subsection*{9. Virtuální paměť, MMU a stránkové tabulky}
+
+Virtuální paměť dává každému procesu vlastní adresní prostor. Proces tedy nepracuje přímo s fyzickou \textbf{RAM}, ale s virtuálními adresami. Fyzická paměť je rozdělena na rámce, virtuální paměť na stránky stejné velikosti. Stránka je blok virtuální paměti, \textbf{rámec} je blok fyzické RAM.
+
+Stránková tabulka mapuje virtuální stránky na fyzické rámce a obsahuje také příznaky: přítomnost v paměti, právo zápisu, spustitelnost, user/kernel přístup a podobně.
+
+Překlad adres dělá MMU, tedy hardwarová jednotka procesoru. Kernel stránkové tabulky vytváří a spravuje, ale při běhu každé instrukce překládá adresy MMU. Virtuální adresa se rozdělí na číslo virtuální stránky a offset. Číslo stránky se podle stránkové tabulky přeloží na číslo fyzického rámce. Offset zůstává stejný, protože udává pozici uvnitř stránky i rámce.
+
+Pokud má \textbf{stránka} 4 KiB, tedy 4096 B neboli 2\textasciicircum{}12 B, offset má 12 bitů. Obecně platí: pokud má offset k bitů, stránka má 2\textasciicircum{}k bajtů. Z jedné adresy samotné offset nepoznám; musím znát velikost stránky. U 4KiB stránky je offset posledních 12 bitů adresy.
+
+TLB je \textbf{cache} překladů virtuálních stránek na fyzické rámce. Když MMU najde překlad v TLB, jde o TLB hit a přístup je rychlý. Když tam překlad není, jde o TLB miss a musí se projít stránkovací tabulka. TLB miss není page fault. Page fault nastává, když překlad není platný, stránka není přítomná, nebo přístup porušuje práva.
+
+Kernel potom rozhodne, zda stránku alokuje, načte z disku, provede \textbf{copy-on-write}, nebo proces ukončí signálem typu segmentation fault.
+
+Virtuální paměť je zároveň ochranný mechanismus. Každý proces má vlastní stránkové tabulky, takže nemůže libovolně číst paměť jiného procesu. Kernelová část adresního prostoru může být namapovaná v každém procesu, ale stránky jsou označené jako přístupné jen v kernel mode. Proto uživatelský program nemůže jen skočit na adresu kernelu. Přechod do kernelu je možný jen kontrolovanými vstupy, jako je syscall, interrupt nebo fault.
+
+\subsection*{Přidělování paměti a segmentace}
+Při přidělování volného místa (na haldě i ve fyzické paměti) se používají strategie hledání volného bloku: \textbf{first-fit} vezme první dostatečně velkou mezeru (rychlé), \textbf{best-fit} nejmenší vyhovující mezeru (méně plýtvá, ale je pomalejší a tvoří drobné nepoužitelné zbytky) a \textbf{worst-fit} naopak největší mezeru. S tím souvisí \textbf{fragmentace} volné paměti.
+
+Kromě stránkování existuje i \textbf{segmentace}. Stránkování dělí paměť na \textbf{stránky} stejné velikosti, což řeší hlavně efektivní využití a vnější fragmentaci, ale neodpovídá logické struktuře programu. Segmentace dělí paměť na \textbf{segmenty proměnné velikosti} odpovídající logickým částem programu (kód, data, zásobník) přes segmentovou tabulku (báze + limit); je bližší struktuře programu, ale trpí vnější fragmentací. V praxi se oba přístupy často kombinují.
+
+\subsection*{10. Souběžnost, race condition a synchronizace}
+
+Souběžnost znamená, že několik výpočtů probíhá tak, že jejich pořadí není pevně dáno. Na více jádrech mohou běžet opravdu paralelně; na jednom jádře je scheduler rychle střídá. Problém vzniká, když více vláken přistupuje ke sdíleným datům. Vlákna jednoho procesu sdílejí heap a globální proměnné, takže synchronizaci často řešíme uvnitř jednoho procesu.
+
+Synchronizace ale může být potřeba i mezi procesy, pokud sdílejí soubor, sdílenou paměť, databázi, semafor nebo zařízení.
+
+Kritická sekce je část kódu, kde se pracuje se sdíleným zdrojem a nesmí tam současně vstoupit více vláken. Race condition nastane, když výsledek závisí na náhodném proložení vláken. Typický příklad je counter++. Vypadá to jako jedna operace, ale reálně se hodnota načte, zvýší a uloží. Když to dvě vlákna provedou současně, jeden update se může ztratit.
+
+Mutex je zámek pro vzájemné vyloučení. Vlákno zamkne mutex, provede kritickou sekci a odemkne ho. Mutex drží konkrétní vlákno, i když zrovna neběží na CPU; scheduler mu může vzít procesor, ale mutex zůstává zamčený. Semafor je synchronizační primitivum založené na čítači. Binární semafor se podobá zámku, počítací semafor omezuje počet vláken, která mohou současně používat více instancí stejného zdroje.
+
+Atomické operace jsou nedělitelné operace podporované CPU, například atomic increment nebo compare-and-swap. Používají se pro jednoduché čítače i jako stavební kámen zámků. Bariéra je synchronizační bod: vlákna čekají, dokud do něj nedorazí všechna, a pak pokračují do další fáze. Paměťová bariéra na nižší úrovni omezuje přeuspořádání paměťových operací procesorem nebo překladačem. Producent-konzument je klasický příklad.
+
+Producent vkládá položky do sdíleného bufferu, konzument je odebírá. Musíme chránit samotný buffer, aby do něj nesahala dvě vlákna nekonzistentně, a zároveň hlídat podmínky: producent čeká, když je buffer plný, konzument čeká, když je prázdný. Typicky se použije mutex na ochranu struktury bufferu a semafory nebo podmínkové proměnné na počítání volných a obsazených míst.
+
+\subsection*{11. Deadlock, RAG, prevence, avoidance a starvation}
+
+Než se dostaneme k \textbf{uváznutí}, je dobré si ujasnit, jak se zachází se zdroji. Zdroj může být sdílený, tedy použitelný více vlákny současně (například soubor otevřený jen pro čtení), nebo výlučný, který v daný okamžik smí používat jen jedno vlákno (například tiskárna nebo zámek).
+
+Z jiného pohledu je zdroj preemptable, pokud ho lze bezpečně odebrat a později vrátit (typicky procesor nebo fyzická paměť díky odložení na disk), nebo non-preemptable, pokud ho odebrat uprostřed použití nelze (například zamčený mutex nebo roztisknutá tiskárna).
+
+Použití zdroje má obvyklý životní cyklus: vlákno o zdroj požádá, systém mu ho přidělí, vlákno ho použije a nakonec uvolní. Pokud zdroj není volný, vlákno při žádosti čeká. Z tohoto cyklu vychází i pojem bezpečného a nebezpečného stavu. Stav je bezpečný, pokud existuje alespoň jedno pořadí, ve kterém lze všem vláknům postupně vyhovět tak, aby všechna doběhla, aniž by uvázla.
+
+Nebezpečný stav neznamená, že už deadlock nastal, ale že nemusí existovat žádné takové pořadí, takže k uváznutí dojít může. Právě na rozlišení bezpečného a nebezpečného stavu staví \textbf{bankéřův algoritmus}: zdroj přidělí jen tehdy, pokud i po přidělení zůstane systém v bezpečném stavu.
+
+Deadlock neboli uváznutí je stav, kdy skupina vláken nebo procesů nemůže pokračovat, protože každý čeká na zdroj držený někým jiným ze skupiny. Typický příklad: vlákno A drží mutex M1 a čeká na M2, zatímco vlákno B drží M2 a čeká na M1. Ani jedno nepokračuje. Pro deadlock musí současně platit čtyři nutné podmínky: vzájemné vyloučení, hold and wait, neodebíratelnost zdroje a kruhové čekání.
+
+Vzájemné vyloučení znamená, že zdroj nemůže být používán libovolným počtem vláken najednou. Hold and wait znamená, že vlákno drží jeden zdroj a čeká na další. Neodebíratelnost znamená, že zdroj nejde bezpečně násilně odebrat. CPU preemptovat lze, ale mutex nebo tiskárnu uprostřed práce obvykle bezpečně odebrat nelze.
+
+Kruhové čekání znamená, že vznikne cyklus: A čeká na B, B čeká na C a C čeká na A. Preemptivní plánování deadlock automaticky neřeší, protože \textbf{preempce} se týká CPU, ne všech zdrojů.
+
+RAG, resource allocation graph, modeluje vztahy mezi procesy a zdroji. Hrana z procesu do zdroje znamená žádost nebo čekání, hrana ze zdroje do procesu znamená přidělení. Pokud má každý zdroj jednu instanci, cyklus v grafu znamená deadlock. Pokud může mít zdroj více instancí, cyklus je varovný signál, ale nemusí sám o sobě stačit k potvrzení deadlocku.
+
+Ochrana proti deadlocku má několik strategií. Prevence znamená porušit jednu ze čtyř podmínek, například zavést pevné pořadí zamykání a tím zabránit cyklu, nebo požadovat všechny zdroje najednou a tím omezit hold and wait. Avoidance se snaží nepřidělit zdroj, pokud by systém přešel do nebezpečného stavu; klasický příklad je bankéřův algoritmus, který ale potřebuje znát maximální požadavky.
+
+Detekce a zotavení deadlock připustí, najde ho a potom řeší například ukončením procesu, rollbackem nebo odebráním zdroje tam, kde to jde. Starvation je jiný problém: vlákno není nutně v cyklu, ale dlouhodobě se nedostane ke zdroji nebo CPU, například kvůli prioritám.
+
+\subsection*{12. POSIX: fork, exec, wait/join, file descriptory a COW}
+
+POSIX model spouštění programů je dobře vysvětlitelný přes shell. Shell je proces. Když spustím příkaz, shell zavolá fork. Fork vytvoří potomka jako kopii rodiče. Po forku existují dva procesy, rodič a dítě, a oba pokračují od místa volání fork. Liší se návratovou hodnotou: rodič dostane PID dítěte, dítě dostane 0 a při chybě se vrátí -1. Dítě potom typicky zavolá exec, čímž svůj adresní prostor nahradí novým programem.
+
+Exec nevytváří nový proces; PID zůstává, ale změní se kód, data, stack, argumenty, prostředí a vstupní bod programu.
+
+Rodič může čekat na dokončení potomka pomocí wait nebo waitpid. U vláken se analogický pojem nazývá join, například pthread\_join, kdy jedno vlákno čeká na dokončení jiného. Je dobré rozlišit: wait se běžně používá pro procesy, join pro vlákna.
+
+Copy-on-write propojuje fork se stránkovými tabulkami a MMU. Kdyby fork fyzicky kopíroval celou paměť procesu, bylo by to drahé a často zbytečné, protože dítě obvykle hned zavolá exec. Proto kernel po forku vytvoří dítěti vlastní stránkové tabulky, ale záznamy v nich zatím ukazují na stejné fyzické rámce jako u rodiče. Zapisovatelné stránky se označí jako read-only a copy-on-write.
+
+Když jeden z procesů do takové stránky zapíše, MMU vyvolá page fault. Kernel pozná, že jde o COW, alokuje nový fyzický rámec, zkopíruje obsah stránky, upraví stránkovou tabulku zapisujícího procesu a instrukce se zopakuje. Tím každý proces dostane vlastní kopii až ve chvíli, kdy ji opravdu potřebuje.
+
+File descriptor je malé číslo v tabulce procesu, které odkazuje na otevřený soubor, socket, pipe nebo jiné I/O. Standardně má proces deskriptory 0, 1 a 2 pro stdin, stdout a stderr. Když proces volá read(fd, buffer, n), kernel podle fd najde otevřený objekt, zkontroluje režim a práva a data přečte, případně proces zablokuje. File descriptory se při forku dědí, takže rodič a dítě mohou odkazovat na stejné otevřené soubory.
+
+To je důležité pro shell, přesměrování a pipes.
+
+\subsection*{13. Jak to říct jako jednu zkouškovou pohádku}
+
+Když chci odpověď spojit do jednoho toku, řekl bych: operační systém je vrstva mezi aplikacemi a hardwarem. Firmware a bootloader nastartují systém a načtou kernel. Kernel běží v privilegovaném režimu, spravuje paměť, procesy, vlákna, zařízení, přerušení a práva. Uživatelské programy běží v user mode a přes API systémových knihoven volají služby OS.
+
+Pokud je potřeba zásah kernelu, provede se syscall, CPU přejde do kernel mode a vykoná se kód jádra, ne uživatelský program s vyššími právy.
+
+Proces je běžící instance programu a kontejner zdrojů. Vlákno je jednotka běhu, kterou scheduler přiděluje CPU. Proto je přesnější říct, že plánujeme vlákna nebo prováděcí jednotky. Scheduler běží jako součást kernelu a vyvolá se, když je potřeba plánovací rozhodnutí, typicky při timer interruptu nebo při zablokování či probuzení vlákna; samotný syscall přivede CPU do kernelu, ale přeplánování způsobí jen v případě potřeby.
+
+Může používat různé politiky: FIFO, Round Robin, SJF nebo priority. Yield dobrovolně předá rozhodnutí scheduleru, sleep vlákno zablokuje do času nebo události.
+
+Každý proces má virtuální adresní prostor. MMU podle stránkových tabulek překládá virtuální stránky na fyzické rámce, offset se nemění. Velikost stránky je 2 na počet bitů offsetu, takže 4 KiB znamená 12bitový offset. Ochrana paměti je vynucená stránkovacími tabulkami a režimy procesoru. Fork vytvoří nový proces, copy-on-write sdílí fyzické stránky do prvního zápisu a page fault při zápisu způsobí vytvoření kopie.
+
+Exec pak nahradí proces novým programem.
+
+Protože vlákna mohou běžet souběžně a sdílet paměť, potřebujeme synchronizaci. Kritické sekce chráníme mutexy, počet instancí zdroje semafory, jednoduché sdílené hodnoty atomickými operacemi a fáze výpočtu bariérami. Špatná synchronizace vede k \textbf{race condition} nebo deadlocku. Deadlock vyžaduje vzájemné vyloučení, drž a čekej, neodebíratelnost a kruhové čekání. RAG ukáže cyklus čekání na zdroje.
+
+Prevence ruší některou podmínku, avoidance se vyhýbá nebezpečnému stavu, detekce deadlock najde a zotavení ho řeší. Starvation je dlouhodobé nedostání zdroje bez nutného cyklu. Tím se propojí architektura OS, kernel, režimy procesoru, paměť, procesy, plánování, souběžnost a POSIX do jednoho celku.
+
+syscall/interrupt/fault; proces je kontejner zdrojů; vlákno je jednotka běhu; scheduler přiděluje CPU vláknům; MMU překládá virtuální adresy přes stránkové tabulky; synchronizace chrání sdílené zdroje; deadlock je cyklus čekání; fork + COW + page fault + exec vysvětlují vznik a spuštění procesu v POSIXu.
+
+\subsection*{14. Praktický průchod: od zapnutí počítače k běžící aplikaci}
+
+Aby se to dalo dobře zapamatovat, je vhodné si představit jeden konkrétní běh systému. Po zapnutí počítače ještě neexistuje OS v tom smyslu, jak ho běžně chápeme. Neexistují procesy, vlákna ani scheduler. CPU začne vykonávat kód firmwaru, typicky UEFI, z předem dané adresy. Firmware není proces a není součást jádra. Je to kód uložený mimo operační systém, který inicializuje základní hardware, připraví RAM a najde bootloader.
+
+Bootloader potom načte obraz kernelu do RAM, případně i initramfs, a předá kernelu řízení.
+
+Kernel po startu nastaví základní mechanismy, bez kterých by nemohl bezpečně pouštět uživatelské programy. Nastaví režimy procesoru a přechody do kernelu, inicializuje správu paměti, vytvoří počáteční stránkové tabulky, nastaví tabulku přerušení, inicializuje scheduler a ovladače.
+
+Jakmile je schopný spouštět uživatelský kód, vytvoří první proces, typicky init nebo systemd s PID 1. Ten už je běžný user-space proces, i když velmi důležitý. Spouští další služby, démony a nakonec uživatelské relace.
+
+Když uživatel spustí například terminál nebo prohlížeč, nejde o to, že by aplikace přímo žádala hardware o paměť a CPU. Některý existující proces zavolá fork nebo jiný systémový mechanismus vytvoření procesu, kernel připraví nový proces, jeho adresní prostor a první vlákno, a pomocí exec se v něm zavede nový program. Od té chvíle aplikace běží v user mode.
+
+Když chce číst soubor, otevřít síťové spojení nebo alokovat novou stránku paměti, buď využije knihovnu v user space, nebo přes syscall vstoupí do kernelu. Kernel pokaždé kontroluje oprávnění a stav zdrojů.
+
+\subsection*{15. Co se stane při systémovém volání read}
+
+Dobrý zkouškový příklad je read ze souboru. Program má file descriptor, například fd = 3, a zavolá read(fd, buffer, velikost). Z pohledu programátora volá API funkci. Knihovna libc připraví systémové volání: do registrů dá číslo syscallu a argumenty a provede instrukci pro vstup do kernelu. CPU uloží návratový stav, přepne do kernel mode a skočí na syscall handler.
+
+Kernel se podívá do tabulky file descriptorů daného procesu, zjistí, co fd 3 znamená, zda byl otevřen pro čtení, zda má proces práva a kde má být výsledek uložen.
+
+Pokud jsou data už v \textbf{page cache}, kernel je může zkopírovat do bufferu procesu a vrátit se do user mode. Pokud data nejsou k dispozici, kernel zadá I/O požadavek blokové vrstvě a ovladači disku a vlákno zablokuje. Scheduler potom vybere jiné ready vlákno. Až disk dokončí čtení, vyvolá interrupt.
+
+CPU skočí do interrupt handleru v kernelu, ovladač označí požadavek jako dokončený, kernel probudí čekající vlákno a scheduler ho později znovu pustí. Teprve potom se read dokončí a program pokračuje, jako by jen zavolal obyčejnou funkci. V tomto příkladu se propojuje API, syscall, kernel mode, file descriptor, ovladač, přerušení, blokování a plánování.
+
+\subsection*{16. Co přesně znamená context switch}
+
+Při přepnutí kontextu se nemění jen nějaké abstraktní jméno procesu. CPU v každém okamžiku vykonává konkrétní proud instrukcí, tedy konkrétní vlákno. Aby mohlo být vlákno zastaveno a později pokračovat, musí kernel uložit jeho stav: registry, instruction pointer, stack pointer a další architekturní stav. Potom obnoví stav jiného vlákna. Pokud se přepíná mezi vlákny stejného procesu, adresní prostor zůstává stejný.
+
+Pokud se přepíná mezi vlákny různých procesů, musí se změnit i \textbf{ukazatel} na stránkové tabulky. Na x86 se často mluví o registru CR3, který říká, jaké stránkové tabulky se používají.
+
+Je dobré si uvědomit, že scheduler sám není proces. Je to kód kernelu. Spustí se tehdy, když je potřeba učinit plánovací rozhodnutí: při timer interruptu, při zablokování nebo probuzení vlákna nebo při jeho ukončení. Samotný syscall jen přivede CPU do kernelu; scheduler se po něm volá jen tehdy, když je to nutné. Scheduler potom vybere další ready vlákno podle plánovací politiky.
+
+Běžný user program nemůže scheduler obejít, protože přidělování CPU je řízené jádrem.
+
+\subsection*{17. Praktické propojení fork, COW, stránkových tabulek a MMU}
+
+Komise může chtít, aby člověk nesypal oddělené definice, ale propojil fork, copy-on-write, stránkové tabulky a MMU. Správný příběh je tento: proces má vlastní virtuální adresní prostor popsaný stránkovými tabulkami. Když zavolá fork, kernel vytvoří nový proces - potomka. Potomek má vlastní stránkové tabulky, takže z hlediska izolace jde o jiný proces.
+
+Ale záznamy v těchto tabulkách nemusí hned ukazovat na nové fyzické kopie všech stránek. Mohou ukazovat na stejné fyzické rámce jako rodič, jen jsou stránky označené jako copy-on-write a dočasně read-only.
+
+Když ani rodič, ani dítě do sdílené stránky nepíšou, není důvod ji kopírovat. Pokud jeden z nich zapíše, MMU si všimne, že zápis míří na stránku označenou read-only/COW, a vyvolá page fault. Kernel zjistí, že to není chyba programu, ale legitimní COW situace.
+
+Alokuje nový fyzický rámec, zkopíruje obsah původní stránky, upraví stránkovou tabulku zapisujícího procesu tak, aby ukazovala na novou kopii, nastaví práva a instrukce se zopakuje. Tím se fyzická kopie vytvoří až při prvním zápisu. Když dítě po forku hned zavolá exec, většina paměti se vůbec nekopíruje, protože exec starý adresní prostor nahradí novým programem.
+
+\subsection*{18. Producent-konzument jako zkouškový příběh synchronizace}
+
+Na synchronizaci se dobře vysvětluje producent-konzument. Máme sdílený buffer o omezené velikosti. Producent do něj vkládá položky, konzument je odebírá. Bez synchronizace může producent zapisovat do struktury právě ve chvíli, kdy z ní konzument čte, a buffer se může rozbít. Proto je kolem přístupu k bufferu mutex. Ten zajistí, že samotnou datovou strukturu mění vždy jen jedno vlákno.
+
+Samotný mutex ale nestačí, protože musíme řešit i stav plnosti a prázdnosti. Když je buffer plný, producent nemá kam vkládat a musí čekat. Když je buffer prázdný, konzument nemá co odebírat a musí čekat. To se dá řešit semafory: jeden počítá volná místa, druhý obsazená místa. Producent čeká na volné místo, zamkne mutex, vloží položku, odemkne mutex a zvýší počet obsazených míst.
+
+Konzument čeká na obsazené místo, zamkne mutex, odebere položku, odemkne mutex a zvýší počet volných míst. Pokud se pořadí zámků a čekání navrhne špatně, může vzniknout deadlock nebo starvation.
+
+\subsection*{19. Nejčastější zkouškové pasti a přesné formulace}
+
+První past je říct, že se plánují procesy, a dál to nerozlišit. Lepší formulace je: historicky se mluví o plánování procesů, ale v moderním OS scheduler typicky vybírá vlákna, protože CPU vykonává konkrétní vlákno. Proces je kontejner zdrojů. Druhá past je říct, že systémové volání přepne proces do kernel mode. Přesněji: CPU přejde do kernel mode a vykonává kód jádra v kontextu volajícího vlákna. User program nezískává privilegia.
+
+Třetí past je zaměnit TLB miss a page fault. TLB miss znamená, že překlad není v rychlé cache překladů a musí se dohledat ve stránkové tabulce. Page fault znamená, že překlad není platný nebo přístup porušuje práva, a kernel musí situaci řešit. Čtvrtá past je říct, že preemptivní plánování ruší deadlock, protože zdroj lze odebrat. Preemptivní plánování odebírá CPU, ale ne nutně mutex, tiskárnu nebo jiný neodebíratelný zdroj.
+
+Pátá past je říct, že mutex automaticky chrání data. Mutex chrání jen tehdy, když všechna vlákna dodržují domluvený protokol a používají ho při každém přístupu ke sdílenému zdroji.
+
+Když se komise zeptá, co udělá yield, odpověď je: vlákno dobrovolně předá řízení scheduleru, často přes systémové volání nebo knihovní mechanismus. Scheduler může vybrat jiné ready vlákno, ale nemusí. Když se zeptá, co udělá sleep, odpověď je: vlákno přejde do blocked stavu do uplynutí času nebo události a CPU dostane někdo jiný.
+
+Když se zeptá, co je ovladač, odpověď je: systémový software pro komunikaci OS s konkrétním hardwarem; u monolitického jádra často běží v kernel mode jako součást kernelu nebo modul, u mikrojádra může běžet v user space.
+
+\newpage
+

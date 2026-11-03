@@ -1,0 +1,298 @@
+\otazka{12. Bezpečnostní architektura}{Bezpečnost sítí, izolace a segmentace sítí, firewally. Monitoring, detekce a logování. Bezpečnost operačních systémů, bezpečnost dat.}{PB156, PB156cv, PV004, PV175}
+
+\subsection*{12. Bezpečnostní architektura -- stručněji}
+Bezpečnostní architektura je návrh, jak se bezpečnost promítne do sítí, systémů, dat, monitoringu a provozu. Nejde o jeden firewall, ale o vrstvenou obranu: prevence, detekce, reakce a obnova.
+
+\textbf{1. Bezpečnost sítí}
+\begin{itemize}
+  \item Segmentace rozděluje síť na zóny podle citlivosti a funkce. Cílem je, aby průnik do jedné části neznamenal volný pohyb všude.
+  \item Izolace je silnější oddělení, například oddělená síť pro správu, DMZ pro veřejné služby nebo oddělení produkce a testu.
+  \item Firewall filtruje provoz podle pravidel. Může být síťový, aplikační nebo host-based. Důležité je vědět, že firewall nenahradí správu identit, patching ani monitoring.
+\end{itemize}
+
+\textbf{2. Monitoring, detekce a logování}
+\begin{itemize}
+  \item Logování zaznamenává události, monitoring sleduje stav a metriky, detekce hledá podezřelé chování. Společně umožňují zjistit incident a rekonstruovat, co se stalo.
+  \item SIEM sbírá a koreluje logy. IDS/IPS hledá podezřelý provoz, EDR sleduje koncové stanice a servery.
+  \item Logy musí mít časovou synchronizaci, integritu, přiměřenou retenci a omezený přístup. Bez dobrých logů se incident vyšetřuje naslepo.
+\end{itemize}
+
+\textbf{3. Bezpečnost OS}
+\begin{itemize}
+  \item Bezpečný OS znamená aktualizace, hardening, omezení služeb, řízení účtů, nejmenší oprávnění, bezpečnou konfiguraci a audit.
+  \item Důležitá je separace uživatelů a procesů, práva k souborům, ochrana kernelu, bezpečný boot, řízení služeb a kontrola privilegovaných operací.
+\end{itemize}
+
+\textbf{4. Bezpečnost dat}
+\begin{itemize}
+  \item Data je potřeba chránit v klidu, při přenosu i při zpracování. Používá se šifrování disků, TLS, řízení přístupu, klasifikace, DLP, zálohy a mazání podle retence.
+  \item Zálohy jsou bezpečnostní opatření pro dostupnost a obnovu, ale musí být testované, oddělené a chráněné proti smazání útočníkem.
+\end{itemize}
+
+\textbf{5. Architektonická pointa}
+\begin{itemize}
+  \item Dobrá architektura počítá s tím, že některé opatření selže. Proto kombinuje více vrstev: MFA, segmentaci, patching, EDR, logy, zálohy, incident response a pravidelné testování.
+  \item Praktický příklad: ransomware se má zastavit na phishingové ochraně nebo EDR, nemá se rozšířit kvůli segmentaci, má být vidět v logách a škodu mají omezit offline zálohy.
+\end{itemize}
+
+Bezpečnost sítí, \textbf{izolace} a \textbf{segmentace} sítí, firewally. Monitoring, detekce a logování. Bezpečnost operačních systémů, bezpečnost dat.
+
+uvést konkrétní opatření i typické útoky z databáze komisí.
+
+\subsection*{Základní myšlenka bezpečnostní architektury}
+
+Bezpečnostní architektura je způsob, jak je bezpečnost promítnuta do návrhu, provozu a kontroly celého informačního systému. Nejde jen o jeden \textbf{firewall} nebo jeden bezpečnostní produkt. Jde o celkové uspořádání sítě, systémů, dat, identit, logování, detekce a provozních pravidel tak, aby byla chráněna \textbf{důvěrnost}, \textbf{integrita} a \textbf{dostupnost} služeb a dat.
+
+Dobrá architektura odpovídá na otázky: kde jsou citlivá aktiva, kdo k nim smí přistupovat, přes jaké kanály, z jakých zón, jak se přístup omezuje, jak se útok pozná a jak se na něj reaguje.
+
+V síťové bezpečnosti se často používá princip obrany do hloubky. Nečekáme, že jedno opatření vyřeší všechno. Pokud útočník obejde jednu vrstvu, má narazit na další: segmentaci, firewallová pravidla, autentizaci, šifrování, \textbf{hardening} operačního systému, logování, detekci a zálohy.
+
+Architektura tedy kombinuje preventivní opatření, která mají útoku zabránit, detekční opatření, která mají útok odhalit, a reaktivní opatření, která umožní obnovu po incidentu.
+
+U komise je dobré začít tím, že bezpečná komunikační síť má poskytovat zejména AAA, tedy autentizaci, autorizaci a accounting. Autentizace říká, kdo komunikuje nebo kdo službu používá. Autorizace říká, co daný subjekt smí dělat. Accounting neboli účtování/auditní evidence sleduje, co subjekt skutečně dělal.
+
+Vedle toho chráníme důvěrnost přenášených dat, integritu přenášených dat, dostupnost služby a u některých komunikací i \textbf{nepopiratelnost} původu nebo doručení.
+
+Dobrá bezpečnostní architektura stojí na několika obecných principech, které je dobré umět vyjmenovat. Defense in depth (obrana do hloubky) klade více nezávislých vrstev, aby selhání jedné neznamenalo prolomení celku. Least privilege dává každému subjektu jen nezbytná oprávnění.
+
+Zero trust opouští představu důvěryhodné vnitřní sítě a vyžaduje ověření a autorizaci u každého přístupu bez ohledu na to, odkud přichází (heslo "nedůvěřuj, ověřuj"). Secure by default znamená, že výchozí nastavení je bezpečné, například default deny na firewallu. Fail secure znamená, že při selhání systém přejde do bezpečného, nikoli otevřeného stavu (například dveře, které při výpadku zůstanou zamčené).
+
+Separation of duties rozděluje kritické pravomoci mezi více osob, aby jeden člověk nemohl sám zneužít celý \textbf{proces}. A minimalizace \textbf{attack surface} znamená co nejvíc omezit počet vystavených služeb, portů a vstupních bodů.
+
+\subsection*{Síťová bezpečnost, izolace a segmentace}
+
+Základní síťová otázka je, jestli spolu opravdu musí mluvit všechny systémy. V bezpečné architektuře by odpověď měla být ne. Síť se rozděluje na zóny podle citlivosti a účelu: uživatelská síť, serverová síť, administrační síť, databázová zóna, \textbf{DMZ} pro veřejně dostupné služby, síť pro hosty, případně zvláštní zóna pro IoT nebo testovací prostředí.
+
+Mezi zónami se nepovoluje komunikace obecně, ale pouze konkrétní potřebné toky. To je síťová varianta principu nejmenších oprávnění.
+
+Segmentace znamená rozdělení jedné fyzické nebo logické sítě na menší části. V praxi se používají hlavně \textbf{VLAN}, \textbf{subnetting} a pravidla na firewallech nebo \textbf{ACL}. VLAN odděluje provoz na linkové vrstvě, subnetting dělí IP adresní prostor a firewall nebo ACL určuje, co smí mezi segmenty procházet. Cíl není jen pořádek v adresách, ale hlavně omezení laterálního pohybu útočníka.
+
+Když je kompromitována pracovní stanice v uživatelské VLAN, neměla by se z ní přímo dostat komunikace na databázový server nebo na management rozhraní síťových prvků.
+
+Typický příklad: veřejný webový server je v DMZ, protože musí být dostupný z internetu. Databázový server ale není v DMZ ani v uživatelské síti, je v interní databázové zóně. Firewall dovolí internetu přístup pouze na webový server na port 443. Webovému serveru dovolí jen nutné spojení do databáze, například na konkrétní port a konkrétní IP adresu. Zaměstnanci nemají přímý přístup k databázi, pokud ho nepotřebují.
+
+Administrace probíhá pouze ze správcovské zóny přes \textbf{VPN} a MFA.
+
+Izolace je přísnější forma oddělení. Může být síťová, například oddělení hostovské Wi-Fi od interní sítě, nebo aplikační a systémová, například sandbox, virtualizace nebo kontejnery. U Wi-Fi se používá také \textbf{client isolation}: klienti připojení do stejné bezdrátové sítě nesmí komunikovat přímo mezi sebou.
+
+To snižuje \textbf{riziko} lokálních útoků mezi klienty, například skenování, šíření malwaru nebo některých pokusů o \textbf{MITM} v rámci stejné Wi-Fi.
+
+Do bezpečné architektury patří i ochrana lokální sítě proti útokům na druhé vrstvě. \textbf{DHCP snooping} rozlišuje důvěryhodné a nedůvěryhodné porty na switchi. \textbf{DHCP} nabídky se akceptují jen z portu, kde je legitimní DHCP server. Útočník připojený do běžné zásuvky tak nemůže snadno spustit vlastní \textbf{rogue DHCP} server a rozdávat klientům falešnou bránu nebo \textbf{DNS}.
+
+DHCP snooping zároveň vytváří vazební tabulku IP adresa - \textbf{MAC} adresa - port - VLAN, kterou může využít \textbf{Dynamic ARP Inspection}. DAI kontroluje \textbf{ARP} odpovědi podle této tabulky a blokuje falešné ARP záznamy, čímž brání ARP spoofingu.
+
+Samotný DHCP snooping ale neřeší celý \textbf{DHCP starvation}; proti vyčerpání poolu pomáhá \textbf{port security}, omezení počtu MAC adres na portu a rate limiting DHCP provozu.
+
+K segmentaci je dobré doplnit několik pojmů. Provoz se dělí na north-south (mezi vnitřní sítí a vnějškem, typicky přes perimetr) a east-west (mezi systémy uvnitř datacentra); klasické perimetrové firewally hlídají hlavně north-south, ale moderní útoky se šíří east-west, proto je potřeba hlídat i vnitřní provoz.
+
+Mikrosegmentace jde až na úroveň jednotlivých serverů nebo aplikací, kde se povolují jen konkrétní toky mezi konkrétními workloady, místo velkých plochých zón. Přístup do sítě může řídit \textbf{NAC} (Network Access Control), často pomocí \textbf{802.1X}, kdy se zařízení musí autentizovat dřív, než ho \textbf{switch} nebo Wi-Fi vůbec pustí do sítě.
+
+Zvlášť je vhodné oddělit zálohovací infrastrukturu, aby se k zálohám útočník nedostal stejnou cestou jako k produkci. A je nutné zdůraznit, že samotná VLAN bez ACL nebo firewallu není plnohodnotná bezpečnostní hranice: odděluje provoz logicky, ale o povolených tocích mezi segmenty rozhoduje až filtrace.
+
+\subsection*{Firewally a řízení síťových toků}
+
+Firewall je mechanismus, který monitoruje a řídí příchozí a odchozí provoz podle bezpečnostních pravidel. Může být na hranici sítě, mezi vnitřními segmenty, na hostiteli, nebo jako součást cloudové infrastruktury. U státnic je důležité rozlišit základní typy firewallů. Paketový filtr rozhoduje podle IP adres, portů a protokolu.
+
+Stavový firewall navíc sleduje stav spojení a chápe, jestli \textbf{paket} patří k již navázané relaci. Aplikační \textbf{proxy} nebo \textbf{WAF} pracuje výše, rozumí konkrétním protokolům nebo webovým požadavkům a umí filtrovat například podezřelé \textbf{HTTP} požadavky.
+
+Bezpečnější přístup je whitelist, tedy default deny: zakázat všechno a povolit jen to, co je potřeba. Blacklist přístup blokuje jen známé špatné věci a zbytek pouští, což je méně bezpečné, protože neznámý nebo nový útok může projít. V praxi se proto pro komunikaci mezi zónami používá co nejpřesnější pravidlo: zdroj, cíl, port, protokol, směr, případně identita uživatele nebo aplikace.
+
+Pravidla se mají pravidelně revidovat, protože staré výjimky bývají častou zranitelností.
+
+Na Linuxu je typickým příkladem filtrování iptables nebo novější nftables. Pravidla mohou pracovat v řetězcích INPUT, OUTPUT a FORWARD. Akce může být ACCEPT, DROP nebo REJECT. ACCEPT paket propustí, DROP ho tiše zahodí a REJECT ho odmítne s odpovědí. U host-based firewallu se tím chrání přímo konkrétní server. Server by měl poslouchat jen na potřebných portech a firewall by měl blokovat všechny nepotřebné směry komunikace.
+
+Firewall ale není samospasitelný. Pokud povolíme příliš široké pravidlo, například "any to database", segmentace ztrácí smysl. Pokud se pravidla neudržují, vzniká bezpečnostní dluh. Pokud je útok veden přes povolený protokol, například \textbf{HTTPS} na webovou aplikaci, běžný síťový firewall ho nemusí poznat. Tam se hodí aplikační kontrola, WAF, bezpečný vývoj aplikace a monitoring.
+
+\subsection*{Monitoring, detekce a logování}
+
+Bez monitoringu organizace často neví, že je pod útokem. Monitoring je proces sledování provozu, systémů, aplikací a událostí za účelem správy, diagnostiky, odhalování anomálií a reakce na incidenty. V bezpečnostní architektuře má monitoring stejnou důležitost jako preventivní opatření, protože žádná prevence není stoprocentní.
+
+Síťový monitoring může být aktivní nebo pasivní. Aktivní monitoring používá například ping, Nmap nebo pravidelné testy dostupnosti. Dává detailní informace, ale generuje vlastní provoz a monitorovaný objekt o něm typicky ví. Pasivní monitoring pouze sleduje existující provoz. Příkladem je NetFlow, IPFIX nebo DPI.
+
+Flow-based monitoring nevidí celý obsah komunikace, ale vidí metainformace: kdo s kým komunikoval, kdy, jak dlouho, jakým protokolem a v jakém objemu. Výhoda je škálovatelnost a použitelnost i u šifrované komunikace. DPI umí analyzovat hlavičky a někdy i aplikační data, ale u šifrované komunikace je omezené a zároveň naráží na otázky soukromí.
+
+Host-based monitoring sleduje konkrétní počítač nebo server. Zajímá nás seznam procesů, otevřené porty, změny souborů, přihlašování, použití administrátorských práv, změny konfigurace, selhání služeb a bezpečnostní události. Na Windows se pracuje s Event Viewerem, na Linuxu typicky s /var/log a journalctl. Logy poskytují auditní stopu, tedy záznam toho, co se v systému stalo.
+
+Bez logů je \textbf{incident} response výrazně slabší, protože není z čeho rekonstruovat průběh útoku.
+
+Logy je vhodné centralizovat. Když jsou logy jen na kompromitovaném serveru, útočník s administrátorským přístupem je může smazat nebo upravit. Centralizace umožňuje korelaci událostí napříč systémy: například neúspěšná přihlášení na VPN, následné přihlášení z neobvyklé země, skenování interní sítě a přístup k databázi. Centralizované logování také pomáhá forenzní analýze, auditům a plnění regulatorních požadavků.
+
+U důležitých logů je vhodné řešit integritu, časovou synchronizaci přes NTP, omezení přístupu a retenci.
+
+Na logy a události navazuje \textbf{IDS}, \textbf{IPS} a \textbf{SIEM}. IDS je systém detekce narušení. Pasivně analyzuje události a hlásí podezřelé chování, které vyžaduje pozornost. IPS je systém prevence narušení a kromě detekce umí v reálném čase aktivně reagovat, například zahodit paket, resetovat spojení nebo zablokovat adresu. IDS může být síťové, tedy NIDS, nebo hostitelské, tedy HIDS.
+
+SIEM shromažďuje a koreluje logy a události z mnoha zdrojů, vytváří alerty, pomáhá při incident response a dává bezpečnostnímu týmu centrální pohled na stav organizace.
+
+Detekce může být signature-based, specification-based nebo anomaly-based. Signature-based detekce poznává známé útoky podle signatur, ale hůř odhaluje nové útoky. Specification-based detekce hledá porušení definovaného správného chování. Anomaly-based detekce hledá odchylky od běžného provozu a může najít nové útoky, ale často trpí falešnými poplachy.
+
+Proto se u IDS/IPS řeší true positive, false positive, false negative a true negative. Falešně pozitivní alert zahlcuje analytiky, falešně negativní znamená neodhalený útok.
+
+K monitoringu je dobré doplnit ještě pár pojmů. Baseline je obraz normálního chování (běžný objem provozu, obvyklé časy přihlašování, typické procesy); odchylky od \textbf{baseline} pomáhají odhalit anomálie. Je také potřeba rozlišit alert od incidentu: alert je upozornění z nástroje, které může být i planý poplach, kdežto incident je potvrzená bezpečnostní událost, kterou je potřeba řešit; ne každý alert je incident.
+
+A zatímco SIEM logy sbírá, koreluje a generuje alerty, \textbf{SOAR} (Security Orchestration, Automation and Response) na to navazuje automatizací a playbooky: umí část reakce provést sám, například izolovat stroj, zablokovat účet nebo založit ticket.
+
+\subsection*{Typické útoky a obrany}
+
+\textbf{DoS} a \textbf{DDoS} útoky míří hlavně na dostupnost. DoS je útok z jednoho nebo menšího počtu zdrojů, DDoS je distribuovaný útok z mnoha zdrojů, často z botnetu. Cílem je zahltit linku, firewall, server, aplikaci nebo konkrétní službu. Obrana závisí na vrstvě útoku: rate limiting, filtrace na hraně sítě, anti-DDoS služba u poskytovatele, CDN, \textbf{anycast}, SYN cookies, omezení náročných aplikačních operací, fronty, \textbf{cache} a kvalitní monitoring. U velkého volumetrického DDoS se provoz musí řešit co nejblíže zdroji nebo u poskytovatele, protože lokální firewall za zahlcenou linkou už nepomůže. V materiálech je uveden i \textbf{RTBH}, tedy Remote Triggered Black Hole, kdy se nežádoucí provoz rychle zahazuje přesměrováním na null0. Je to účinné a rychlé, ale hrubé opatření, protože může odříznout i legitimní provoz k cíli.
+
+\textbf{ICMP} flooding je konkrétní typ zahlcení, kdy útočník posílá velké množství ICMP paketů, například echo request. Obrana je rate limiting ICMP, filtrace nepotřebných ICMP typů, ochrana na síťovém okraji a monitoring objemových anomálií. Není ale správné slepě zakázat celé ICMP všude, protože některé ICMP zprávy jsou potřebné pro diagnostiku a správné fungování sítě.
+
+\textbf{ARP spoofing} je útok v lokální síti. Útočník posílá falešné ARP odpovědi a přesvědčí oběť, že jeho MAC adresa patří například výchozí bráně. Tím může dostat provoz přes sebe, odposlouchávat ho nebo měnit, tedy vytvořit Man-in-the-Middle. Obrana je Dynamic ARP Inspection, DHCP snooping, statické ARP záznamy u kritických systémů, port security, segmentace a klientská izolace na Wi-Fi. Důležité je vysvětlit, že ARP samo o sobě nemá silné ověření, proto je na lokální síti zneužitelné.
+
+Man-in-the-Middle znamená, že útočník stojí mezi dvěma komunikujícími stranami a může provoz číst, měnit nebo přeposílat. Může vzniknout přes ARP spoofing, rogue Wi-Fi, falešný DHCP server, DNS spoofing nebo kompromitovaný směrovač.
+
+Obrana je šifrování a \textbf{autentizace} komunikujících stran, typicky \textbf{TLS} s ověřením certifikátu, \textbf{SSH} known\_hosts, VPN, HSTS, \textbf{DNSSEC} podle kontextu, ochrana lokální sítě, monitoring anomálií a školení uživatelů, aby neignorovali varování certifikátů. Samotné šifrování bez ověření protistrany nestačí, protože bychom sice šifrovali, ale možná přímo s útočníkem.
+
+Rogue DHCP a DHCP starvation také patří mezi praktické útoky v lokální síti. Při rogue DHCP útočník rozdává klientům špatnou konfiguraci, například sebe jako bránu nebo DNS server. Obrana je DHCP snooping s trusted portem pro legitimní DHCP server. Při DHCP starvation útočník generuje mnoho požadavků s různými MAC adresami a vyčerpá adresní pool.
+
+Obrana je port security, limit počtu MAC adres, rate limiting DHCP a monitoring neobvyklých DHCP požadavků.
+
+\subsection*{Bezpečnost operačních systémů}
+
+Bezpečná síťová architektura nestačí, pokud jsou koncové systémy špatně nakonfigurované. Bezpečnost operačního systému stojí na aktualizacích, hardeningu, řízení účtů a práv, omezení služeb, auditních záznamech a ochraně proti spouštění nedůvěryhodného kódu.
+
+Hardening znamená snížit útočnou plochu: vypnout nepotřebné služby, zavřít nepotřebné porty, odstranit výchozí účty a hesla, nastavit bezpečná oprávnění, povolit firewall, zapnout auditování a aplikovat bezpečné konfigurace podle benchmarků.
+
+V UNIX/Linux systémech je základní model práv vlastník, skupina, ostatní a práva read, write, execute. Tento model je jednoduchý, ale není vždy dostatečně jemný. Proto existují POSIX ACL, které umožňují přidávat výjimky pro konkrétní uživatele nebo skupiny a nastavovat výchozí ACL pro adresáře. Z hlediska bezpečnosti je důležité hlídat, kdo má právo číst citlivé soubory, kdo může zapisovat konfiguraci a kdo může spouštět programy.
+
+Rizikovým mechanismem jsou SUID a SGID programy. Program běží s právy vlastníka nebo skupiny, typicky roota. To je užitečné například u programu passwd, který musí zapisovat do souborů s hesly, ale zároveň je to nebezpečné. SUID root program musí být napsaný velmi bezpečně, protože jeho vstupy, parametry a proměnné prostředí nejsou důvěryhodné. Chyba může vést k eskalaci privilegií.
+
+Tradiční UNIX model má problém, že root může všechno. Proto existují mechanismy pro omezení privilegií.
+
+Linux \textbf{capabilities} rozdělují moc roota na menší oprávnění, například možnost měnit vlastníka souboru nebo otevírat privilegované porty. \textbf{SELinux} přidává povinné řízení přístupu: při systémovém volání se vedle běžných práv kontroluje i bezpečnostní \textbf{politika} založená na identitě, roli, typu a případně MLS klasifikaci.
+
+SELinux může běžet v enforcing režimu, kdy politiku vynucuje, nebo permissive režimu, kdy porušení jen loguje.
+
+\begin{notebox}
+\textbf{PAM, AppArmor a SELinux} -- tři linuxové bezpečnostní mechanismy na různých úrovních:
+\begin{itemize}
+  \item \textbf{PAM (Pluggable Authentication Modules)} -- modulární \emph{autentizační} rámec; řeší, \emph{kdo se přihlašuje}: ověření hesla, vícefaktor, politiku hesel, omezení relace a správu účtů. Aplikace (login, sshd, sudo) nevolají autentizaci přímo, ale přes PAM, takže se chování mění konfigurací (\texttt{/etc/pam.d/}) bez úpravy programu. \textbf{Příklad:} vynutit silná hesla (\texttt{pam\_pwquality}), zamknout účet po několika neúspěšných pokusech (\texttt{pam\_faillock}) nebo přidat OTP/MFA k SSH.
+  \item \textbf{AppArmor} -- \emph{MAC} (povinné řízení přístupu) přes \textbf{profily vázané na cestu k programu}. Pro každý program profil určuje, k jakým souborům, schopnostem a síti smí. Snáz se píše a čte, ale je vázaný na cesty. \textbf{Příklad:} profil pro Nginx, který mu dovolí číst jen webový kořen a logy a zbytek zakáže; výchozí v Ubuntu a SUSE.
+  \item \textbf{SELinux} -- \emph{MAC} přes \textbf{labely (kontext identita:role:typ)} a typovou politiku, kontrolovanou při každém systémovém volání bezpečnostním serverem v jádře. Je jemnější a silnější, ale složitější na správu; má režim \emph{enforcing} a \emph{permissive}. \textbf{Příklad:} type enforcement, kdy webový proces (\texttt{httpd\_t}) smí číst jen soubory typu \texttt{httpd\_sys\_content\_t}; výchozí v RHEL, Fedoře a Androidu.
+\end{itemize}
+\textbf{Jak se liší:} PAM řeší \emph{autentizaci} (vstup do systému), kdežto AppArmor i SELinux řeší \emph{autorizaci běžících procesů} (co smí program dělat) jako MAC nad běžnými unixovými právy. AppArmor confinuje podle \textbf{cesty k souboru} (jednodušší, méně jemné), SELinux podle \textbf{labelů a typů} (jemnější a robustnější, ale náročnější na nastavení). AppArmor i SELinux jsou implementované jako LSM (Linux Security Modules) a obvykle se používá jen jeden z nich.
+\end{notebox}
+
+\begin{notebox}
+\textbf{Omezení a kontrola účtu root} -- jak v praxi zkrotit všemocného roota:
+\begin{itemize}
+  \item \textbf{Zákaz přímého přihlášení za root} -- přímé přihlášení roota (přes SSH i u konzole) se zakáže; správci se přihlašují pod osobními účty (např. \texttt{jan}) a správcovské zásahy dělají přes \texttt{sudo}. Výhoda: v logu je pak vidět, který konkrétní člověk příkaz spustil.
+  \item \textbf{Jemná pravidla v sudo} -- \texttt{sudo} nemusí znamenat \emph{povolit úplně všechno}; v souboru \texttt{/etc/sudoers} lze nastavit velmi detailní pravidla. Příklad: juniorní správce smí spustit jen \texttt{systemctl restart nginx}, ale ne smazat disk ani měnit hesla.
+  \item \textbf{SELinux jako jediný skutečný limit roota} -- tradiční DAC běžícímu rootovi nezabrání v ničem, kdežto SELinux (MAC) stojí \emph{nad} rootem. Příklad: když útočník získá root přes chybu v Apache, SELinux vidí, že proces má jen štítek \emph{webový server}, a podle politiky mu nedovolí číst \texttt{/root/} ani měnit firewall -- root má v tom případě smůlu.
+  \item \textbf{Linux Capabilities} -- moc roota je rozdělená na desítky drobných schopností, které lze procesu udělit jednotlivě. Příklad: program pro synchronizaci času (NTP) nemusí běžet jako plný root; stačí mu jediná schopnost \texttt{CAP\_SYS\_TIME} -- může měnit systémový čas, ale ne mazat soubory ani restartovat stroj.
+  \item \textbf{Kernel Lockdown} -- moderní jádra mají režim lockdown: ani root pak nesmí měnit paměť běžícího jádra ani obcházet Secure Boot. Brání to tomu, aby root nasadil do jádra hluboko skrytý rootkit.
+\end{itemize}
+\end{notebox}
+
+Ve Windows jsou ACL jemnější a umožňují například číst atributy, zapisovat atributy, měnit oprávnění, převzít vlastnictví, mazat a auditovat úspěšné i neúspěšné pokusy o přístup. UAC snižuje riziko trvalé práce s administrátorskými právy tím, že administrátorské akce vyžadují potvrzení. I tady ale platí, že uživatelé a administrátoři by neměli pracovat trvale pod privilegovaným účtem.
+
+Spouštění nedůvěryhodného kódu se řeší kombinací více opatření: ověřování původu kódu, například digitálním podpisem, antivirová a \textbf{EDR} kontrola, běh s minimálními právy, sandbox, omezené prostředí, aplikační whitelisting a oddělení procesů. Hardware podporuje bezpečnost například režimy procesoru, rings of protection, ochranu paměti a oddělení uživatelského a kernelového režimu.
+
+Cílem je, aby proces nemohl číst nebo měnit paměť jiného procesu ani struktury jádra jinak než explicitně povoleným způsobem.
+
+K bezpečnosti operačního systému patří i zabezpečení startu a kódu na nízké úrovni. \textbf{Secure Boot} ověřuje digitální podpisy zaváděného kódu už při startu (firmware, bootloader, jádro), takže se nespustí podvržený nebo upravený bootloader či rootkit. Na to navazuje podepisování kódu a kernelových modulů: systém spustí jen moduly a ovladače s platným podpisem, čímž ztíží zavedení škodlivého kódu do jádra.
+
+Spolu s aktualizovaným firmwarem to chrání systém ještě dřív, než se vůbec nahraje operační systém.
+
+\subsection*{Bezpečnost dat}
+
+Bezpečnost dat se musí řešit v celém životním cyklu: vznik, uložení, přenos, zpracování, zálohování, archivace a likvidace. Pro důvěrnost se používá řízení přístupu a šifrování. Data v přenosu se chrání například TLS, SSH, VPN nebo \textbf{IPsec}. Data v klidu se chrání šifrováním disků, databází, záloh nebo jednotlivých souborů.
+
+U šifrování je klíčová správa klíčů: kdo klíč generuje, kde je uložen, kdo k němu má přístup, jak se rotuje, zálohuje a ruší. Šifrování bez dobré správy klíčů může být jen formální opatření.
+
+Integrita dat znamená, že data nebyla neautorizovaně změněna. Pro náhodné chyby stačí kontrolní součty nebo \textbf{CRC}, ale ty nechrání proti úmyslnému útočníkovi, protože útočník umí kontrolní součet přepočítat. Pro bezpečnostní integritu se používají kryptografické hashovací funkce, MAC nebo \textbf{digitální podpis}. Hash dává otisk dat pevné délky a používá se například k ověření, zda se soubor změnil.
+
+MAC používá sdílený tajný klíč a zajišťuje integritu a autenticitu mezi stranami, které klíč znají. Digitální podpis používá privátní a \textbf{veřejný klíč}, umožňuje ověření třetí stranou a váže se na nepopiratelnost.
+
+Dostupnost dat se zajišťuje hlavně zálohami, replikací, redundancí a testovanou obnovou. Záloha není bezpečnostní opatření, dokud nevíme, že ji umíme obnovit. Je třeba řešit pravidelnost, retenci, oddělení záloh od produkčního prostředí, ochranu proti ransomwaru, šifrování záloh a test obnovy. U důležitých dat je vhodné mít offline nebo immutable zálohy, aby je útočník s administrátorskými právy nemohl snadno smazat nebo zašifrovat.
+
+Bezpečnost dat se propojuje s monitoringem a řízením přístupu. Nestačí data zašifrovat, pokud k dešifrovacímu klíči má přístup každý administrátor. Nestačí nastavit ACL, pokud se nerevidují a neloguje se přístup k citlivým datům. U citlivých systémů se proto sledují přístupy k datům, exporty, hromadné čtení, neobvyklé dotazy a změny oprávnění.
+
+K bezpečnosti dat je dobré doplnit několik pojmů. Data rozlišujeme ve třech stavech: \textbf{data at rest} (uložená, chrání je šifrování disků a databází), \textbf{data in transit} (přenášená, chrání je TLS, VPN nebo IPsec) a \textbf{data in use} (právě zpracovávaná v paměti, nejhůř se chrání; pomáhají technologie jako šifrovaná či izolovaná paměť).
+
+Aby se vědělo, co jak chránit, slouží klasifikace dat, například veřejné, interní, důvěrné a přísně tajné. Pro zálohy se doporučuje pravidlo 3-2-1: tři kopie dat, na dvou různých typech médií, jedna mimo lokalitu; ideálně doplněné o immutable nebo offline kopii odolnou vůči ransomwaru.
+
+Únikům citlivých dat ven z organizace brání \textbf{DLP} (Data Loss Prevention), které hlídá a blokuje neoprávněné odesílání nebo kopírování citlivých dat. Na konci životního cyklu je nutné bezpečné mazání a likvidace médií, tedy spolehlivé přepsání nebo fyzické zničení nosičů, aby z nich nešlo data obnovit.
+
+\subsection*{Jak to spojit u zkoušky}
+
+U zkoušky bych odpověď uzavřel tím, že bezpečnostní architektura je návrh bezpečnosti jako celku. Začíná identifikací aktiv a jejich rozdělením do zón. Síťová bezpečnost potom pomocí segmentace, izolace, firewallů a pravidel minimálních síťových oprávnění omezuje, kdo s kým smí komunikovat. DMZ slouží pro služby dostupné z internetu, ale databáze a interní systémy mají být v oddělených zónách.
+
+Firewally mohou být paketové, stavové nebo aplikační a ideálně fungují na principu default deny.
+
+Druhá část je viditelnost. Monitoring, logování, IDS, IPS a SIEM umožňují poznat, že se děje něco podezřelého, a dodat informace pro incident response. Logy mají být centralizované, chráněné a časově synchronizované. Detekce může být založená na signaturách, specifikaci správného chování nebo anomáliích, ale vždy řešíme falešné pozitivní a falešné negativní výsledky.
+
+Třetí část je bezpečnost koncových systémů a dat. Operační systémy musí být aktualizované, hardenované, s omezenými službami, správně nastavenými právy a auditními logy. U Linuxu je dobré zmínit rwx, POSIX ACL, SUID/SGID, capabilities a SELinux. U Windows jemná ACL, dědičnost, auditování a UAC. Data chráníme řízením přístupu, šifrováním v klidu a při přenosu, integritními mechanismy, zálohami a testovanou obnovou.
+
+A nakonec je vhodné ukázat, že umím nejen definice, ale i obrany proti útokům. Proti DDoS pomáhá rate limiting, anti-DDoS, filtrace u poskytovatele, CDN a RTBH. Proti ARP spoofingu DHCP snooping, Dynamic ARP Inspection, port security a segmentace. Proti rogue DHCP DHCP snooping a trusted porty. Proti MITM hlavně autentizované šifrování, správné ověření certifikátů, SSH known\_hosts, VPN a ochrana lokální sítě.
+
+Proti ICMP floodingu rate limiting a filtrace. Pointa je, že architektura musí útokům nejen bránit, ale také je detekovat a umožnit reakci.
+
+\subsection*{Bezpečná komunikace, kryptografie a síťové protokoly}
+
+Součástí bezpečnostní architektury je také zabezpečení samotné komunikace. Síť může být dobře segmentovaná, ale pokud citlivá data tečou nešifrovaně nebo se neověřuje druhá strana, pořád hrozí odposlech a manipulace. Základní kryptografické prostředky jsou symetrické a asymetrické šifrování. Symetrická kryptografie používá stejný klíč pro šifrování i dešifrování, je rychlá a hodí se pro velké objemy dat.
+
+Problém je bezpečná distribuce klíče. Asymetrická kryptografie používá veřejný a \textbf{soukromý klíč}, řeší distribuci veřejného klíče a používá se například pro výměnu klíče, autentizaci nebo digitální podpis. Protože je pomalejší, v praxi se často používá hybridně: \textbf{asymetrická} část ověří strany nebo ustanoví sdílené tajemství a vlastní data se pak šifrují symetricky.
+
+Klasický problém komunikace je také čerstvost autentizace. Pokud Alice pošle Bobovi jen heslo nebo důkaz, který útočník jednou zachytí, může ho později přehrát. Proto se používá \textbf{challenge-response}: Bob pošle náhodné číslo, \textbf{nonce}, a Alice musí odpovědět tak, že prokáže znalost tajemství, například vytvoří MAC nebo digitální podpis nad touto výzvou.
+
+Starou odpověď nelze jednoduše znovu použít, protože nová výzva je jiná. U vzájemné autentizace se stejný princip použije oběma směry.
+
+TLS, SSH a IPsec jsou příklady protokolů, které tyto principy dávají do provozní podoby. TLS chrání hlavně aplikační komunikaci, například HTTPS. Klient ověřuje \textbf{certifikát} serveru, během handshake se dohodnou kryptografické parametry a ustanoví se symetrické klíče pro další komunikaci.
+
+SSH je typický pro bezpečnou vzdálenou správu serverů, kde klient ověřuje veřejný klíč serveru v known\_hosts a uživatel se může autentizovat heslem nebo klíčem. IPsec pracuje na síťové vrstvě a hodí se pro VPN nebo zabezpečení IP komunikace mezi hostiteli či sítěmi. V tunelovém režimu chrání celý původní IP paket, v transportním režimu hlavně payload.
+
+Do širší bezpečné architektury sítě patří také dostupnost a odolnost \textbf{směrování}. Redundance spojů, agregace linek, vícecestné směrování, odolné překryvové sítě a bezpečné DNS pomáhají tomu, aby výpadek jedné cesty nebo jednoho prvku nezpůsobil výpadek celé služby.
+
+U DNS je třeba myslet na to, že kompromitace nebo podvržení DNS odpovědi může uživatele přesměrovat na útočníka, proto podle kontextu pomáhá DNSSEC, ochrana resolverů, monitoring změn záznamů a oddělení administračních přístupů.
+
+\subsection*{Jak logování navazuje na incident response}
+
+Monitoring a logování mají smysl hlavně tehdy, když na ně navazuje proces reakce na incidenty. Alert v SIEMu sám o sobě systém nezachrání. Musí existovat odpovědnost, kdo alert sleduje, jak se vyhodnocuje, kdy se eskaluje, jak se izoluje kompromitovaný stroj a jak se obnoví provoz. Incident response obvykle začíná detekcí, pokračuje analýzou a omezením škod, potom odstraněním příčiny, obnovou a nakonec poučením.
+
+Logy slouží jako důkazní materiál a jako základ pro pochopení časové osy incidentu.
+
+Prakticky je vhodné logovat přihlašování a odhlašování, neúspěšné pokusy, změny účtů a oprávnění, použití privilegovaných práv, změny konfigurace, spuštění nebo pád služeb, síťová spojení u kritických serverů, DNS dotazy, VPN přístupy, administrátorské akce a přístupy k citlivým datům.
+
+U aplikací se logují bezpečnostně významné operace: změna hesla, změna e-mailu, vytvoření API tokenu, export dat, změna role nebo neobvykle velký počet požadavků. Zároveň je nutné nelogovat zbytečně citlivý obsah, například hesla, celé tokeny nebo osobní údaje, pokud to není nutné.
+
+Kvalita detekce stojí na tom, že se události dají spojit dohromady. Proto je důležitá časová synchronizace, jednotné identifikátory uživatelů, \textbf{normalizace} logů a znalost topologie. Bez toho může být v každém systému jiný čas a jiný název stejného uživatele, takže rekonstrukce útoku je obtížná.
+
+Centralizované logy by měly být chráněné před mazáním a změnou, ideálně s odděleným oprávněním, aby běžný správce serveru nemohl zničit auditní stopu svého vlastního jednání.
+
+\subsection*{Příklad kompletní architektury v praxi}
+
+Představme si organizaci s veřejným webem, interním informačním systémem a databází. Internetový provoz jde nejprve přes hraniční filtraci a DDoS ochranu. Veřejný web je v DMZ. Z DMZ vede jen úzké pravidlo do aplikační vrstvy nebo databáze, nikoliv obecný přístup do interní sítě. Databáze je v samostatné zóně a přijímá spojení pouze z aplikačních serverů.
+
+Administrace je možná jen ze správcovské sítě přes VPN, MFA a logovaný jump server. Hostovská Wi-Fi je oddělena od interní sítě a má client isolation. Přístupové switche používají DHCP snooping, Dynamic ARP Inspection a port security.
+
+Servery jsou hardenované, mají jen potřebné služby, pravidelně se aktualizují a mají host-based firewall. Citlivé konfigurace a tajné klíče nejsou volně čitelné. Na Linuxu jsou správně nastavena práva a pokud je to vhodné, SELinux běží v enforcing režimu. Na Windows se používá UAC, auditování a oddělené administrátorské účty. Logy z firewallů, serverů, aplikací, VPN, DNS a identity provideru tečou do SIEMu.
+
+IDS sleduje podezřelé síťové chování a EDR sleduje podezřelé procesy na hostech. Kritická data jsou šifrovaná, zálohovaná a obnova je testovaná. Tohle je příklad obrany do hloubky: i když útočník pronikne do jedné vrstvy, neměl by automaticky získat celou organizaci.
+
+\subsection*{Krátké opakovací jádro}
+
+\begin{longtable}{p{0.475\linewidth}p{0.475\linewidth}}
+\toprule
+\textbf{Téma} & \textbf{Co říct jednou větou} \\
+\midrule\endhead
+Segmentace & Rozdělení sítě na zóny a povolení jen nutných toků omezuje laterální pohyb útočníka. \\
+\addlinespace
+Firewall & Řídí provoz podle pravidel; paketový filtr řeší IP/port/protokol, stateful sleduje stav spojení, proxy/WAF rozumí aplikaci. \\
+\addlinespace
+Monitoring a logy & Bez centralizovaných a chráněných logů neumím spolehlivě zjistit průběh incidentu. \\
+\addlinespace
+IDS/IPS/SIEM & IDS hlásí, IPS aktivně blokuje, SIEM koreluje události napříč organizací. \\
+\addlinespace
+OS hardening & Aktualizace, minimum služeb, správná práva, auditování, SELinux/capabilities/UAC a bezpečné spouštění kódu. \\
+\addlinespace
+Bezpečnost dat & Důvěrnost šifrováním a ACL, integrita hashem/MAC/podpisem, dostupnost zálohami a obnovou. \\
+\addlinespace
+ARP/MITM & ARP spoofing řeší DAI/DHCP snooping; MITM řeší autentizované šifrování a ověření protistrany. \\
+\addlinespace
+DoS/DDoS & Cílí na dostupnost; obrana je rate limiting, filtrace, anti-DDoS, CDN, RTBH a monitoring. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+\newpage

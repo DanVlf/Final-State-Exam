@@ -1,0 +1,331 @@
+\otazka{1. Výpočetní systémy}{Číselné soustavy, vztahy mezi soustavami, zobrazení celého čísla v počítači, aritmetika. Kódy, vnitřní, vnější, detekční a opravné. Procesory, jejich parametry a architektury. Vnitřní a vnější paměti a principy jejich funkce. Vstupní a výstupní zařízení počítače a jejich připojování.}{PB151}
+
+\subsection*{1. Výpočetní systémy -- stručněji}
+Tahle kratší verze drží otázku v jedné lince: informace se v počítači reprezentují bity, nad nimi počítá procesor, data se ukládají v pamětech a okolní svět se připojuje přes vstupně-výstupní zařízení.
+
+\textbf{1. Výpočetní systém jako celek}
+\begin{itemize}
+  \item Výpočetní systém je souhra procesoru, pamětí, vstupně-výstupních zařízení, sběrnic a operačního systému. Procesor vykonává instrukce, paměť drží program a data, periferie zajišťují kontakt s okolím.
+  \item Počítač pracuje s informací fyzicky jako se stabilními stavy, které značíme 0 a 1. Všechno ostatní, tedy čísla, text, instrukce i obrázky, je nad tím jen dohodnutá interpretace bitů.
+\end{itemize}
+
+\textbf{2. Číselné soustavy a zobrazení čísel}
+\begin{itemize}
+  \item Dvojková soustava je přirozená pro hardware, šestnáctková je kratší zápis bitů pro člověka. Převody je dobré umět přes váhy pozic a přes skupiny po čtyřech bitech.
+  \item Celá čísla se ukládají v pevné šířce bitů. Bez znaménka reprezentují rozsah 0 až $2^n-1$, se znaménkem se dnes nejčastěji používá \textbf{doplňkový kód}.
+  \item V doplňkovém kódu se přenos z nejvyššího bitu zahazuje. Přetečení nastane hlavně tehdy, když sčítám dvě čísla stejného znaménka a vyjde opačné znaménko.
+  \item Reálná čísla se ukládají přibližně podle IEEE 754: znaménko, exponent a mantisa. Nejde o přesné desetinné počítání, proto se objevují zaokrouhlovací chyby.
+\end{itemize}
+
+\textbf{3. Kódy}
+\begin{itemize}
+  \item Vnitřní kódy slouží uvnitř počítače, například binární reprezentace čísel nebo instrukcí. Vnější kódy slouží pro výměnu informací, typicky ASCII, Unicode a UTF-8.
+  \item Detekční a opravné kódy přidávají redundantní bity. Parita umí zachytit některé chyby, CRC se používá v přenosech a Hammingův kód umí za určitých podmínek chybu i opravit.
+\end{itemize}
+
+\textbf{4. Procesor a paměti}
+\begin{itemize}
+  \item Procesor pracuje v cyklu fetch -- decode -- execute -- memory -- write-back. Instrukce se načte, dekóduje, provede, případně sáhne do paměti a výsledek se zapíše zpět.
+  \item Parametry procesoru nejsou jen takt. Důležité jsou jádra, cache, instrukční sada, šířka registrů, pipeline, superskalárnost a IPC, tedy kolik instrukcí může za cyklus skutečně dokončit.
+  \item Paměťová hierarchie je kompromis mezi rychlostí, cenou a kapacitou: registry a cache jsou rychlé a malé, RAM je větší a pomalejší, SSD/HDD jsou perzistentní a ještě pomalejší.
+\end{itemize}
+
+\textbf{5. Vstupy a výstupy}
+\begin{itemize}
+  \item Vstupní a výstupní zařízení převádějí data mezi počítačem a okolím. Připojují se přes řadiče a rozhraní, například USB, PCIe, SATA, NVMe nebo síťové rozhraní.
+  \item Důležitá pointa: procesor obvykle neřídí každý bajt ručně. Používají se přerušení, buffery a DMA, aby zařízení mohla přenášet data efektivněji.
+\end{itemize}
+
+\itbox{\textbf{Jak s tím pracovat:} text je napsaný jako jedna souvislá odpověď. Při ústní zkoušce není cílem odříkat každou větu, ale držet stejnou linku: nejdřív vysvětlit, jak se informace reprezentuje bity, potom jak nad ní procesor počítá, a nakonec jak spolu procesor, paměti a periferie komunikují. Komise podle zkušeností často nechce jen definice, ale konkrétní převod, dvojkový doplněk, rozpoznání overflow, BCD a srovnání RISC/CISC.}
+
+\subsection*{1. Úvod: proč se vůbec bavíme o soustavách}
+
+Výpočetní systém je celek složený z procesoru, pamětí, vstupních a výstupních zařízení a propojujících sběrnic nebo rozhraní. Aby s nimi mohl počítač pracovat, musí být instrukce, čísla, texty i jiné informace reprezentovány fyzicky. V digitálním počítači se k tomu používají dva stabilní stavy, které označujeme jako 0 a 1. Proto je základním jazykem počítače binární reprezentace.
+
+Člověk ale běžně používá desítkovou soustavu a pro stručnější zápis bitů se používá také osmičková a hlavně šestnáctková soustava.
+
+Celou otázku je dobré chápat jako řetězec. Nejdříve vysvětlím číselné soustavy a převody mezi nimi. Potom ukážu, jak se celá čísla ukládají v pevně daném počtu bitů a proč potřebujeme přímý, inverzní a hlavně \textbf{dvojkový doplněk}. Na to navazuje aritmetika, zejména sčítání, odčítání a přetečení. Potom přejdu ke kódům, tedy ke způsobům, jak bity reprezentují číslice, znaky nebo kontrolní informace.
+
+Nakonec navážu na procesor, paměťovou hierarchii a vstupně-výstupní zařízení.
+
+\subsection*{2. Číselné soustavy a vztahy mezi nimi}
+
+Číselná soustava je způsob zápisu čísel. V poziční soustavě záleží hodnota číslice na její pozici. Obecně platí, že číslo zapsané v základu z je součtem číslic násobených mocninami základu. Například 1011 ve dvojkové soustavě znamená 1$\cdot$2\textasciicircum{}3 + 0$\cdot$2\textasciicircum{}2 + 1$\cdot$2\textasciicircum{}1 + 1$\cdot$2\textasciicircum{}0, tedy 8 + 0 + 2 + 1 = 11 v desítkové soustavě.
+
+Stejný princip funguje pro desítkovou, osmičkovou i šestnáctkovou soustavu.
+
+Nejdůležitější soustavy jsou binární, osmičková, desítková a šestnáctková. Binární soustava má základ 2 a používá jen 0 a 1. Je přirozená pro hardware. Osmičková má základ 8, takže jedna její číslice odpovídá třem bitům, protože 8 = 2\textasciicircum{}3. Šestnáctková soustava má základ 16 a jedna její číslice odpovídá čtyřem bitům, protože 16 = 2\textasciicircum{}4.
+
+Proto se hexadecimal používá pro kompaktní zápis bajtů, adres a obsahu paměti. Desítková soustava je běžná pro člověka, ale pro počítač není nejpřirozenější.
+
+Převod z binární, osmičkové nebo šestnáctkové soustavy do desítkové se dělá rozkladem podle mocnin základu. U převodu z desítkové do jiné soustavy opakovaně dělím cílovým základem a zapisuji zbytky. Výsledek se čte od posledního zbytku k prvnímu. Například 53 dělené dvěma dává zbytky 1, 0, 1, 0, 1, 1, takže 53 desítkově je 110101 dvojkově.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+53 / 2 = 26 zbytek 1
+26 / 2 = 13 zbytek 0
+13 / 2 =  6 zbytek 1
+ 6 / 2 =  3 zbytek 0
+ 3 / 2 =  1 zbytek 1
+ 1 / 2 =  0 zbytek 1
+čtu odspodu: 53(10) = 110101(2)
+\end{verbatim}
+\end{codebox}
+
+Převod mezi binární a hexadecimální soustavou je rychlý, protože se bity seskupují po čtyřech. Například 110101 doplním zleva nulami na 0011 0101. Čtveřice 0011 je 3 a 0101 je 5, tedy 110101 dvojkově je 35 šestnáctkově. U převodu na osmičkovou se skupiny berou po třech bitech. Například 110101 rozdělím jako 110 101, což je 6 a 5, tedy 65 osmičkově.
+
+\itpr{\textbf{Na tabuli:} když dostanu binární číslo a mám ho převést do HEX, doplním nuly zleva tak, aby počet bitů byl dělitelný čtyřmi. Potom každou čtveřici nahradím jednou hex číslicí. Například 10111100 = 1011 1100 = BC(16).}
+
+U desetinných částí je princip podobný, jen se místo dělení používá násobení základem. Celou část čísla převedu obvyklým dělením, desetinnou část opakovaně násobím dvěma a zapisuji celé části výsledků. Například 0,625 krát 2 je 1,25, zapíšu 1; potom 0,25 krát 2 je 0,5, zapíšu 0; potom 0,5 krát 2 je 1,0, zapíšu 1. Proto 0,625 desítkově je 0,101 dvojkově. Některá desetinná čísla, například 0,1, ale nemají konečný binární rozvoj.
+
+To je důležité pro pochopení chyb zaokrouhlení u reálných čísel.
+
+\subsection*{3. Zobrazení celých čísel v počítači}
+
+Počítač obvykle pracuje s pevně daným počtem bitů. Pokud mám n bitů, existuje 2\textasciicircum{}n různých kombinací. U čísel bez znaménka se všechny bity použijí pro hodnotu, takže rozsah je od 0 do 2\textasciicircum{}n - 1. Například v osmi bitech je rozsah 0 až 255, ve čtyřech bitech 0 až 15. Jakmile ale potřebuji i záporná čísla, musím si určit, jak budou jednotlivé bitové kombinace interpretovány.
+
+Nejjednodušší je \textbf{přímý kód}. Nejvyšší bit označuje znaménko, typicky 0 pro plus a 1 pro minus, a zbytek bitů obsahuje absolutní hodnotu. Ve čtyřech bitech je +5 zapsáno jako 0101 a -5 jako 1101. Nevýhoda je, že existují dvě nuly, +0 jako 0000 a -0 jako 1000, a aritmetika je nepohodlná.
+
+Druhá možnost je \textbf{inverzní kód}, neboli \textbf{jedničkový doplněk}. Kladné číslo se zapisuje běžně, záporné číslo vznikne invertováním všech bitů kladné hodnoty. Ve čtyřech bitech je +5 = 0101 a -5 = 1010. I tady existují dvě nuly: 0000 a 1111. Proto se v běžné aritmetice používá hlavně dvojkový doplněk.
+
+Dvojkový doplněk je nejdůležitější reprezentace celých čísel se znaménkem. Záporné číslo vytvořím tak, že zapíšu kladnou hodnotu, invertuji všechny bity a přičtu 1. Například -5 ve čtyřech bitech: +5 je 0101, po inverzi 1010 a po přičtení jedničky 1011. Takže -5 je 1011. Výhoda je, že existuje jen jedna nula a sčítání i odčítání funguje jednotně pomocí stejné binární sčítačky.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+Příklad: -5 ve 4bitovém dvojkovém doplňku
++5  = 0101
+inverze = 1010
++1      = 1011
+=> -5 = 1011
+\end{verbatim}
+\end{codebox}
+
+Rozsah dvojkového doplňku pro n bitů je -2\textasciicircum{}(n-1) až 2\textasciicircum{}(n-1)-1. Pro 4 bity tedy -8 až +7, pro 8 bitů -128 až +127. Rozsah není symetrický, protože nula je jen jedna a nejzápornější hodnota nemá kladný protějšek ve stejném počtu bitů. Když čtu číslo ve dvojkovém doplňku, podívám se na nejvyšší bit. Pokud je 0, číslo je nezáporné. Pokud je 1, je záporné a jeho velikost zjistím opět inverzí a přičtením jedničky.
+
+\subsection*{4. Binární aritmetika, odčítání a overflow}
+
+Binární sčítání funguje podobně jako desítkové sčítání, jen základ soustavy je 2. Základní pravidla jsou: 0 + 0 = 0, 0 + 1 = 1, 1 + 0 = 1, 1 + 1 = 10. To poslední znamená, že zapíšu 0 a přenesu 1 do vyššího řádu. Pokud sčítám 1 + 1 + přenos, dostanu 11, takže zapíšu 1 a znovu přenesu 1.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+  1011
++ 0110
+------
+ 10001
+1011(2)=11, 0110(2)=6, výsledek 10001(2)=17
+\end{verbatim}
+\end{codebox}
+
+Odčítání se ve dvojkovém doplňku převádí na sčítání opačného čísla. Platí a - b = a + (-b). Například 5 - 3 ve čtyřech bitech: 5 je 0101. Číslo 3 je 0011, jeho dvojkový doplněk je 1101, tedy -3. Sčítám 0101 + 1101 = 10010. Protože pracuji jen se čtyřmi bity, přenos mimo rozsah zahodím a zůstane 0010, tedy 2.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+5 - 3 ve 4 bitech
+ 5  = 0101
+ 3  = 0011
+-3  = 1101   (inverze 1100 + 1)
+  0101
++ 1101
+------
+ 10010 -> zahodím přenos -> 0010 = 2
+\end{verbatim}
+\end{codebox}
+
+Přetečení, tedy \textbf{overflow}, nastane tehdy, když matematický výsledek nejde v daném počtu bitů reprezentovat. Ve čtyřbitovém dvojkovém doplňku je rozsah jen -8 až +7. Když spočítám 5 + 4, správný výsledek je 9, ale ten se do rozsahu nevejde. Bitově 0101 + 0100 = 1001. Jenže 1001 ve čtyřbitovém dvojkovém doplňku znamená -7. To je typický overflow.
+
+Praktické pravidlo pro sčítání ve dvojkovém doplňku je: když sčítám dvě čísla stejného znaménka a výsledek má opačné znaménko, nastalo přetečení. Sčítání kladného a záporného čísla overflow nezpůsobí, protože výsledek leží mezi nimi. Důležité je neplést si overflow s obyčejným přenosem carry. U dvojkového doplňku samotný přenos z nejvyššího bitu ještě automaticky neznamená chybu.
+
+\itbox{\textbf{Mini tabulka: přenos vs. overflow u reprezentací se znaménkem}}
+
+\begin{longtable}{p{0.23\linewidth}p{0.36\linewidth}p{0.35\linewidth}}
+\toprule
+\textbf{Reprezentace} & \textbf{Co dělat s přenosem} & \textbf{Kdy nastane overflow} \\
+\midrule\endhead
+\textbf{Dvojkový doplněk} \newline \emph{2's complement, nejpoužívanější}
+& Přenos z nejvyššího bitu může vzniknout, ale \textbf{ignoruje se a zahodí}. Žádný kruhový přenos se nedělá.
+& Pouze při sčítání čísel se \textbf{stejným znaménkem}, když vyjde opačné znaménko. Kladné + záporné overflow nezpůsobí. \\
+\addlinespace
+\textbf{Inverzní kód} \newline \emph{1's complement}
+& Přenos z nejvyššího bitu se \textbf{nesmí zahodit}. Udělá se \textbf{kruhový přenos}: jednička se přičte k nejnižšímu bitu.
+& Stejné pravidlo jako u dvojkového doplňku: dvě stejná znaménka dají opačné znaménko. Opačná znaménka overflow nezpůsobí. \\
+\addlinespace
+\textbf{Přímý kód} \newline \emph{sign-magnitude}
+& U stejných znamének se sčítají absolutní hodnoty; bit navíc mimo hodnotové bity znamená přetečení. U opačných znamének se hodnoty odčítají: když přenos vyjde, udělá se kruhový přenos, když nevyjde, výsledek se invertuje.
+& Při sčítání stejných znamének, pokud se absolutní hodnota nevejde do hodnotových bitů. Při odčítání opačných znamének overflow nenastane. \\
+\bottomrule
+\end{longtable}
+
+\itpr{\textbf{Hardwarové pravidlo XOR pro dvojkový doplněk:} overflow nastane tehdy, když se \textbf{přenos do znaménkového bitu} liší od \textbf{přenosu ze znaménkového bitu ven}. Jinak řečeno: \textbf{overflow = carry-in do MSB XOR carry-out z MSB}. Když jsou oba přenosy stejné, například 1 a 1, přetečení nenastane, i když ven z nejvyššího bitu nějaký přenos vznikl. Proto se u dvojkového doplňku samotný carry-out ignoruje; rozhoduje rozdíl mezi přenosem dovnitř a ven.}
+
+\itzk{\textbf{Na zkoušku:} umět ručně vytvořit záporné číslo ve dvojkovém doplňku, spočítat malé odčítání ve 4 bitech a vysvětlit overflow na příkladu 5 + 4 nebo 6 + 3.}
+
+\subsection*{5. Reálná čísla a IEEE 754}
+
+Reálná čísla se neukládají jako jednoduché celé číslo, ale typicky ve formátu plovoucí řádové čárky podle \textbf{IEEE 754}. Obecná myšlenka je zápis ve tvaru znaménko krát mantisa krát základ umocněný na exponent. V binárním počítači je základ 2, takže číslo je ve tvaru přibližně $\pm$M $\cdot$ 2\textasciicircum{}E.
+
+U 32bitového typu float je jeden bit pro znaménko, osm bitů pro exponent a dvacet tři bitů pro mantisu, přesněji pro část significandu.
+
+Před uložením se číslo normalizuje. Například 53 desítkově je 110101 dvojkově. To se zapíše jako 1,10101 $\cdot$ 2\textasciicircum{}5. Znaménkový bit určí plus nebo minus, exponent uloží posun řádové čárky a mantisa uloží významné bity čísla. Důsledek je, že reálná čísla mají omezenou přesnost. Ne každé desetinné číslo má konečný binární zápis, takže například 0,1 nelze uložit přesně konečným počtem bitů.
+
+Proto u floating point aritmetiky vznikají zaokrouhlovací chyby. U zkoušky obvykle stačí vysvětlit princip znaménko - exponent - mantisa a dodat, že jde o aproximaci s omezenou přesností a rozsahem.
+
+\subsection*{6. Kódy: vnitřní, vnější, detekční a opravné}
+
+Kód je pravidlo, podle kterého se informace převádí na posloupnost bitů. Vnitřní kódy slouží pro reprezentaci dat uvnitř počítače. Patří sem například dvojkový doplněk pro celá čísla, IEEE 754 pro reálná čísla a také \textbf{BCD}. Vnější kódy se používají hlavně pro reprezentaci znaků a výměnu dat s okolím, například \textbf{ASCII}, Windows-1250 nebo \textbf{Unicode} v konkrétním kódování \textbf{UTF-8}. Vnější kód je tedy výměnný formát: převádí lidsky chápané znaky na konkrétní sekvence bajtů v souboru, síti, webu nebo databázi, aby si různé systémy stejný text vyložily stejně.
+
+BCD znamená Binary Coded Decimal. Každá desítková číslice se kóduje samostatně čtyřmi bity. Například číslo 259 není v BCD převedeno jako celé číslo do dvojkové soustavy, ale jako 2 = 0010, 5 = 0101, 9 = 1001, tedy 0010 0101 1001. To je důležitý rozdíl. BCD je méně úsporné než čistý binární zápis, protože čtyři bity dávají šestnáct kombinací, ale pro číslici 0 až 9 se jich používá jen deset.
+
+Výhodou je ale přímější práce s desítkovými číslicemi, například ve finančních výpočtech nebo při zobrazování.
+
+ASCII je starší sedmibitové kódování znaků. Sedm bitů dává 128 možností, což stačí pro anglickou abecedu, číslice, interpunkci a řídicí znaky, ale nestačí pro češtinu. Proto vznikala různá osmibitová kódování, například Windows-1250 nebo ISO-8859-2, která doplňovala znaky pro středoevropské jazyky. Problém je, že stejný bajt může v různých kódováních znamenat jiný znak, a proto vzniká rozbitá diakritika.
+
+Unicode je obecná znaková sada, která přiřazuje znakům číselné kódy. Samotný Unicode ještě neříká, jak přesně budou znaky uloženy v bajtech. K tomu slouží kódování jako UTF-8, UTF-16 nebo UTF-32. Dnes je nejběžnější UTF-8. Je kompatibilní s ASCII pro základní anglické znaky a používá proměnný počet bajtů: jeden až čtyři bajty na znak. Anglické znaky mají jeden bajt, české znaky typicky více.
+
+\itpr{\textbf{Mini pomůcka: znak, Unicode a UTF-8.} \textbf{Znak} je to, co vidí člověk, například písmeno Č. \textbf{Unicode} je celosvětový katalog znaků: každému znaku přiřadí unikátní číslo, tedy code point. \textbf{UTF-8} je formát, kterým se toto číslo reálně zabalí do bajtů, aby šlo uložit na disk nebo poslat po síti. Funguje úsporně: znaky z ASCII ukládá do jednoho bajtu, česká písmena s diakritikou typicky do dvou bajtů a složitější znaky, například některé asijské znaky nebo emoji, do tří až čtyř bajtů. Jinak řečeno: Unicode je seznam, UTF-8 je způsob balení a posílání položek z tohoto seznamu.}
+
+S kódy souvisí i endianita, tedy pořadí bajtů u vícebajtových hodnot. Big-endian ukládá nejvýznamnější bajt na nejnižší adresu, \textbf{little-endian} ukládá na nejnižší adresu nejméně významný bajt. Například hodnota 0x12345678 je u \textbf{big-endian} v paměti jako 12 34 56 78, zatímco u little-endian jako 78 56 34 12. Hodnota je stejná, liší se fyzické pořadí bajtů v paměti.
+
+Detekční a opravné kódy se používají tam, kde se data mohou poškodit při přenosu nebo ukládání. Základní princip je \textbf{redundance}, tedy přidání nadbytečné informace. Paritní bit je nejjednodušší detekční kód. U sudé parity se paritní bit nastaví tak, aby celkový počet jedniček byl sudý. Pokud se jeden bit změní, \textbf{parita} nesedí a chyba se detekuje. Parita ale neumí určit, který bit je špatně, a neodhalí spolehlivě sudý počet chyb.
+
+Silnější detekční metoda je například \textbf{CRC}, kontrolní hodnota založená na polynomiálním dělení. V praxi se používá v komunikaci a ukládání dat k detekci chyb s vysokou pravděpodobností. Opravné kódy jdou ještě dál: nejen detekují chybu, ale za určitých podmínek ji opraví. Jednoduchý příklad je ztrojení bitu. Bit 1 pošlu jako 111 a bit 0 jako 000. Když přijmu 101, většinové hlasování říká, že původně šlo o 1. Nevýhoda je trojnásobná režie.
+
+Obecnější pojem je \textbf{Hammingova vzdálenost}. Je to počet pozic, ve kterých se dvě kódová slova liší. Když má kód minimální Hammingovu vzdálenost 3, umí opravit jednu chybu, protože jedno chybné slovo je stále nejblíže původnímu platnému slovu. Zároveň umí detekovat dvě chyby. Obecně pro detekci d chyb potřebujeme minimální vzdálenost alespoň d + 1 a pro opravu t chyb alespoň 2t + 1.
+
+\subsection*{7. Procesor, jeho parametry a architektury}
+
+Procesor je jednotka, která vykonává instrukce programu. Základní části jsou řadič, \textbf{ALU}, registry, případně \textbf{FPU} a \textbf{cache}. Řadič načítá instrukce z paměti, dekóduje je a řídí ostatní části procesoru. ALU, tedy aritmeticko-logická jednotka, provádí operace jako sčítání, odčítání, porovnání, logické operace AND, OR, XOR a bitové posuny. FPU provádí výpočty s plovoucí řádovou čárkou.
+
+Registry jsou velmi rychlá paměťová místa přímo uvnitř procesoru a slouží pro operandy, mezivýsledky a řízení běhu programu. Instrukční cyklus se dá popsat jako fetch - decode - execute - \textbf{write-back}. Procesor načte instrukci z paměti, dekóduje, co instrukce znamená, provede ji a uloží výsledek. Program counter, někdy instruction pointer, obsahuje adresu další instrukce.
+
+Stavový \textbf{registr} obsahuje příznaky výsledku, například nulový výsledek, carry nebo overflow. Stack pointer ukazuje na vrchol zásobníku.
+
+Mezi parametry procesoru patří taktovací frekvence, počet jader, velikost a uspořádání cache, šířka registrů a datových cest, podporovaná \textbf{instrukční sada}, počet instrukcí za cyklus (\textbf{IPC}, instructions per cycle), spotřeba a výrobní technologie. IPC neznamená jen to, kolik instrukcí procesor začne zpracovávat, ale zjednodušeně kolik instrukcí za cyklus skutečně dokončí, tedy kolik jich v jednoduchém pipeline modelu doběhne do fáze \textbf{write-back} nebo v modernějším popisu do fáze commit/retire. Takt sám o sobě nestačí pro srovnání výkonu. Procesor s nižší frekvencí může být rychlejší, pokud má efektivnější architekturu, lepší cache, více jader nebo vyšší paralelismus.
+
+\subsection*{Pipeline, superskalární zpracování a paralelismus}
+
+Moderní procesor nezpracovává instrukce striktně jednu po druhé od začátku do konce. Místo toho používá zřetězené zpracování, anglicky \textbf{pipeline}. Fáze fetch, decode, execute a write-back se rozdělí na samostatné stupně, které pracují současně nad různými instrukcemi. Ve chvíli, kdy jedna instrukce počítá v ALU, se další může dekódovat a ještě další načítat z paměti.
+
+Je to podobné jako výrobní linka: každý stupeň dělá pořád stejnou část práce, ale na jiném kuse. Díky tomu může procesor v ideálním případě dokončit jednu instrukci každý takt, i když samotná instrukce projde celou linkou za několik taktů.
+
+Plynulý průchod linkou ale narušují takzvané hazardy. Datový hazard nastane, když instrukce potřebuje výsledek jiné instrukce, která ještě není hotová, například když hned po sčítání následuje operace s jeho výsledkem. Řídicí hazard souvisí se skoky a podmíněnými větveními, protože procesor v okamžiku načítání další instrukce ještě nemusí vědět, kam se program rozvětví.
+
+Strukturální hazard znamená, že dvě instrukce chtějí ve stejném taktu stejný hardwarový prostředek, například jednu paměťovou bránu.
+
+Hazardy se řeší několika způsoby. Forwarding, tedy přeposílání, umožní předat výsledek z jednoho stupně rovnou do dalšího, aniž by se čekalo na jeho zapsání do registru. Když to nestačí, vloží procesor stall, tedy prázdný takt, ve kterém linka počká. U větvení pomáhá \textbf{branch prediction}, predikce skoku: procesor odhadne, kterou cestou se program nejspíš vydá, a začne ji vykonávat dopředu.
+
+Pokud se netrefí, rozpracované instrukce zahodí a začne znovu, což stojí několik taktů.
+
+Superskalární procesor jde ještě dál: má více výkonných jednotek, takže ve stejném taktu spustí několik nezávislých instrukcí najednou. S tím souvisí vykonávání mimo pořadí, anglicky \textbf{out-of-order} execution, což zjednodušeně znamená, že procesor smí uvnitř změnit pořadí nezávislých instrukcí tak, aby zbytečně nečekal, a navenek se přitom tváří, jako by se vše vykonalo v původním pořadí.
+
+Jiný druh paralelismu nabízí \textbf{SIMD}, tedy Single Instruction, Multiple Data. Jedna instrukce zpracuje najednou několik datových prvků, například sečte čtyři dvojice čísel jediným příkazem. Hodí se na zpracování obrazu, zvuku nebo vědecké výpočty, kde se stejná operace opakuje nad velkým polem dat.
+
+Je dobré odlišit tři různé věci. Více jader znamená několik samostatných jader na jednom čipu, která běží opravdu současně. Více vláken, tedy hardwarový multithreading, znamená, že jedno jádro umí střídat dvě či více vláken a lépe využít své jednotky, když jedno \textbf{vlákno} zrovna čeká. A více instrukcí za takt, tedy vyšší \textbf{IPC}, je vlastnost samotného jádra díky pipeline a superskalárnímu zpracování.
+
+Právě proto nelze procesory porovnávat jen podle taktovací frekvence: výkon závisí na počtu jader, na tom, kolik instrukcí jádro zvládne za takt, na velikosti a rychlosti cache i na efektivitě architektury. Procesor s nižší frekvencí tak může být v praxi rychlejší než procesor s frekvencí vyšší.
+
+Cache je rychlá mezipaměť mezi procesorem a operační pamětí. L1 cache je nejrychlejší a nejmenší, typicky přímo u jádra. L2 je větší a pomalejší. L3 bývá ještě větší a často sdílená více jádry. Cache funguje díky lokalitě přístupu. Časová lokalita znamená, že co jsem použil nedávno, pravděpodobně použiji znovu. Prostorová lokalita znamená, že když přistupuji k jedné adrese, brzy budu pravděpodobně přistupovat i k okolním adresám.
+
+Cache nepřenáší jednotlivé bajty, ale pracuje po blocích pevné velikosti, kterým se říká \textbf{cache line}, typicky 64 bajtů. Když procesor potřebuje data a najde je v cache, jde o \textbf{cache hit}; když tam nejsou, nastane \textbf{cache miss} a celá příslušná cache line se musí natáhnout z pomalejší paměti. Právě proto pomáhá prostorová lokalita: spolu s jedním bajtem se přitáhnou i jeho sousedé ve stejné lince.
+
+Při zápisu se rozlišují dvě politiky. Write-through zapisuje data zároveň do cache i do paměti, takže paměť je vždy aktuální, ale zápisy jsou pomalejší. Write-back zapisuje nejdřív jen do cache a do paměti se obsah propíše až později; takovou změněnou, dosud nepropsanou linku označujeme jako dirty, tedy špinavou. Write-back je rychlejší, ale procesor si musí hlídat, které linky je ještě potřeba uložit.
+
+Rámcově se cache liší i tím, kam smí konkrétní blok paměti uložit. U direct-mapped cache patří každý blok na jediné možné místo, což je jednoduché, ale snadno dochází ke kolizím. U fully associative cache může blok kamkoli, což je nejpružnější, ale drahé na vyhledávání. Kompromisem je set-associative cache, kde blok patří do jedné skupiny a v ní na několik možných míst; tak fungují běžné procesorové cache.
+
+U více jader vzniká problém koherence cache: stejné datum může mít ve své cache více jader a změna v jednom jádře se musí promítnout do ostatních, aby si jádra neviděla zastaralé hodnoty. To zajišťují koherenční protokoly. L1 cache navíc bývá rozdělena na instrukční a datovou část, protože procesor v jednom taktu typicky načítá instrukci a zároveň pracuje s daty; oddělené cache mu umožní dělat obojí současně bez vzájemného blokování.
+
+\subsection*{RISC vs CISC}
+
+\textbf{RISC} znamená Reduced Instruction Set Computer. Má jednodušší instrukce, často pevnou délku instrukcí a princip load/store, kde se s pamětí pracuje hlavně instrukcemi load a store a aritmetika probíhá nad registry. Výhoda je jednodušší dekódování, dobrá pipeline a často energetická efektivita. Příklady jsou \textbf{ARM} nebo \textbf{RISC-V}.
+
+\textbf{CISC} znamená Complex Instruction Set Computer. Má rozsáhlejší a složitější instrukční sadu, instrukce mohou mít různou délku a jedna instrukce může dělat komplexnější operaci. Typický příklad je \textbf{x86}/\textbf{x86-64}. Výhodou může být kompaktnější strojový kód a bohatší instrukce, nevýhodou složitější dekódování. Moderní hranice se ale stírá, protože moderní CISC procesory často převádějí složité instrukce interně na jednodušší mikrooperace.
+
+\subsection*{32bitové a 64bitové architektury}
+
+Když se mluví o 32bitové nebo 64bitové architektuře, myslí se tím hlavně šířka, se kterou procesor pracuje s čísly a adresami. U 64bitového procesoru mají hlavní registry 64 bitů, takže v jedné operaci zpracuje 64bitové číslo, a adresy jsou rovněž 64bitové. U 32bitového procesoru jsou registry i adresy 32bitové. Větší šířka tedy znamená jak práci s většími čísly v jednom kroku, tak schopnost adresovat více paměti.
+
+Paměť se přitom adresuje po bajtech: jedna paměťová adresa běžně označuje jeden bajt. Počet adresních bitů proto přímo určuje, kolik různých adres, a tím kolik paměti, umí procesor přímo pojmout. Při 32 bitech existuje 2\textasciicircum{}32 adres, což jsou 4 GiB.
+
+Při 64 bitech je teoretický rozsah 2\textasciicircum{}64, tedy nepředstavitelně velký; reálné procesory dnes využívají jen část těchto bitů, ale i tak jde o adresní prostor mnohonásobně větší než 4 GiB. To je hlavní praktický důvod přechodu na 64 bitů: 32bitový systém neumí přímo adresovat více než 4 GiB operační paměti.
+
+x86 je původně 32bitová instrukční sada od Intelu, x86-64 (též AMD64) je její 64bitové rozšíření, které dnes používají běžné počítače. ARM a RISC-V jsou RISC instrukční sady; ARM převažuje v mobilech a embedded zařízeních a v posledních letech i v noteboocích, RISC-V je otevřená sada bez licenčních poplatků. Důležité je odlišit instrukční sadu od konkrétního modelu procesoru.
+
+Instrukční sada, například x86-64 nebo ARMv8, je jakýsi jazyk, kterému procesor rozumí, kdežto konkrétní model, například určitý Intel Core nebo Apple M, je hardwarová implementace tohoto jazyka. Více různých modelů od různých výrobců může sdílet stejnou instrukční sadu.
+
+\subsection*{Von Neumannova a Harvardská architektura}
+
+Von Neumannova architektura používá společnou paměť pro instrukce i data. Počítač se skládá z procesoru, operační paměti, vstupních a výstupních zařízení a propojení mezi nimi.
+
+Výhoda je jednoduchost a univerzálnost, nevýhoda je von Neumannovo úzké hrdlo, protože instrukce i data sdílí stejnou cestu mezi pamětí a procesorem. \textbf{Harvardská architektura} odděluje paměť instrukcí a paměť dat, takže lze k oběma přistupovat paralelně. Používá se například v mikrokontrolérech, DSP a embedded systémech.
+
+Moderní procesory často kombinují oba principy: programátor vidí spíše von Neumannův model, ale interně existuje oddělená instrukční a datová cache.
+
+S procesorem souvisí také \textbf{přerušení}. Přerušení je signál, že nastala událost vyžadující obsluhu, například stisk klávesy, dokončení I/O operace, chyba dělení nulou, \textbf{page fault} nebo \textbf{systémové volání}. Procesor dokončí aktuální instrukci, uloží stav, přejde na obslužnou rutinu a potom se vrátí. Díky přerušením nemusí procesor neustále aktivně čekat na pomalá zařízení.
+
+\itbox{\textbf{Slabší doplňky z materiálů:} kombinační obvod má výstup daný jen aktuálními vstupy, například sčítačka. Sekvenční obvod má paměť, takže výstup závisí i na předchozím stavu, například klopný obvod RS. Polosčítačka sčítá dva bity a dává součet a přenos. Minimalizační metody slouží ke zjednodušení logických funkcí. Stačí rámcově, hlavní průnik je spíše v soustavách, doplňkovém kódu a architekturách. Z logických hradel je \textbf{NAND} (a také NOR) \emph{univerzální} -- jen z něj lze sestavit libovolnou logickou funkci. U instrukčního cyklu se rozlišuje \textbf{nepodmíněný skok}, který program counter nastaví vždy, a \textbf{podmíněný skok}, který ho nastaví jen podle příznaku ve stavovém registru (například nulový výsledek); tak se realizují podmínky a cykly.}
+
+\subsection*{8. Vnitřní a vnější paměti}
+
+Paměti slouží k uložení instrukcí a dat. Důležitá je \textbf{paměťová hierarchie}: registry, cache, operační paměť, \textbf{SSD} nebo \textbf{HDD} a další externí úložiště. Čím blíže je paměť procesoru, tím bývá rychlejší, menší a dražší za bit. Čím je dále, tím je obvykle pomalejší, větší a levnější. Proto počítač kombinuje více druhů pamětí a snaží se často používaná data držet co nejblíže procesoru.
+
+Vnitřní paměti jsou ty, které procesor používá bezprostředně: registry, cache, operační paměť \textbf{RAM} a různé typy \textbf{ROM}. Registry jsou nejrychlejší, ale mají velmi malou kapacitu. Cache je velmi rychlá mezipaměť. RAM je hlavní operační paměť pro běžící programy a data. Je volatilní, tedy po vypnutí napájení ztrácí obsah.
+
+RAM se často dělí na \textbf{SRAM} a \textbf{DRAM}. SRAM je statická, rychlá a drahá, nepotřebuje obnovování a používá se hlavně pro cache. DRAM je dynamická, levnější a umožňuje větší kapacity, ale musí se pravidelně obnovovat, protože informace je uložena jako náboj v kapacitě, který se postupně ztrácí. Proto se používá jako hlavní operační paměť. ROM je paměť určená pro trvalejší obsah, například firmware.
+
+PROM je jednou programovatelná, EPROM lze mazat ultrafialovým zářením, EEPROM elektricky a flash paměť je moderní varianta používaná v SSD, USB flash discích a paměťových kartách. Zvláštním typem je \textbf{CAM}, Content Addressable Memory, kde nehledám podle adresy, ale podle obsahu. Používá se tam, kde je potřeba velmi rychlé vyhledávání.
+
+Vnější paměti slouží pro dlouhodobé uložení dat. Patří sem HDD, SSD, optická média, magnetické pásky, USB flash disky a paměťové karty. HDD používá magnetický záznam na rotujících plotnách a mechanické hlavičky. Má velkou kapacitu a nízkou cenu za GB, ale horší náhodný přístup a mechanickou citlivost. SSD používá flash paměť, nemá pohyblivé části, má nízkou latenci a rychlý náhodný přístup.
+
+Magnetické pásky mají sekvenční přístup a používají se hlavně pro archivaci a zálohy.
+
+U pamětí sledujeme kapacitu, přístupovou dobu, propustnost, cenu za bit, volatilitu, spolehlivost a způsob přístupu. Náhodný nebo přímý přístup znamená, že se lze dostat přímo na požadovanou adresu, typicky u RAM nebo SSD. Sekvenční přístup znamená, že se musí procházet data v pořadí, typicky u magnetické pásky.
+
+\subsection*{9. Vstupní a výstupní zařízení a jejich připojování}
+
+Vstupní zařízení převádí informace z okolí do počítače. Příklady jsou klávesnice, myš, mikrofon, kamera, skener, senzory nebo dotyková plocha. Výstupní zařízení převádí informace z počítače ven, například monitor, tiskárna, reproduktory nebo projektor. Některá zařízení jsou vstupní i výstupní zároveň, například disk, síťová karta, dotykový displej nebo USB zařízení.
+
+Zařízení se k počítači připojují pomocí rozhraní a sběrnic. Historicky se používala paralelní rozhraní jako Centronics pro tiskárny nebo sériová rozhraní RS-232/V.24. Paralelní přenos posílá více bitů zároveň po více vodičích, což bylo jednoduché na krátké vzdálenosti, ale při vyšších rychlostech vznikají problémy se synchronizací a přeslechy.
+
+Sériový přenos posílá bity postupně, ale moderní sériová rozhraní dosahují vysokých rychlostí a používají méně vodičů. Příklady jsou USB, SATA, PCI Express nebo \textbf{Ethernet}.
+
+USB, Universal Serial Bus, sjednotilo připojování mnoha periferií. Umožňuje připojování za provozu, napájení zařízení, použití hubů a komunikaci řízenou hostitelem. Starší verze USB 1.x nabízely jednotky až desítky Mbit/s, USB 2.0 dosahuje 480 Mbit/s a novější USB 3.x pracují v jednotkách až desítkách Gbit/s podle konkrétní verze.
+
+Pro zkoušku je důležitější princip než přesné rychlosti: USB nahradilo řadu starších rozhraní a slouží jako univerzální sériová sběrnice pro periferie.
+
+Komunikace s I/O zařízením může probíhat více způsoby. Polling znamená, že procesor se opakovaně ptá zařízení, zda už je hotové. Je to jednoduché, ale plýtvá výkonem. Přerušení je efektivnější: zařízení samo upozorní procesor, že potřebuje obsluhu. \textbf{DMA}, Direct Memory Access, umožňuje zařízení přenášet bloky dat přímo mezi zařízením a pamětí bez toho, aby procesor kopíroval každý bajt.
+
+To se používá například u disků, síťových karet nebo zvukových zařízení.
+
+Tyto pojmy je dobré přesně rozlišit, protože se snadno pletou. Programované I/O, zkráceně PIO, znamená, že přenos dat obstarává sám procesor instrukcemi, které čtou nebo zapisují registry zařízení. U PIO musí procesor poznat, kdy je zařízení připravené, a to dvěma způsoby: buď pollingem, kdy se opakovaně ptá na stavový registr, nebo přes přerušení, kdy ho zařízení samo upozorní.
+
+Polling i přerušení tedy nejsou plnohodnotné způsoby přenosu, ale způsoby, jak se procesor dozví, že může pokračovat. Registry zařízení přitom bývají dostupné přes \textbf{memory-mapped I/O}: tváří se jako běžné paměťové adresy, takže se s nimi pracuje stejnými instrukcemi jako s pamětí.
+
+Z toho plyne důležité upřesnění: přerušení není alternativa k DMA. DMA je způsob přenosu dat, kdy data putují mezi zařízením a operační pamětí, aniž by je procesor kopíroval po bajtech. Přerušení je naproti tomu způsob oznámení události procesoru. Skutečnou alternativou k DMA je programované I/O, kde data kopíruje procesor sám. A PIO může pro zjištění připravenosti používat buď \textbf{polling}, nebo přerušení.
+
+DMA a přerušení se navíc běžně kombinují: řadič DMA přenese blok dat a po dokončení vyvolá přerušení, kterým dá procesoru vědět, že je hotovo.
+
+Konkrétně může čtení bloku z disku přes DMA vypadat takto: procesor řekne řadiči disku, odkud má číst a kam do paměti data uložit, a pak se může věnovat jiné práci. Řadič s pomocí DMA přenese celý blok přímo do zadané oblasti operační paměti. Jakmile je přenos hotový, řadič vyvolá přerušení; procesor v obsluze přerušení zjistí, že data jsou v paměti připravená, a může s nimi dál pracovat.
+
+Procesor tak nebyl zbytečně blokovaný po celou dobu pomalého čtení.
+
+\subsection*{10. Jak bych to řekl jako krátké zakončení}
+
+Závěrem bych řekl, že výpočetní systém stojí na reprezentaci informace pomocí bitů. Číselné soustavy vysvětlují, jak bity číst a převádět mezi lidským a strojovým zápisem. Zobrazení celých čísel řeší, jak v pevném počtu bitů uložit kladná i záporná čísla, přičemž nejdůležitější je dvojkový doplněk, protože umožňuje jednotnou aritmetiku.
+
+U reálných čísel používáme IEEE 754, kde je číslo rozděleno na znaménko, exponent a mantisu, ale musíme počítat s omezenou přesností.
+
+Kódy převádějí další typy informací na bity: BCD reprezentuje desítkové číslice, ASCII a Unicode reprezentují znaky a detekční a opravné kódy přidávají redundanci pro odhalení nebo opravu chyb. Procesor potom instrukce nad těmito daty vykonává pomocí řadiče, ALU, registrů, cache a dalších jednotek. Paměťová hierarchie vyvažuje rychlost, kapacitu a cenu.
+
+Vstupní a výstupní zařízení propojují počítač s okolím a k efektivní komunikaci používají rozhraní, přerušení a DMA.
+
+\itzk{\textbf{Poslední kontrola před zkouškou:} umět převést DEC-BIN-HEX, vysvětlit proč HEX odpovídá čtveřicím bitů, udělat -5 ve dvojkovém doplňku, spočítat 5 - 3 přes dvojkový doplněk, poznat overflow na 5 + 4 ve 4 bitech, říct rozdíl BCD vs binární zápis, ASCII vs Windows-1250 vs Unicode/UTF-8, RISC vs CISC, von Neumann vs Harvard, RAM vs cache vs ROM vs SSD/HDD a polling vs přerušení vs DMA.}
+
+\subsection*{Rychlá cvičení, která si projít nahlas}
+
+1) 10111100(2) = BC(16), protože 1011 = B a 1100 = C. 2) 2F(16) = 0010 1111(2). 3) -6 ve čtyřech bitech: +6 = 0110, inverze 1001, plus 1 = 1010. 4) 7 - 5: 7 = 0111, -5 = 1011, součet 0111 + 1011 = 10010, ve čtyřech bitech 0010 = 2. 5) 6 + 3 ve čtyřech bitech: 0110 + 0011 = 1001, což je -7, takže nastal overflow, protože skutečný výsledek 9 je mimo rozsah -8 až +7.
+
+\newpage
+

@@ -1,0 +1,399 @@
+\otazka{8. Softwarové a informační systémy}{Vývoj a provoz softwarových systémů. Použití UML při vývoji software. Aplikované informační systémy. Architektury rozsáhlých informačních systémů. Metody vedení rozsáhlých projektů. Řízení provozu IS.}{PB007, PV028}
+
+\itbox{\textbf{Cíl odpovědi:} ukázat, že informační systém není jen program, ale celek lidí, dat, procesů, hardwaru a softwaru. U státnic je dobré postupovat od životního cyklu a požadavků přes modelování a testování až k architektuře, projektovému řízení a provozu. Praktická pointa je, že systém musí být nejen vyvinut, ale také provozován, udržován, měněn, monitorován a smluvně zajištěn.}
+
+\begin{greenbox}
+\textbf{Modelová odpověď v přesném pořadí otázky podle dodaných zdrojů}
+
+\textbf{1. Softwarové a informační systémy.} Začal bych vymezením. \textbf{Software} je programové vybavení, tedy aplikace, služby, knihovny nebo komponenty, které vykonávají určitou činnost. \textbf{Informační systém} je širší socio-technický celek: lidé, hardware, software, data, procesy a pravidla, které zajišťují sběr, přenos, zpracování, uchování a prezentaci informací pro plánování, rozhodování a řízení. Operační systém nebo middleware samy o sobě ještě nejsou informační systém; jsou to podpůrné technologie. IS vzniká až tehdy, když nad daty pracují konkrétní uživatelé v rolích a systém podporuje reálný proces organizace.
+
+\textbf{2. Vývoj a provoz softwarových systémů.} Vývoj bych popsal přes SDLC, tedy životní cyklus softwaru: \textbf{plánování a požadavky -- analýza -- návrh -- implementace -- testování -- nasazení -- provoz -- údržba a další vývoj}. Cílem SDLC je dodat software efektivně, v požadované kvalitě a tak, aby byl udržovatelný. Důležité je rozlišit \textbf{funkční požadavky}, tedy co systém dělá, a \textbf{nefunkční požadavky}, tedy v jaké kvalitě to dělá: dostupnost, výkon, bezpečnost, auditovatelnost, škálovatelnost nebo použitelnost. Provoz není dodatek až po projektu. Už při návrhu se musí myslet na monitoring, logy, zálohy, obnovu, správu verzí, podporu uživatelů, bezpečnostní aktualizace a změnové řízení. Pokud jde o bezpečný vývoj, SSDLC přidává bezpečnost do každé fáze: bezpečnostní požadavky, threat modeling, bezpečný návrh, statickou analýzu, bezpečnostní testy a provozní monitoring.
+
+\textbf{3. Použití UML při vývoji software.} UML je standardizovaný grafický jazyk pro modelování systému. Jeho smysl není kreslit obrázky pro obrázky, ale vytvořit společný jazyk mezi zákazníkem, analytikem, vývojářem, testerem a provozem. \textbf{Use-case diagram} se hodí na začátku pro aktéry, hranice systému a požadavky. \textbf{Activity diagram} popisuje workflow procesu, například vyřízení žádosti nebo objednávky. \textbf{Class diagram} ukazuje strukturu domény nebo návrhu, tedy třídy, atributy a vztahy. \textbf{Sequence diagram} ukazuje komunikaci v čase, třeba volání mezi webem, API a databází. \textbf{Deployment diagram} ukazuje fyzické nebo virtuální nasazení: klient, web server, aplikační server, databáze, message broker nebo cloud. ER diagram a DFD nejsou UML v úzkém smyslu, ale ve zdrojích dávají smysl jako doplněk: ER pro databázový model, DFD pro toky dat a bezpečnostní/threat modeling.
+
+\textbf{4. Aplikované informační systémy.} Aplikovaný IS je rozsáhlejší systém zasazený do konkrétní domény. Typicky jej používá více uživatelů v různých rolích, pracuje nad společnými daty v databázi, podporuje workflow a často běží jako klient-server nebo webový systém. V nemocnici AIS podporuje příjem pacienta, hospitalizaci, žádanky, laboratorní výsledky, medikaci, pojišťovny a role lékaře, sestry, laboratoře a administrativy. Ve veřejné správě AIS přijímá žádosti, vede spis, pracuje s číslem jednacím, registry a doručováním. V e-shopu se propojuje katalog, objednávka, sklad, platba, doprava, fakturace a reklamace. U environmentálních IS je dobré zmínit logiku monitoring -- data -- informace -- assessment -- reporting: stát sbírá data, kontroluje jejich kvalitu, převádí je na použitelné informace a reportuje je podle právních povinností, například vůči EU.
+
+\textbf{5. Architektury rozsáhlých informačních systémů.} U architektur bych šel přes to, co zdroje výslovně chtějí slyšet: \textbf{třívrstvá architektura, MVC, SOA, mikroslužby, škálování a kontejnerizace}. Třívrstvá architektura dělí systém na prezentační vrstvu, aplikační vrstvu s business logikou a databázovou vrstvu. MVC je vzor uvnitř aplikace: Model drží data a pravidla, View zobrazuje a Controller zpracovává vstup. SOA chápe systém jako soubor spolupracujících služeb s rozhraními; mikroslužby jsou jemnější varianta s menšími samostatně nasazovanými službami. Rozsáhlý IS musí být škálovatelný, spolehlivý, bezpečný a efektivní. Škálování může být vertikální, tedy silnější server, nebo horizontální, tedy více instancí za load balancerem. Docker a Kubernetes patří k provoznímu nasazení: kontejnery balí aplikaci se závislostmi, Kubernetes je orchestruje, škáluje a restartuje.
+
+\textbf{6. Metody vedení rozsáhlých projektů.} U velkých projektů bych zdůraznil, že bývají \textbf{iterativní a inkrementální}. Iterace je opakovaný vývojový cyklus, inkrement je konkrétní přírůstek funkcionality. Ze zdrojů je důležité říct \textbf{Unified Process/RUP}, případně kombinaci s PRINCE2 nebo IPMA. UP je iterativní a inkrementální, řízený riziky a případy užití, zaměřený na architekturu a podporovaný UML. Pro plánování se používá WBS pro rozpad práce, PERT pro odhad pracnosti a času, Ganttův diagram pro harmonogram, síťový diagram a kritická cesta pro zjištění úkolů, které nesmí sklouznout bez posunu celého projektu. U rozsáhlého projektu je nutné řídit rizika, komunikaci, eskalace, změny, rozpočet, milníky, akceptace, dodavatele a kvalifikaci týmu.
+
+\textbf{7. Řízení provozu IS.} Provoz IS znamená zajistit, aby systém dlouhodobě poskytoval službu v dohodnuté kvalitě. Patří sem monitoring, helpdesk, incident management, problem management, change management, profylaxe, zálohování, obnova, dokumentace, správa kapacity, bezpečnost a komunikace s uživateli. \textbf{SLA} určuje servisní hodiny, kategorie incidentů, reakční dobu, dobu opravy, dostupnost, komunikační kanály, cenu a sankce. Kritický výpadek produkčního nemocničního systému se tedy řeší jinak než kosmetická chyba v interním reportu. Cena podpory může být částečně paušální a částečně položková podle rozsahu zásahů. Závěrečná věta: úspěšný IS se nepozná jen podle toho, že byl naprogramován, ale podle toho, že v provozu spolehlivě podporuje proces organizace, zvládá změny a má jasně nastavenou odpovědnost.
+\end{greenbox}
+
+\begin{greenbox}
+\textbf{Doplňková praktická odpověď: aplikovaný informační systém, architektura, projekt a provoz}
+
+Kdybych dostal otázku na softwarové a informační systémy a chtěl odpovědět co nejpraktičtěji, začal bych pojmem \textbf{aplikovaný informační systém}. AIS není jedna malá aplikace, ale \textbf{soubor aplikací, databází, uživatelů, rolí, workflow a integračních vazeb}, který umožňuje více lidem v organizaci pracovat nad společnými daty. Typicky jde o webový nebo klient-server systém: uživatel pracuje v prohlížeči nebo klientské aplikaci, aplikační server provádí business logiku a databázová vrstva drží sdílená data. Pointa je, že AIS podporuje reálný proces organizace, například léčbu pacienta, vyřízení žádosti, prodej zboží, skladové hospodářství nebo úřední řízení.
+
+\textbf{Data a databáze.} Data jsou obvykle uložena v databázích, protože více uživatelů musí pracovat nad stejnými záznamy konzistentně a současně. Relační databáze, například PostgreSQL, Oracle nebo MySQL, ukládá data do tabulek a vztahů: pacient, vyšetření, lékař, hospitalizace; zákazník, objednávka, položka, faktura. Dokumentové nebo NoSQL databáze se hodí pro pružnější struktury, logy, dokumenty nebo velké objemy méně relačních dat. U zkoušky stačí říct, že databáze neřeší jen "uložení", ale také transakce, integritu, současný přístup více uživatelů, oprávnění, zálohy a obnovu.
+
+\textbf{Příklad: AIS ve zdravotnictví.} Nemocniční informační systém není jen seznam pacientů. V nemocnici, například typu fakultní nemocnice, systém podporuje příjem pacienta, ambulantní návštěvy, hospitalizaci, diagnózy, žádanky na laboratorní vyšetření, výsledky laboratoří, obrazovou dokumentaci, medikaci, operační plán, výkazy pro pojišťovny, statistiky a administraci. Lékař, sestra, laboratoř, administrátor a pojišťovna mají jiné role a jiná oprávnění, ale pracují nad propojenými daty. Když se změní postup na oddělení, není to jen změna jedné obrazovky; může to ovlivnit workflow, databázi, oprávnění, integrace a reporty.
+
+\textbf{Příklad: AIS ve veřejné správě.} Veřejnosprávní AIS přijímá žádosti, vede spis, podporuje práci úředníka a končí rozhodnutím, vyrozuměním nebo zápisem do registru. Prakticky: občan pošle žádost datovou schránkou, e-mailem s uznávaným podpisem nebo přes portál. \textbf{Spisová služba} žádost zaeviduje, přidělí číslo jednací nebo spisovou značku a dokument se spojí s konkrétním řízením až do vyřízení. Úředník může ověřovat údaje v základních registrech, katastru nemovitostí nebo jiných agendových systémech. Výstupem je rozhodnutí, výzva, potvrzení nebo jiný úřední dokument, který se doručí zpět, často datovou schránkou. Tady je dobře vidět, že AIS propojuje dokumenty, data, workflow, právní pravidla a integrace.
+
+\textbf{Příklad: e-shop a sklad.} E-shop není jen katalog produktů. Je propojený se skladem, platbami, dopravci, fakturací, CRM, reklamačním procesem a účetnictvím. Když zákazník objedná zboží, systém zarezervuje skladovou zásobu, založí objednávku, předá platbu platební bráně, vytvoří doklad, pošle data dopravci a aktualizuje stav objednávky. Pokud selže integrace se skladem, web může prodávat zboží, které už fyzicky není. To je typická ukázka, proč AIS musí řešit procesy a integrace, ne jen programování formulářů.
+
+\textbf{Architektura: třívrstvá aplikace a MVC.} Nejjednodušší architektonická odpověď je třívrstvá architektura. \textbf{Prezentační vrstva} je uživatelské rozhraní, na webu typicky HTML, CSS a frontendová logika. \textbf{Aplikační vrstva} obsahuje business logiku: validace, workflow, výpočty, pravidla, oprávnění, integrace a API. \textbf{Databázová vrstva} spravuje data, transakce, dotazy, indexy a integritní omezení. MVC je vzor uvnitř aplikace: Model drží data a pravidla, View zobrazuje, Controller zpracuje požadavek a řídí tok. Třívrstvá architektura tedy říká, kde systém běží a jak je rozdělený; MVC říká, jak je organizovaný kód aplikace.
+
+\textbf{SOA, služby a kontejnery.} U rozsáhlejších systémů se monolit často rozděluje na služby. \textbf{SOA} chápe systém jako soubor softwarových komponent/služeb, které spolupracují přes rozhraní podobně jako služby v reálném světě: mapová služba, platební služba, identitní služba, notifikační služba. Mikroslužby jsou jemnější varianta: menší služby, samostatné nasazení, vlastní odpovědnost a často vlastní databáze. Výhody jsou nezávislé nasazování a škálování; nevýhody jsou složitější provoz, monitoring, síťová komunikace, verzování API a konzistence dat. Docker balí aplikaci se závislostmi do kontejneru, Kubernetes kontejnery nasazuje, restartuje, škáluje a vyvažuje provoz. Je dobré říct, že kontejnery nejsou architektura samy o sobě; jsou provozní technologie pro balení a nasazování.
+
+\textbf{Vývoj a řízení projektu.} Vývoj AIS nejde dělat jen tak, že "programátor začne psát". Nejdřív se sbírají požadavky: funkční, tedy co má systém dělat, a nefunkční, tedy v jaké kvalitě to má dělat. Potom se analyzují procesy, data, role, integrace a rizika. UML se hodí jako komunikační jazyk: use-case diagram ukáže aktéry a případy užití, activity diagram workflow, class diagram doménové objekty, sequence diagram komunikaci v čase a deployment diagram nasazení. Pro vedení větších projektů je dobré zmínit \textbf{UP/RUP} a \textbf{Scrum}. UP/RUP je iterativní, řízený riziky, případy užití a architekturou; Scrum pracuje se sprinty, backlogem, Product Ownerem, Scrum Masterem, review a retrospektivou. Praktická věta: velký AIS často kombinuje formálnější řízení projektu s iterativním vývojem, protože organizace potřebuje kontrolu, ale zároveň se požadavky zpřesňují postupně.
+
+\textbf{Provoz IS a SLA.} Nasazením projekt nekončí. AIS musí běžet, být podporovaný, zálohovaný, monitorovaný a měněný. Řízení provozu znamená helpdesk, incident management, change management, monitoring, logy, zálohy, obnovu, dokumentaci, správu kapacity a bezpečnost. \textbf{SLA} stanoví kvalitu služby: servisní hodiny, reakční dobu, dobu opravy, dostupnost, kategorie incidentů, komunikační kanál a sankce. Kritický výpadek nemocničního systému v režimu 24/7 je něco jiného než drobná chyba v interním reportu, která se řeší další pracovní den. U zkoušky se dá zakončit takto: dobrý AIS se pozná až v provozu podle toho, jestli dlouhodobě podporuje proces organizace, drží společná data konzistentní, má jasné role, zvládá změny a má smluvně i technicky zajištěnou podporu.
+\end{greenbox}
+
+\subsection*{8. Softwarové a informační systémy -- stručněji}
+Tuhle kratší verzi lze použít, když je potřeba odpovědět rychle a přehledně. Nejde o seznam hesel, ale o osnovu, podle které se dá mluvit v logickém pořadí: nejdřív vymezit systém, potom vývoj, požadavky, modelování, testování, architekturu, projektové řízení a provoz.
+
+\textbf{1. Co je software a informační systém}
+\begin{itemize}
+  \item \textbf{Software} je programové vybavení, tedy aplikace, knihovny, služby a komponenty, které vykonávají určitou činnost.
+  \item \textbf{Informační systém} je širší celek: lidé, data, procesy, software, hardware a pravidla, které společně sbírají, zpracovávají, ukládají a poskytují informace pro řízení organizace.
+  \item Důležitá věta ke zkoušce: informační systém není jen aplikace v počítači. Například nemocniční IS zahrnuje software, databázi pacientů, role lékařů a sester, laboratorní procesy, napojení na pojišťovny, pravidla přístupu a provozní podporu.
+  \item \textbf{Aplikovaný IS} je systém zasazený do konkrétní domény, například zdravotnictví, banka, sklad, univerzita, veřejná správa nebo environmentální reporting. Klíčové je rozumět procesu organizace, ne jen napsat obrazovky.
+\end{itemize}
+
+\textbf{2. Vývojový životní cyklus: co jde po sobě}
+\begin{itemize}
+  \item Nejjednodušší pořadí je: \textbf{požadavky -- analýza -- návrh -- implementace -- testování -- nasazení -- provoz -- údržba}.
+  \item V požadavcích se zjišťuje, co zákazník skutečně potřebuje. Častá chyba nastává už tady: zákazník řekne "chci rychlý systém", ale není určeno, co znamená rychlý, kolik uživatelů bude pracovat najednou a jaká odezva je přijatelná.
+  \item V analýze se popíše problém, aktéři, procesy, data a hranice systému. V návrhu se rozhodne architektura, databáze, rozhraní, bezpečnost, komponenty a nasazení. Implementace je samotné programování.
+  \item Testování ověřuje, zda systém funguje podle požadavků. Nasazení převádí systém do produkce. Provoz a údržba řeší incidenty, změny, nové požadavky, aktualizace, monitoring a podporu uživatelů.
+  \item Praktická pointa: chyba je tím dražší, čím později se najde. Chyba v požadavku objevená až po nasazení může znamenat předělání architektury, databáze, obrazovek i smluvních akceptací.
+\end{itemize}
+
+\textbf{3. Požadavky: funkční, nefunkční, validace a verifikace}
+\begin{itemize}
+  \item \textbf{Funkční požadavky} říkají, co má systém dělat: přihlášení uživatele, vystavení faktury, zadání diagnózy, vytvoření objednávky, export dat nebo schválení žádosti.
+  \item \textbf{Nefunkční požadavky} říkají, jak kvalitně to má dělat: dostupnost 99,9 \%, odezva do dvou sekund, šifrování dat, auditní logy, škálovatelnost, použitelnost, legislativní soulad nebo provoz 24/7.
+  \item Velké problémy často nevznikají na funkcích, ale na nefunkčních požadavcích: systém sice umí vytvořit objednávku, ale nezvládne tisíc objednávek za minutu, nemá auditní stopu nebo nejde obnovit po výpadku.
+  \item \textbf{Validace} znamená: děláme správný produkt pro uživatele? \textbf{Verifikace} znamená: děláme produkt správně podle specifikace?
+  \item Příklad: pokud specifikace říká deset kroků pro příjem pacienta a systém je přesně splní, verifikace může být úspěšná. Pokud ale lékař kvůli tomu nestíhá reálný provoz, selhává validace.
+\end{itemize}
+
+\textbf{4. UML: proč, kdy a jaký diagram říct}
+\begin{itemize}
+  \item \textbf{UML} je standardizovaný grafický jazyk pro modelování systému. Smyslem není kreslit obrázky pro obrázky, ale domluvit se mezi zákazníkem, analytikem, vývojářem, testerem a provozem.
+  \item \textbf{Use-case diagram} použiju na začátku pro požadavky: ukáže aktéry, hranice systému a případy užití. Příklad: pacient, lékař, sestra a pojišťovna; use-casy příjem pacienta, zadání vyšetření, import výsledků, vykázání péče.
+  \item \textbf{Class diagram} ukáže strukturu domény nebo návrhu: třídy, atributy, vztahy, dědičnost, agregaci a kompozici. Příklad: Pacient, Vyšetření, Lékař, Oddělení.
+  \item \textbf{Sequence diagram} ukáže komunikaci v čase. Hodí se pro přihlášení, platbu, objednávku nebo volání mezi mikroslužbami.
+  \item \textbf{Activity diagram} ukáže proces nebo workflow, například schválení žádosti nebo průchod pacienta nemocnicí.
+  \item \textbf{Deployment diagram} ukáže, kde co běží: klient, web server, aplikační server, databáze, message broker, cloud nebo on-premise infrastruktura.
+  \item ER diagram není UML v užším smyslu, ale je důležitý pro databázový návrh: entity, atributy, vztahy, primární a cizí klíče.
+\end{itemize}
+
+\textbf{5. Testování a údržba}
+\begin{itemize}
+  \item Testování prokazuje přítomnost chyb, ne jejich nepřítomnost. Proto ani otestovaný systém není automaticky bezchybný.
+  \item \textbf{Unit testy} ověřují malé části kódu. \textbf{Integrační testy} ověřují spolupráci komponent. \textbf{Systémové testy} testují systém jako celek. \textbf{Akceptační testy} rozhodují, zda zákazník může systém převzít.
+  \item \textbf{Regresní testy} hlídají, že nová změna nerozbila staré funkce. To je zásadní u dlouho provozovaných IS.
+  \item Když uživatel hlásí chybu, vývojář potřebuje kroky reprodukce, očekávané a skutečné chování, čas, prostředí, roli uživatele, vstupní data, screenshot nebo log a závažnost.
+  \item Údržba není jen oprava bugů. Patří sem \textbf{corrective} údržba (opravy), \textbf{adaptive} údržba (nové prostředí, OS, legislativa), \textbf{perfective/evolutionary} údržba (nové funkce) a \textbf{preventive} údržba (refaktoring, snížení technického dluhu).
+\end{itemize}
+
+\textbf{6. Architektury rozsáhlých IS}
+\begin{itemize}
+  \item Základní odpověď je \textbf{třívrstvá architektura}: prezentační vrstva, aplikační vrstva a databázová vrstva. Oddělení vrstev zvyšuje přehlednost, udržovatelnost a možnost škálovat části samostatně.
+  \item \textbf{MVC} je vzor pro organizaci aplikace: Model drží data a logiku, View zobrazuje, Controller zpracuje vstup a řídí tok. Třívrstvá architektura řeší rozdělení systému, MVC organizaci kódu.
+  \item \textbf{Monolit} je jeden větší celek. Je jednodušší na vývoj a provoz, ale hůř se škáluje a mění, pokud je špatně modularizovaný.
+  \item \textbf{SOA a mikroslužby} rozdělují systém na služby s jasnými rozhraními. Výhodou je nezávislé nasazování a škálování, nevýhodou složitější provoz, monitoring, síťová komunikace a konzistence dat.
+  \item Škálování může být \textbf{vertikální} (silnější server) nebo \textbf{horizontální} (více instancí za load balancerem). U moderních IS se často používají kontejnery, Kubernetes, cloud, cache, replikace databáze a message brokery.
+  \item Praktická věta: mikroslužby nejsou automaticky lepší než monolit. Dávají smysl až tehdy, když organizace zvládne jejich provozní složitost.
+\end{itemize}
+
+\textbf{7. Metody vedení rozsáhlých projektů}
+\begin{itemize}
+  \item \textbf{Vodopád} postupuje po fázích a hodí se, když jsou požadavky stabilní a je potřeba formální dokumentace. Nevýhoda je nízká pružnost při změnách.
+  \item \textbf{Iterativní a inkrementální vývoj} dodává systém po částech. Iterace je opakovaný cyklus práce, inkrement je konkrétní nový přírůstek funkcionality.
+  \item \textbf{Agile/Scrum} používá krátké sprinty, backlog, review a retrospektivu. Product Owner hlídá hodnotu a priority, Scrum Master proces a tým dodává přírůstky.
+  \item \textbf{DevOps} propojuje vývoj a provoz. Důležité pojmy: CI/CD pipeline, automatické testy, automatizované nasazení, monitoring, rollback a společná odpovědnost za službu.
+  \item U velkého projektu je nutné řídit rozsah, rizika, komunikaci, rozpočet, termíny, změny, kvalitu a dodavatele. Používá se WBS, Ganttův diagram, PERT, kritická cesta, milníky, akceptace a změnové řízení.
+  \item Změnové řízení je prakticky klíčové: nový požadavek se zapíše, posoudí se dopad na cenu, čas, rizika, architekturu a provoz, schválí se a teprve pak implementuje.
+\end{itemize}
+
+\textbf{8. Řízení provozu IS}
+\begin{itemize}
+  \item Nasazením systém nekončí. V provozu se řeší dostupnost, incidenty, změny, monitoring, logy, zálohy, obnova, dokumentace, kapacita, bezpečnost a podpora uživatelů.
+  \item \textbf{SLA} stanoví dohodnutou kvalitu služby: servisní hodiny, reakční dobu, dobu opravy, kategorie incidentů, dostupnost, cenu a případné sankce.
+  \item \textbf{Incident management} má co nejrychleji obnovit službu. \textbf{Problem management} hledá kořenovou příčinu, aby se incident neopakoval. \textbf{Change management} řídí změny v produkci.
+  \item \textbf{RTO} říká, za jak dlouho má být služba obnovena. \textbf{RPO} říká, kolik dat si organizace může maximálně dovolit ztratit, tedy jak stará smí být použitelná záloha.
+  \item Zálohy nestačí jen vytvářet; musí se pravidelně testovat obnova. Bez dokumentace se systém stává závislý na konkrétních lidech.
+\end{itemize}
+
+\textbf{Krátká odpověď na konec:} Softwarový a informační systém je dlouhodobý socio-technický celek. Musím umět zjistit požadavky, rozlišit funkční a nefunkční vlastnosti, namodelovat systém, otestovat ho, zvolit architekturu, řídit projekt a hlavně zajistit provoz a údržbu. Úspěch IS se nepozná jen podle toho, že byl naprogramován, ale podle toho, že dlouhodobě podporuje procesy organizace, je dostupný, bezpečný, udržovatelný a rozumně rozšiřitelný.
+
+\subsection*{Základní vymezení: software, informační systém a aplikovaný IS}
+
+Nejdříve bych vymezil, o čem vlastně mluvím. Software je programové vybavení počítače, které umožňuje vykonávat určitou činnost. Může mít grafické rozhraní, textové rozhraní nebo rozhraní příkazové řádky, může být tvořeno jedním programem nebo více komponentami. Sám software ale ještě nemusí být informační systém.
+
+Informační systém je širší celek: jsou to lidé, technické prostředky, software, data a procesy, které dohromady zajišťují sběr, přenos, zpracování, uchování a prezentaci informací. Tyto informace pak slouží k plánování, rozhodování a řízení. Operační systém nebo middleware tedy sám o sobě informační systémem není; je spíše podpůrnou technologií, na které může informační systém běžet.
+
+Aplikovaný informační systém je typicky rozsáhlejší systém používaný v konkrétní doméně: nemocnice, veřejná správa, sklad, obchod, výroba, životní prostředí, univerzita nebo banka. Má více uživatelů v různých rolích, pracuje se společnými daty a podporuje podnikové nebo úřední procesy. Například nemocniční informační systém neslouží jen k ukládání pacientů.
+
+Musí podporovat hospitalizaci, ambulantní péči, žádanky, laboratorní výsledky, výkazy pro pojišťovny, statistiky, administraci, import obrazových dat z rentgenu nebo komunikaci s dalšími systémy. Právě proto je rozdíl mezi malou aplikací a informačním systémem: IS se dotýká chodu celé organizace a chyba se může projevit jinde, později a u jiného uživatele, než kde vznikla.
+
+U podnikového IS je důležitý pojem podnikový \textbf{proces} a workflow. Proces je opakovatelná posloupnost kroků, která převádí vstupy na výstupy, například vyřízení objednávky, přijetí pacienta, schválení faktury nebo odeslání environmentálního reportu do EU. Workflow popisuje, kdo krok provádí, v jakém pořadí, s jakými daty a s jakými termíny. Prakticky tedy IS nesmí být navržen jen podle obrazovek, ale podle reálných procesů organizace.
+
+\subsection*{Životní cyklus softwaru a požadavky}
+
+Vývoj softwarového systému se popisuje životním cyklem. Základní fáze jsou analýza požadavků, návrh, implementace, testování, nasazení, provoz, údržba a další vývoj. V analýze se zjišťuje, co zákazník skutečně potřebuje. V návrhu se rozhoduje o architektuře, databázovém modelu, rozhraních, komponentách a způsobu nasazení. V implementaci se systém programuje. Testování ověřuje, že systém plní požadavky a neobsahuje známé chyby.
+
+Nasazení převádí systém do produkčního provozu. Provoz a údržba jsou dlouhodobé fáze, kdy se řeší incidenty, změny, opravy, aktualizace, dokumentace, monitoring a podpora uživatelů.
+
+Zvlášť důležité je správně rozlišit požadavky. Funkční požadavky říkají, co má systém dělat: uživatel se přihlásí, lékař zadá diagnózu, skladník vytvoří příjemku, systém vygeneruje report nebo exportuje data pro úřad.
+
+Nefunkční požadavky říkají, jak má systém fungovat a jaké má mít vlastnosti: \textbf{dostupnost} 99,9 \%, odezva do dvou sekund, šifrování osobních údajů, auditní stopa, možnost zpracovat tisíc transakcí za sekundu, použitelnost pro mobilní zařízení nebo splnění legislativy.
+
+Častá chyba je, že zákazník mluví hlavně o funkcích, ale problém projektu nakonec způsobí \textbf{nefunkční požadavky}: výkon, bezpečnost, dostupnost, provozní okna, integrace nebo právní omezení.
+
+S požadavky souvisí verifikace a validace. Validace odpovídá na otázku, jestli vytváříme správný produkt, tedy zda systém odpovídá skutečným očekáváním uživatele. Verifikace odpovídá na otázku, jestli produkt vytváříme správně, tedy zda odpovídá specifikaci a neobsahuje chyby.
+
+Praktický příklad: pokud zákazník chtěl systém pro rychlé odbavení pacientů, ale my jsme přesně podle specifikace vytvořili systém, který vyžaduje deset obrazovek, může být verifikace úspěšná, ale validace selže. Naopak pokud je myšlenka správná, ale implementace padá, selhává verifikace.
+
+Je dobré zmínit i bezpečný životní cyklus SSDLC. Ten do běžného SDLC přidává bezpečnost do všech fází: bezpečnostní požadavky už při analýze, \textbf{threat modeling} a bezpečný návrh, statickou analýzu během vývoje, bezpečnostní testy před nasazením a monitoring v provozu. U rozsáhlých IS je to důležité, protože pozdě opravená chyba je dražší než chyba odhalená v návrhu.
+
+\subsection*{Modely vývoje: vodopád, iterace, agilní přístup a DevOps}
+
+Klasický vodopádový model postupuje sekvenčně: požadavky, analýza, návrh, implementace, testování, nasazení a údržba. Hodí se tam, kde jsou požadavky stabilní, kde je potřeba silná dokumentace a formální akceptace, například u části veřejných zakázek nebo regulovaných systémů. Jeho nevýhoda je malá pružnost: když se chyba v požadavcích objeví až ve fázi testování, oprava je drahá.
+
+Blízko vodopádu stojí \textbf{V-model}, který ke každé vývojové fázi přiřazuje odpovídající úroveň testování: požadavkům odpovídají akceptační testy, návrhu systému systémové testy, návrhu komponent integrační testy a implementaci unit testy. Levá strana "V" je návrh shora dolů, pravá strana je testování zdola nahoru; výhodou je, že už při psaní požadavků se promýšlí, jak se budou ověřovat.
+
+Jiný přístup je \textbf{prototypování}: rychle se vytvoří zjednodušená verze, prototyp, na které si zákazník upřesní představu, a teprve pak se staví ostrý systém. Prototyp se může zahodit (throwaway), nebo postupně dopracovat. Hodí se, když požadavky nejsou na začátku jasné.
+
+Iterativní a \textbf{inkrementální} přístup řeší systém postupně. Iterace je opakovaný vývojový cyklus, ve kterém se plánuje, navrhuje, implementuje a testuje menší část systému. Inkrement je konkrétní přírůstek funkcionality mezi dvěma verzemi. Velké projekty se často vedou právě iterativně a inkrementálně: nejdříve základní architektura a nejrizikovější části, potom další funkce.
+
+U rozsáhlých informačních systémů je vhodné kombinovat strukturované projektové řízení s iterativním vývojem, protože úplně agilní přístup bez pevné architektury a bez řízení rizik může být u velkých organizací problematický.
+
+Agilní vývoj, typicky \textbf{Scrum} nebo Kanban, zdůrazňuje krátké cykly, zpětnou vazbu, komunikaci se zákazníkem a průběžné dodávání hodnoty. Scrum pracuje se sprinty, backlogem, review a retrospektivou. Kanban více vizualizuje tok práce a omezuje rozpracovanost. Agile se hodí tam, kde se požadavky mění nebo nejsou na začátku přesně známé.
+
+U státnic bych ale dodal, že agilní přístup neznamená vývoj bez dokumentace a bez řízení. I agilní projekt potřebuje požadavky, testování, architekturu, řízení změn a odpovědnosti.
+
+U Scrumu je dobré umět role a artefakty. \textbf{Product Owner} zastupuje zákazníka, spravuje produktový \textbf{backlog} a určuje priority. \textbf{Scrum Master} se stará o proces, odstraňuje překážky a chrání tým, ale není to klasický nadřízený. Vývojový tým je samoorganizující se a doručuje hotový přírůstek.
+
+Práce se plánuje v krátkých sprintech, typicky dva až čtyři týdny; produktový backlog je seznam všeho, co se má udělat, a \textbf{sprint} backlog je výběr položek pro daný sprint. Na konci sprintu je review, tedy předvedení přírůstku, a retrospektiva zaměřená na zlepšení procesu.
+
+Moderní návazností je \textbf{DevOps}, který propojuje vývoj a provoz. Smyslem je, aby vývojáři nepředali kód provozu jako cizí balík, ale aby existovala společná odpovědnost za kvalitu, nasazení a stabilitu. DevOps používá \textbf{pipeline}: kontinuální integraci, automatické sestavení, testování, bezpečnostní kontroly a nasazení. Continuous Delivery znamená, že kód je připraven k produkčnímu nasazení po schválení.
+
+Continuous Deployment znamená, že po průchodu testy se nasazuje automaticky. U velkého IS to snižuje \textbf{riziko} ručních chyb, ale vyžaduje dobré testy, rollback, monitoring a jasná pravidla nasazování.
+
+\subsection*{UML a modelování systému}
+
+\textbf{UML}, Unified Modeling Language, je standardizovaný jazyk pro grafické modelování softwaru. Jeho smysl není kreslit diagramy pro diagramy, ale vytvořit společný jazyk mezi analytiky, vývojáři, zákazníkem a provozem. Každý UML diagram ukazuje jiný pohled na systém. Externí pohled ukazuje hranice systému a komunikaci s okolím. Strukturální pohled ukazuje třídy, komponenty, balíky nebo nasazení. Interakční pohled ukazuje komunikaci v čase. Behaviorální pohled ukazuje chování, procesy a stavy.
+
+Use-case diagram používám při analýze požadavků. Ukazuje aktéry, hranice systému a případy užití. Hodí se, když má systém více typů uživatelů nebo více rozhraní. Například u nemocničního IS budou aktéři lékař, sestra, laboratoř, pojišťovna a administrátor. Případy užití mohou být příjem pacienta, zadání vyšetření, import výsledků, vystavení výkazu pojišťovně a správa uživatelů.
+
+Důležité je, že \textbf{use-case} nespouští systém sám od sebe, ale aktér. Vztah include znamená povinně sdílené chování, například při každém nákupu je zahrnuto ověření platby. Vztah extend znamená volitelné rozšíření, například použití slevového kupónu.
+
+Class diagram popisuje třídy a jejich vztahy. Používá se v analýze i návrhu. V analýze bývá jednodušší a popisuje doménové pojmy, například Pacient, Lékař, Vyšetření, Oddělení, Faktura. V návrhu už může být implementační: atributy, metody, rozhraní, dědičnost, asociace, agregace a kompozice. Kompozice znamená silný vztah celek-část, kde část nemá samostatný život bez celku; agregace je slabší.
+
+Sequence diagram používám, když chci ukázat časovou posloupnost zpráv mezi objekty nebo službami, například průběh přihlášení, vytvoření objednávky nebo platby. Activity diagram je vhodný pro procesy a workflow, zvlášť když je potřeba ukázat větvení, paralelní kroky a odpovědnosti v plaveckých drahách.
+
+State diagram se hodí pro objekt s významným životním cyklem, například objednávka: vytvořená, zaplacená, odeslaná, doručená, reklamovaná, uzavřená.
+
+Další UML diagramy doplňují pohled na strukturu systému. Component diagram ukazuje komponenty a jejich závislosti. Package diagram člení model nebo kód do balíků. Deployment diagram mapuje softwarové části na fyzické nebo virtuální uzly: klient, aplikační server, databázový server, \textbf{message broker}, load balancer. Object diagram ukazuje konkrétní instance v určitém okamžiku.
+
+Vedle UML se často používá ER diagram pro databázový návrh. Ten modeluje entity, atributy a vztahy a je přirozeným mostem mezi analýzou domény a relační databází. Z ER diagramu se na relační model přechází tak, že z entit vzniknou tabulky, z atributů sloupce, identifikátor se stane primárním klíčem a vztah 1:N se realizuje cizím klíčem na straně N (vztah M:N samostatnou spojovací tabulkou). Rozdíl proti UML class diagramu je, že ER popisuje čistě data a databázový návrh, kdežto class diagram modeluje i chování (metody) objektů. U bezpečnostních a integračních analýz se také používá DFD, tedy diagram toků dat, protože jasně ukazuje, kudy data tečou a kde vznikají hranice důvěry.
+
+\subsection*{Testování, statická analýza a údržba}
+
+\begin{notebox}
+\textbf{Shrnutí k zapamatování: testování, údržba a komunikace se zákazníkem}
+\begin{itemize}
+  \item \textbf{Údržba (maintenance)} -- \textbf{corrective} (oprava chyb), \textbf{adaptive} (přizpůsobení novému prostředí, OS, knihovnám, legislativě), \textbf{evolutionary/perfective} (nové a vylepšené funkce) a \textbf{preventive} (refaktoring, snižování technického dluhu). Probíhá ve fázích evolution, servicing a phase-out a u zakázkových systémů často stojí víc než původní vývoj.
+  \item \textbf{Testování (úrovně)} -- \textbf{unit} (jednotky, metody/třídy), \textbf{integrační} (spolupráce komponent a rozhraní), \textbf{systémové} (celek proti požadavkům) a \textbf{akceptační} (zákazník dílo přebírá); navíc \textbf{regresní} testy hlídají, že nová změna nerozbila dříve funkční chování. Testování prokazuje přítomnost chyb, ne jejich nepřítomnost.
+  \item \textbf{Mockup / mock testing} -- \textbf{mock} je náhrada reálné závislosti (databáze, externí služba, platební brána) připravená tak, aby vracela předem dané odpovědi. Umožní otestovat jednotku \textbf{izolovaně, rychle a opakovatelně}, bez volání skutečných systémů a bez vedlejších efektů.
+  \item \textbf{Když zákazník hlásí chybu}, programátor potřebuje vědět: přesné \textbf{kroky reprodukce}, \textbf{očekávané vs. skutečné chování}, čas výskytu, \textbf{prostředí} (OS, verze, prohlížeč), roli/účet uživatele, vstupní data, \textbf{screenshot nebo log}, závažnost a zda je chyba \textbf{opakovatelná}. Bez spolehlivé reprodukce se chyba těžko opravuje.
+  \item \textbf{Než začne něco programovat}, programátor chce od zákazníka: jasné \textbf{funkční i nefunkční požadavky}, účel a cílové uživatele, \textbf{akceptační kritéria} (podle čeho se pozná, že je hotovo), rozsah a priority, datový model a \textbf{integrace} (s jakými systémy se komunikuje), \textbf{omezení} (výkon, bezpečnost, legislativa, termín, rozpočet) a přístup k prostředí i \textbf{kontaktní osobu}, která zodpoví dotazy.
+\end{itemize}
+\end{notebox}
+
+Testování je proces, kterým zjišťujeme, zda systém dělá to, co má, a zda se v něm nacházejí chyby. Důležité je říct, že testování prokazuje přítomnost chyb, ne jejich nepřítomnost. Vývojové testování probíhá během vývoje. Unit testy ověřují malé jednotky, typicky metody nebo třídy. Dobrý automatizovaný test má přípravu dat, provedení akce a ověření výsledku.
+
+Mocky se používají tam, kde nechceme v testu používat skutečnou databázi, externí službu nebo platební bránu. Komponentní a integrační testy ověřují spolupráci více částí systému a rozhraní mezi nimi. Systémové testy testují systém jako celek a měly by pokrýt hlavní use-casy. Akceptační testování ověřuje, zda zákazník může systém převzít.
+
+Vedle toho existuje release testing, tedy testování kompletní verze před vydáním, ideálně nezávislým týmem. Uživatelské testování může mít podobu alfa testování v prostředí vývoje, beta testování v reálném prostředí a akceptačních testů u zákazníka. Regresní testování ověřuje, že nová změna nerozbila dříve fungující chování.
+
+Test-driven development píše testy před kódem; výhodou je lepší pokrytí, jednodušší refaktoring a testy jako částečná dokumentace chování.
+
+Kromě dynamického testování existuje statická analýza, která nevyžaduje spuštění programu. Může jít o revize kódu lidmi, automatické nástroje hledající typické chyby, kontrolu assertions, SAST nebo formální verifikaci. U bezpečnosti se používá SAST pro analýzu kódu, DAST pro testování běžící aplikace a penetrační test jako simulace útoku.
+
+Prakticky: SAST může najít nebezpečné volání v kódu, DAST najde \textbf{zranitelnost} v nasazené aplikaci a pentest ověří, zda ji lze reálně zneužít.
+
+Po nasazení systém nezůstává stejný. Software stárne a mění se okolí: požadavky uživatelů, legislativa, operační systémy, knihovny, integrace i bezpečnostní hrozby. Fáze životnosti lze popsat jako initial development, evolution, servicing a phase-out. Evolution znamená opravy i nové funkce. Servicing znamená už hlavně opravy bez nových funkcí. Phase-out znamená, že systém se stále používá, ale už se nepodporuje.
+
+Údržba může být corrective, tedy oprava chyb, adaptive, tedy přizpůsobení novému prostředí, a evolutionary, tedy přidávání nebo úprava funkcionality. U custom systémů cena údržby často přesahuje cenu původního vývoje, protože údržba postupně zhoršuje strukturu systému a starý systém může vyžadovat starý jazyk, starý kompilátor nebo znalosti původního týmu.
+
+Proto existuje refaktoring a re-inženýrství. Refaktoring mění vnitřní strukturu kódu bez změny funkcionality a používá se průběžně, například při odstranění duplicit, rozdělení dlouhých metod nebo zjednodušení složitých podmínek. Re-inženýrství je rozsáhlejší zásah do existujícího systému po začátku údržby, například modularizace, migrace na jiný jazyk nebo přestavba datového modelu.
+
+Když uživatel hlásí chybu, vývojář potřebuje minimálně přesný popis kroku, očekávané a skutečné chování, čas výskytu, roli uživatele, prostředí, vstupní data, screenshot nebo log, závažnost a informaci, zda je chyba opakovatelná.
+
+\subsection*{Aplikované informační systémy v praxi}
+
+U aplikovaných IS je dobré umět uvést příklad z praxe. U nemocničního IS je typické, že se systém skládá z mnoha částí: evidence pacientů, hospitalizace, ambulance, laboratorní a obrazová vyšetření, výkazy pro pojišťovny, statistiky, administrace a importy z jiných systémů. Při zavádění systému do nové nemocnice nestačí zkopírovat software.
+
+Dělá se rozdílová analýza: porovná se původní proces s procesem nové organizace, vytvoří se use-case a activity diagramy, označí se části stejné, měněné a nové, navrhne se změna architektury, doplní se datové toky, odhadne se práce, čas, peníze a hardware. Příklad: dvě nemocnice mohou obě vykazovat péči pojišťovně, ale liší se v tom, kdo data sbírá, kdo je kontroluje a kdy se exportují.
+
+Druhý dobrý příklad je environmentální informatika. Environmentální data jsou často časoprostorová: kde a kdy bylo co naměřeno, například koncentrace látky ve vodě, kvalita ovzduší, teplota, hluk nebo produkce odpadu. Česká CENIA shromažďuje a provozuje informační systémy v oblasti životního prostředí a reportuje data směrem k evropským institucím, například EEA.
+
+V takovém systému se musí z legislativy odvodit reportingové povinnosti, datové modely, zdroje dat, formáty a termíny. Pyramida MDIAR ukazuje cestu od monitoringu přes data a informace až k assessmentu a reportingu. Monitoring jsou měření a senzory, data jsou uložené a validované záznamy, informace vznikají transformací a vizualizací, assessment je odborné hodnocení a reporting je předání vyhodnocených dat podle povinností.
+
+Prakticky to znamená, že informační systém zde není jen databáze, ale nástroj pro splnění zákonných a evropských povinností.
+
+U veřejného sektoru je důležitá i smluvní \textbf{stránka}. Smlouva na dodání softwaru typicky vymezuje předmět díla, požadovanou funkcionalitu a kvalitu, harmonogram a milníky, tým, cenu, platby, práva a povinnosti, licenční ujednání, ochranu důvěrných informací, záruku, sankce a přílohy s detailní specifikací požadavků. Požadavky bývají často v příloze, zatímco dodavatel v jiné příloze popisuje technické řešení.
+
+U veřejné zakázky se řeší také kvalifikace firmy, reference, certifikace, složení týmu, hodnoticí kritéria a cenová nabídka. To je důležité, protože u velkých IS vývoj není jen technická aktivita, ale i právní, organizační a projektová záležitost.
+
+\subsection*{Architektury rozsáhlých informačních systémů}
+
+Architektura rozsáhlého IS musí řešit škálovatelnost, spolehlivost, bezpečnost, výkon, udržovatelnost a integraci. Klasická je \textbf{třívrstvá architektura}: prezentační vrstva, aplikační vrstva a databázová vrstva. Prezentační vrstva je uživatelské rozhraní, například web nebo mobilní aplikace. Aplikační vrstva obsahuje business logiku, validace, workflow a integrace. Databázová vrstva spravuje data.
+
+Smyslem je oddělit části tak, aby změna vzhledu nemusela znamenat změnu databáze a aby bylo možné vrstvy samostatně škálovat a spravovat.
+
+\textbf{MVC} je architektonický vzor uvnitř aplikace. Model představuje data a pravidla, View zobrazuje data uživateli a Controller zpracovává vstupy a řídí tok mezi modelem a view. MVC tedy řeší organizaci kódu, zatímco třívrstvá architektura řeší spíše rozdělení systému do vrstev, které mohou běžet i fyzicky odděleně. Oba přístupy se mohou kombinovat: webová aplikace může být uvnitř napsaná v MVC a současně běžet v třívrstvé architektuře.
+
+\textbf{SOA}, Service Oriented Architecture, rozděluje monolitický systém na služby, které poskytují určité schopnosti a komunikují přes rozhraní. Typicky jedna služba poskytuje mapy, jiná platby, jiná identitu. Microservices jdou ještě dále: služby jsou menší, samostatně nasaditelné, mají úzkou odpovědnost a často vlastní databázi. Výhodou je nezávislé nasazování, horizontální škálování a menší vazba. Nevýhodou je složitější provoz, distribuované \textbf{transakce}, monitoring, síťová komunikace a potřeba dobrého DevOps. Monolit tedy není automaticky špatně; pro menší systém může být jednodušší. Mikroslužby dávají smysl tam, kde organizace zvládne jejich provozní složitost.
+
+Škálování může být vertikální nebo horizontální. Vertikální škálování znamená silnější server: více CPU, \textbf{RAM} nebo rychlejší disk. Horizontální škálování znamená více instancí a \textbf{load balancing}. U rozsáhlých IS se často kombinuje cloud, kontejnery a orchestrátor. Docker balí aplikaci se závislostmi do kontejneru a Kubernetes pomáhá kontejnery nasazovat, škálovat, restartovat a vyvažovat zátěž.
+
+Cloud nabízí pružnost, ale zároveň přináší závislost na poskytovateli, náklady a bezpečnostní požadavky. On-premise dává větší kontrolu, ale vyžaduje vlastní infrastrukturu a provozní tým.
+
+U architektury velkých systémů je dobré znát i několik dalších pojmů. Modulární \textbf{monolit} je střední cesta mezi monolitem a mikroslužbami: systém běží jako jeden celek, ale uvnitř je rozdělený na jasně oddělené moduly s definovanými rozhraními; je jednodušší na provoz než \textbf{mikroslužby}, a přitom udržitelnější než nepřehledný monolit.
+
+Výkon a dostupnost se zvyšují cachováním (uložení často čtených dat blíž k aplikaci, například v Redis) a replikací databáze (více kopií dat, typicky jeden zapisovatelný uzel a více čtecích replik). Load balancer rozkládá požadavky mezi více instancí.
+
+Komponenty spolu mohou komunikovat synchronně, kdy volající čeká na odpověď (například REST volání), nebo asynchronně přes message broker (například Kafka nebo RabbitMQ), kdy odesílatel pošle zprávu do fronty a nečeká; to zvyšuje odolnost a umožňuje vyrovnat špičky.
+
+Aby šly instance snadno škálovat, mají být pokud možno \textbf{stateless}, tedy bez vlastního stavu mezi požadavky (stav se drží v databázi nebo \textbf{cache}), takže je load balancer může libovolně střídat. Cenou za distribuovanost bývá jen \textbf{eventual consistency}: data se mezi uzly či službami sjednotí až po čase, ne okamžitě.
+
+A protože distribuovaný systém je těžké ladit, klíčová je \textbf{observability}, tedy schopnost vidět, co se uvnitř děje, pomocí metrik, logů a trasování.
+
+Lze zmínit i MDA, Model Driven Architecture. Ta odděluje pohled na business procesy od aplikační logiky a platformy. CIM popisuje požadavky a procesy bez výpočetních detailů, PIM popisuje systém nezávisle na platformě a PSM jej konkretizuje pro určitou technologii. Prakticky jde o snahu, aby změna technologie nemusela znamenat ztrátu porozumění doméně a procesům.
+
+\subsection*{Metody vedení rozsáhlých projektů}
+
+Vedení rozsáhlých projektů není jen volba mezi vodopádem a agilem. U velkých IS je potřeba řídit rozsah, rizika, rozpočet, termíny, komunikaci, změny, kvalitu, architekturu, dodavatele a akceptaci. Často se kombinuje metodika projektového řízení, například PRINCE2, IPMA nebo PMP, s metodikou vývoje, například Unified Process.
+
+Unified Process je \textbf{iterativní} a inkrementální, řízený riziky a případy užití, zaměřený na architekturu a podporovaný UML. Hodí se pro rozsáhlé a heterogenní projekty, kde je potřeba detailní dokumentace, plánování a kontrola. Nevýhoda je menší flexibilita při častých změnách.
+
+PRINCE2 je procesně orientovaná metodika, která vede projekt přes definované role, produkty řízení, fáze, kontroly a reporty. Je vhodná pro velké týmy a formální prostředí, ale může být byrokratická. U velkých projektů je nutné nastavit komunikační plán: kdo s kým komunikuje, jak často, o čem a v jakém formátu. Je nutné mít principy eskalace: kdy problém řeší tým, kdy projektový manažer a kdy řídicí výbor.
+
+Stejně tak musí být změnové řízení. Každá změna požadavku se musí zaznamenat, posoudit z hlediska dopadu na cenu, termín, riziko, architekturu a provoz, schválit a teprve pak implementovat.
+
+Při plánování se používá \textbf{WBS}, Work Breakdown Structure, která rozkládá projekt na menší části a úkoly. Z těchto úkolů se odhaduje pracnost a čas. \textbf{PERT} používá tři odhady: optimistický, nejpravděpodobnější a pesimistický. Očekávaný čas se počítá jako (optimistický + 4 $\times$ očekávaný + pesimistický) / 6. Z úkolů a závislostí lze vytvořit Ganttův diagram nebo síťový diagram.
+
+CPM, Critical Path Method, hledá kritickou cestu, tedy nejdelší posloupnost závislých aktivit, která určuje nejkratší možný termín dokončení projektu. Pokud se zpozdí aktivita na kritické cestě, zpozdí se celý projekt.
+
+U softwarové veřejné zakázky se projektové řízení promítá i do smlouvy. Milník obvykle znamená předání konkrétní části, kontrolní meeting, předávací protokol a akceptační proceduru. Příliš mnoho milníků zvyšuje režii, příliš málo milníků zvyšuje riziko, že se problém objeví pozdě. U ceny se řeší, zda se platí celé dílo najednou, po milnících nebo paušálem. U licencí je důležitý rozdíl mezi výhradní a nevýhradní licencí.
+
+Výhradní licence je výhodnější pro zákazníka, ale pro dodavatele dražší, protože nemůže řešení jednoduše použít jinde. U ochrany informací se řeší důvěrná data, osobní údaje, sankce a někdy i požadované certifikace.
+
+\subsection*{Řízení provozu informačního systému}
+
+Nasazením vývoj nekončí. Řízení provozu IS znamená zajistit, aby systém dlouhodobě poskytoval službu v dohodnuté kvalitě. Řeší se monitoring, \textbf{incident} management, \textbf{problem} management, change management, zálohování, obnova, dokumentace, bezpečnost, kapacita, dostupnost a komunikace s uživateli.
+
+Provozní tým musí vědět, co je normální stav, co je incident, komu se incident hlásí, jak se eskaluje a jak se ověřuje, že je služba obnovena.
+
+Provoz bývá upraven servisní smlouvou a \textbf{SLA}, Service Level Agreement. SLA stanoví parametry služby: rozsah, servisní hodiny, reakční dobu, dobu opravy, způsob hlášení, kategorie incidentů, cenu a sankce. Servisní hodiny mohou být například 5x10, tedy pracovní dny 8-18, nebo 7x24, tedy nonstop. Response time je doba, do kdy dodavatel potvrdí, že požadavek převzal a pracuje na něm.
+
+Fix time je doba, do kdy má být incident odstraněn nebo služba obnovena. Časy se počítají podle servisních hodin, takže stejných 12 hodin znamená něco jiného v režimu 7x24 a něco jiného v režimu 5x10. Incidenty se třídí podle závažnosti: kritický výpadek produkce, závažné omezení, běžná chyba nebo dotaz.
+
+Incident management se soustředí na rychlé obnovení služby a minimalizaci dopadu na uživatele. Není prvořadé okamžitě znát kořenovou příčinu; důležité je službu obnovit. Potom může následovat analýza příčin a problem management. Change management řeší požadavky na změny v provozu, například novou funkci, změnu formuláře kvůli legislativě nebo úpravu integrace.
+
+Změna by měla projít analýzou dopadu, naceněním, schválením, implementací, testováním a nasazením. Helpdesk poskytuje podporu uživatelům, ale musí mít pravidla, jinak se vývojářský tým zahltí telefonáty. Profylaxe je pravidelná preventivní kontrola systému: kapacita disků, paměť, vytížení, logy, dostupné IP adresy, certifikáty, zálohy a bezpečnostní rizika. Výstupem má být profylaktická zpráva s nálezy a doporučeními.
+
+Do provozu patří také monitoring a plány kontinuity. Monitoring sleduje dostupnost, odezvu, chybovost, kapacitu, logy, bezpečnostní události a business metriky. U bezpečnostně významných systémů může existovat SOC nebo CSIRT, které sledují incidenty a koordinují reakci. Disaster Recovery Plan popisuje obnovu po havárii, například ztráta datového centra.
+
+Business Continuity Plan řeší, jak organizace udrží klíčové činnosti i při výpadku systému. Zálohy nestačí jen vytvářet; musí se pravidelně testovat obnova. Dokumentace musí obsahovat architekturu, integrační vazby, konfiguraci, provozní postupy, kontakty, účty, zálohování a známé incidenty. Bez dokumentace se provoz stává závislý na konkrétních lidech.
+
+U provozu je dobré umět několik dvojic pojmů přesně rozlišit. Incident je konkrétní výpadek nebo narušení služby, který je potřeba co nejrychleji vyřešit; problem je hledání a odstranění jeho kořenové příčiny, aby se incidenty neopakovaly. Change je schválená změna v systému, zatímco release je sbalení jedné nebo více změn do verze, která se nasadí do provozu.
+
+SLA je závazek vůči zákazníkovi (například dostupnost a reakční doby), kdežto \textbf{OLA} (Operational Level Agreement) je interní dohoda mezi týmy uvnitř dodavatele, která plnění SLA podpírá. U obnovy se rozlišuje \textbf{RTO} (Recovery Time Objective), tedy za jak dlouho musí být služba opět v provozu, a \textbf{RPO} (Recovery Point Objective), tedy kolik posledních dat smíme nejvýše ztratit (jak staré smí být zálohy).
+
+V monitoringu se rozlišuje monitoring (sledování metrik a stavu), logging (záznam událostí) a tracing (sledování jednoho požadavku napříč službami). Evidenci konfiguračních položek a jejich vazeb drží configuration management v databázi \textbf{CMDB}. A zatímco \textbf{disaster recovery} řeší technickou obnovu IT po havárii, \textbf{business continuity} řeší, jak organizace udrží klíčové činnosti i během výpadku.
+
+Celou otázku bych u zkoušky uzavřel tak, že softwarový a informační systém je dlouhodobý socio-technický celek. Nestačí umět napsat kód. Je potřeba správně zjistit požadavky, rozlišit funkční a nefunkční vlastnosti, modelovat systém pomocí UML a ER diagramů, zvolit vhodnou architekturu, testovat, řídit projekt, smluvně ošetřit dodávku a hlavně zajistit provoz, údržbu a změny.
+
+Úspěch informačního systému se pozná až v provozu: podle toho, zda podporuje procesy organizace, zda je dostupný, udržovatelný, bezpečný a zda se dá rozumně rozvíjet.
+
+\subsection*{Smlouva, veřejná zakázka a akceptace dodávky}
+
+U rozsáhlých informačních systémů je dobré zmínit, že projekt má vedle technické stránky také právní a organizační stránku. Ve veřejném sektoru se často začíná zadávací dokumentací. Ta popisuje zadavatele, účel zakázky, předpokládanou hodnotu, dobu a místo plnění, kvalifikační podmínky, hodnoticí kritéria a požadavky na nabídku.
+
+Kvalifikace dodavatele může zahrnovat základní způsobilost, profesní způsobilost, technickou kvalifikaci, reference z posledních let, certifikace a složení týmu. U IT zakázky se často požadují role jako projektový manažer, analytik, architekt, vývojář, tester, bezpečnostní specialista nebo doménový expert. Prakticky to znamená, že schopnost dodat IS se neprokazuje jen cenou, ale také zkušeností a odborností týmu.
+
+Smlouva na vývoj softwaru obvykle neobsahuje všechny technické detaily přímo v hlavním textu. Hlavní text vymezuje předmět díla, termíny, milníky, cenu, platební podmínky, práva a povinnosti stran, licenční ujednání, ochranu důvěrných informací, záruku, sankce a závěrečná ustanovení. Detailní funkční a nefunkční požadavky jsou často v příloze.
+
+Dodavatel v jiné příloze popisuje technické řešení: platformu, architekturu, databázi, integrační rozhraní, způsob migrace dat, testování, nasazení a školení. Důležité jsou milníky a akceptace. Milník není jen datum v harmonogramu; obvykle znamená předání určité části, kontrolu, testování, předávací protokol a možnost zákazníka výstup přijmout nebo vrátit k opravě. Licenční ujednání určuje, kdo může software používat a jak.
+
+U nevýhradní licence zůstává dodavateli možnost řešení dále poskytovat jiným zákazníkům. U výhradní licence získá zákazník silnější kontrolu, ale pro dodavatele je to dražší a omezuje ho to v dalším využití výsledku. Dále se řeší záruka a servis. Záruka se týká vad dodaného díla, zatímco servisní podpora se týká provozu a reakce na provozní problémy.
+
+Je potřeba tyto věci nemíchat: chyba, která existovala v předaném díle, může být záruční vada; požadavek na novou funkcionalitu je typicky změnové řízení a platí se zvlášť.
+
+Sankce a garance v IT smlouvách nejsou jen formalita. Mohou být za prodlení, za nedodržení SLA, za únik důvěrných informací, za nesplnění milníku nebo za nepředání práv. U velkých zakázek se mohou objevit pojistné smlouvy, bankovní záruky nebo kauce. Smyslem je snížit riziko pro zákazníka, ale pokud jsou sankce přehnané, promítne je dodavatel do ceny nebo se do zakázky nepřihlásí kvalitní firmy.
+
+U státnic stačí říct, že smlouva je nástroj řízení rizik projektu: převádí požadavky, odpovědnosti, termíny, cenu, licence a provozní závazky do vymahatelné podoby.
+
+\subsection*{Odhady pracnosti a plánování ceny}
+
+Při plánování rozsáhlého projektu nestačí říct, že systém bude hotový za půl roku. Nejprve se rozpadne rozsah práce pomocí WBS. Potom se pro jednotlivé úkoly odhadne pracnost a závislosti. PERT pracuje se třemi odhady, protože jeden odhad bývá klamavě přesný: optimistický scénář, realistický nebo očekávaný scénář a pesimistický scénář. Vážený průměr dává větší váhu očekávanému odhadu.
+
+V praxi je vhodné být spíše opatrný, protože velké projekty mají integrační rizika, schvalování, čekání na součinnost zákazníka, legislativní změny a akceptační řízení.
+
+Do ceny se nepočítá jen vývojářská práce. Připočítává se projektové řízení, analýza, architektura, testování, dokumentace, školení, migrace dat, nasazení, provozní příprava, licence, hardware, cloudové zdroje, bezpečnostní testy a rezerva na rizika. V některých metodách se používají funkční body nebo COCOMO, tedy odhad podle velikosti a složitosti systému.
+
+U zkoušky není nutné počítat přesné modely, ale je potřeba chápat princip: nejdřív odhadnout rozsah a složitost, potom pracnost, z ní cenu člověkodnů a nakonec přidat nepersonální náklady a rizikovou rezervu.
+
+\subsection*{Servisní smlouva a provozní organizace detailněji}
+
+Po předání systému se často uzavírá samostatná servisní smlouva. Její struktura může být podobná vývojové smlouvě, ale předmět je jiný: incident management, change management, helpdesk, konzultace, profylaxe, školení a pravidelné reporty. Incident management má obnovit službu co nejrychleji.
+
+Když například nefunguje objednávání pacientů, nejdříve je potřeba systém zprovoznit, třeba restartem služby, přepnutím na záložní instanci nebo dočasným workaroundem. Analýza příčiny přijde následně. Change management je naproti tomu řízená změna systému: zákazník chce novou sestavu, změnu formuláře, nové pole v databázi nebo úpravu kvůli změně zákona.
+
+Dodavatel změnu analyzuje, nacení, zákazník ji schválí a pak se implementuje.
+
+SLA má být konkrétní a měřitelné. Nestačí napsat, že systém bude podporován rychle. Musí být řečeno, kdy běží servisní hodiny, jak se požadavek hlásí, jak se měří začátek incidentu, kdy se čas pozastavuje kvůli čekání na součinnost zákazníka, jaké jsou kategorie incidentů a jaké jsou reakční a opravné doby.
+
+Například kritický incident v režimu 7x24 může mít reakci do 30 minut a obnovení do 4 hodin, zatímco běžný požadavek v režimu 5x10 může mít odpověď do dalšího pracovního dne. Část služeb může být v paušálu a část položkově. Typicky incident management a profylaxe jsou v paušálu, větší změny a rozvoj se platí podle hodinové sazby nebo samostatné objednávky.
+
+Profylaxe je užitečná proto, že odhaluje problémy před výpadkem. Kontroluje se kapacita disků, dostupnost paměti, velikost databáze, expirace certifikátů, chybové logy, zálohy, výkon, bezpečnostní aktualizace a konfigurace. Výstupem má být srozumitelná zpráva: co je v pořádku, co je varování, co je kritické, jaké je doporučení, kdo má co opravit a do kdy.
+
+V dobře řízeném provozu se výsledky profylaxe promítají do change managementu a do plánování kapacit.
+
+\subsection*{Rychlá kontrola před zkouškou}
+
+\begin{longtable}{p{0.475\linewidth}p{0.475\linewidth}}
+\toprule
+\textbf{Když se komise zeptá...} & \textbf{Co říct prakticky} \\
+\midrule\endhead
+Rozdíl validace/verifikace & Validace: děláme správný produkt pro uživatele. Verifikace: děláme produkt správně podle specifikace. \\
+\addlinespace
+Kdy použít UML diagramy & Use-case pro požadavky, class pro strukturu domény/kódu, sequence pro komunikaci v čase, activity pro proces, deployment pro nasazení. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{p{0.475\linewidth}p{0.475\linewidth}}
+\toprule
+\textbf{Co dodat k údržbě} & \textbf{Údržba je často dražší než vývoj; řeší opravy, adaptace, nové funkce, refaktoring a re-inženýrství.} \\
+\midrule\endhead
+Co potřebuje vývojář u hlášení chyby & Kroky reprodukce, očekávané/skutečné chování, čas, role, prostředí, data, screenshot/log, závažnost. \\
+\addlinespace
+Provoz IS & SLA, incident management, change management, helpdesk, monitoring, profylaxe, zálohy, DRP/BCP a dokumentace. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+\subsection*{Krátká mluvená verze odpovědi}
+
+Kdybych to měl říct u státnic souvisle, začal bych tím, že informační systém není pouze software. Je to celek lidí, dat, procesů, hardwaru a aplikací, který podporuje řízení organizace. Proto se při jeho vývoji musí řešit nejen programování, ale také požadavky, procesy organizace, role uživatelů, datový model, integrace, provoz a smluvní odpovědnosti.
+
+Vývoj softwaru popíšu přes životní cyklus: požadavky, analýza, návrh, implementace, testování, nasazení, provoz a údržba. U požadavků rozliším funkční a nefunkční. Funkční říkají, co systém dělá, nefunkční říkají, v jaké kvalitě to dělá. Validace odpovídá na otázku, zda tvoříme správný produkt pro uživatele, verifikace zda ho tvoříme správně podle specifikace.
+
+Testování pak probíhá od unit testů přes integrační a systémové testy až po akceptační testy u zákazníka.
+
+UML uvedu jako nástroj komunikace a analýzy: use-case pro požadavky a aktéry, class diagram pro strukturu, sequence diagram pro komunikaci v čase, activity diagram pro workflow a deployment diagram pro nasazení. U rozsáhlých IS vysvětlím třívrstvou architekturu, MVC, SOA a mikroslužby, včetně škálování a kontejnerizace.
+
+U řízení projektu zmíním iterativní a inkrementální přístup, WBS, PERT, Gantt, kritickou cestu, rizika, komunikaci, eskalaci a změnové řízení. Nakonec zdůrazním provoz: SLA, incidenty, změny, helpdesk, profylaxe, monitoring, zálohy, disaster recovery a dokumentace. Tím ukážu, že dobrý informační systém musí být nejen vyvinutý, ale dlouhodobě udržitelný a provozovatelný.
+
+\newpage
+

@@ -1,0 +1,287 @@
+\otazka{9. Základní bezpečnostní funkce a jejich zajištění}{Důvěrnost, integrita, dostupnost, nepopiratelnost původu. Organizace a řízení bezpečnosti, bezpečnostní politiky a procedury. Struktura řízení kyberbezpečnosti, role, odpovědnosti a kompetence.}{PV080, PV017, PV210}
+
+\subsection*{9. Základní bezpečnostní funkce -- stručněji}
+Bezpečnost informací znamená řízeně chránit aktiva organizace. Technicky se nejčastěji mluví o důvěrnosti, integritě, dostupnosti a nepopiratelnosti; organizačně o politice, rolích, odpovědnosti, řízení rizik a průběžném zlepšování.
+
+\textbf{1. Co chráníme}
+\begin{itemize}
+  \item Aktivum je cokoli hodnotného: data, služba, aplikace, konfigurace, účet administrátora, reputace, know-how nebo dostupnost systému.
+  \item Bezpečnost není absolutní. Vždy se ptám: co chráním, před kým, proti jakému scénáři a jak silná opatření dávají smysl vzhledem k riziku.
+\end{itemize}
+
+\textbf{2. Základní bezpečnostní funkce}
+\begin{itemize}
+  \item \textbf{Důvěrnost} znamená, že informaci čte jen oprávněný subjekt. Zajišťuje se řízením přístupu, šifrováním, segmentací, klasifikací dat a školením.
+  \item \textbf{Integrita} znamená, že data nejsou neoprávněně změněna. Pomáhají hashe, digitální podpisy, kontroly změn, auditní logy a transakční mechanismy.
+  \item \textbf{Dostupnost} znamená, že služba je k dispozici, když ji potřebujeme. Řeší se redundancí, zálohami, monitoringem, kapacitním plánováním, DRP/BCP a ochranou proti DoS.
+  \item \textbf{Nepopiratelnost původu} znamená, že původce nemůže rozumně popřít provedený úkon. Typicky se opírá o elektronický podpis, časové razítko a auditní stopu.
+\end{itemize}
+
+\textbf{3. Politiky a procedury}
+\begin{itemize}
+  \item Bezpečnostní politika říká, co je povoleno a zakázáno, kdo za co odpovídá a jaké cíle bezpečnosti organizace sleduje.
+  \item Procedury jsou konkrétní postupy: jak se zakládá účet, jak se schvaluje přístup, jak se hlásí incident, jak se obnovuje ze zálohy nebo jak se nasazuje změna.
+  \item Politika bez procedur je příliš obecná; procedury bez politiky mohou řešit detaily bez jasného cíle.
+\end{itemize}
+
+\textbf{4. ISMS a role}
+\begin{itemize}
+  \item ISMS je systém řízení bezpečnosti informací. Nejde jen o techniku, ale o cyklus: plánovat, zavést opatření, kontrolovat a zlepšovat.
+  \item Role musí být jasné: vedení nese odpovědnost, vlastník aktiva určuje hodnotu a požadavky, bezpečnostní manažer koordinuje, administrátoři provozují, uživatelé dodržují pravidla a auditor nezávisle ověřuje.
+  \item Důležitá věta: bezpečnost se nedá "delegovat na IT" celá, protože rozhodnutí o riziku, rozpočtu a dopadech patří vedení organizace.
+\end{itemize}
+
+Důvěrnost, \textbf{integrita}, \textbf{dostupnost}, \textbf{nepopiratelnost} původu. Organizace a řízení bezpečnosti, bezpečnostní politiky a procedury. Struktura řízení kyberbezpečnosti, role, odpovědnosti a kompetence.
+
+Tento text je přepracovaná souvislá odpověď ke státnicové otázce 9. Je psaný tak, aby se dal před zkouškou prostě přečíst jako "pohádka": nejdřív vysvětluje základní bezpečnostní funkce, potom kryptografické mechanismy, na které se komise často ptá, a nakonec organizaci a řízení bezpečnosti, tedy politiky, procedury, \textbf{ISMS}, role, odpovědnosti a hodnocení bezpečnosti.
+
+Pointa celé otázky je, že bezpečnost není jen šifra nebo \textbf{hash}. Je to řízený systém, který má chránit aktiva organizace před konkrétními hrozbami pomocí technických, organizačních, personálních a fyzických opatření.
+
+\subsection*{1. Základní rámec: aktiva, politika a bezpečnostní cíle}
+
+Začal bych tím, že bezpečnost informací chrání aktiva. Aktivem může být informace, software, hardware, výpočetní a komunikační služba, databáze, aplikace, účet administrátora, konfigurace systému, síťová infrastruktura nebo i důvěra uživatelů ve službu. Nechráníme tedy abstraktní "IT", ale konkrétní hodnoty, jejichž narušení by způsobilo škodu. Abychom věděli, co je bezpečné a co už bezpečné není, potřebujeme bezpečnostní politiku.
+
+Bezpečnostní \textbf{politika} popisuje, co je v systému povoleno a co zakázáno. Určuje, která aktiva se chrání, kdo k nim smí přistupovat, jakým způsobem, jaké služby mají být dostupné a jaké kontroly musí být zavedeny. Teoreticky lze politiku chápat tak, že každý možný stav systému je buď autorizovaný, tedy bezpečný, nebo neautorizovaný, tedy nebezpečný.
+
+Systém by měl začít v bezpečném stavu a jeho akce by neměly vést do stavu, který politika zakazuje. Porušení bezpečnostní politiky je tedy přechod do neautorizovaného stavu.
+
+V praxi nejsou politiky vždy formální matematické modely. Často jde o dokumenty, které stanovují pravidla pro hesla, přístupy, klasifikaci informací, používání zařízení, práci z domova, hlášení incidentů, bezpečný vývoj, zálohování nebo vztah k dodavatelům. Je ale důležité říct větu: bezpečnost je vždy relativní k politice.
+
+Pokud organizace nemá definováno, co chce chránit a jaké chování je povolené, neumí smysluplně tvrdit, že je systém bezpečný.
+
+\itbox{\textbf{Dobrá úvodní věta:} Bezpečnost informací je řízené zajištění požadovaných vlastností aktiv. Technicky jde hlavně o důvěrnost, integritu, dostupnost a nepopiratelnost původu; organizačně jde o politiku, procedury, odpovědnosti, řízení rizik, audit a průběžné zlepšování.}
+
+\subsection*{2. Důvěrnost}
+
+Důvěrnost znamená, že neveřejné informace zůstávají přístupné pouze oprávněným stranám. Týká se dat uložených, tedy dat "v klidu", i dat přenášených, tedy dat "v pohybu". Příkladem jsou osobní údaje, zdravotní dokumentace, obchodní tajemství, interní konfigurace, hesla, soukromé klíče nebo neveřejné dokumenty organizace. Porušení důvěrnosti nastane, když se k informaci dostane někdo, kdo k ní nemá mít přístup.
+
+Důvěrnost se nezajišťuje jedním opatřením, ale vrstvami. První vrstvou je řízení přístupu: systém musí znát identitu subjektu a rozhodnout, zda smí k daným datům přistoupit. V operačním systému to mohou být oprávnění k souborům, v databázi role a privilegia, v aplikaci \textbf{autorizace} konkrétní operace, v síti například \textbf{segmentace} a \textbf{firewall}. Druhou vrstvou je šifrování.
+
+Pokud jsou data zašifrována a klíč zná jen oprávněná strana, útočník bez klíče nezíská smysluplný obsah.
+
+Důvěrnost lze chránit i procedurálně a fyzicky. Zálohovací médium může být uložené v trezoru, serverovna může být přístupná jen oprávněným osobám, dokumenty se nemají nechávat na stole, citlivá data se nemají posílat nešifrovaným e-mailem a média se musí bezpečně likvidovat.
+
+U zkoušky je vhodné uvést konkrétní opatření: šifrování disků a záloh, \textbf{TLS}/\textbf{VPN} pro komunikaci, \textbf{ACL} a role, vícefaktorová \textbf{autentizace}, klasifikace informací, \textbf{DLP}, fyzická kontrola vstupu, bezpečná likvidace médií a školení uživatelů. Důvěrnost souvisí se soukromím, ale není s ním totožná. Důvěrnost je bezpečnostní vlastnost informace: kdo ji může číst.
+
+Soukromí je širší otázka toho, zda se informace o člověku vůbec smí zpracovávat, za jakým účelem, jak dlouho a s jakými právy subjektu údajů. Proto se u komisí může objevit přesah k ochraně soukromí a anonymitě.
+
+\subsection*{3. Integrita}
+
+Integrita znamená, že data, software nebo hardware zůstávají nezměněny, pokud změnu neprovedla oprávněná osoba oprávněným způsobem. Nejde tedy o to, že data někdo nevidí, ale o to, že datům můžeme věřit. Porušení integrity je například změna známky v informačním systému, úprava platebního příkazu, změna zdravotního záznamu, modifikace konfigurace firewallu, podvržení aktualizace nebo změna programu.
+
+Integrita se chrání organizačně i technicky. Organizačně pomáhá autorizace změn, princip čtyř očí, změnové řízení, oddělení rolí a auditní stopa. Technicky pomáhá řízení přístupu, \textbf{transakce}, kontrola konfigurace, verzování, logování, hashovací funkce, \textbf{MAC}, digitální podpisy a kontrola integrity souborů.
+
+U neúmyslných chyb se používají i detekční a opravné kódy, například v pamětech nebo při přenosech, ale ve státnicové bezpečnostní otázce je podstatná hlavně ochrana proti neoprávněné nebo úmyslné změně.
+
+Častá chyba je myslet si, že samotné šifrování automaticky zajišťuje integritu. Šifrování primárně řeší \textbf{důvěrnost}. Pokud se použije nevhodný režim bez autentizace, útočník může někdy ciphertext změnit tak, že se po dešifrování změní i plaintext, aniž by příjemce změnu poznal. Proto se používají autentizované režimy šifrování nebo kombinace šifrování a MAC.
+
+Moderní odpověď na otázku "co splňuje důvěrnost a integritu, ale ne nepopiratelnost" je například symetrické autentizované šifrování, typicky \textbf{AES}-GCM, nebo schéma encrypt-then-MAC. Protože obě strany sdílí tajný klíč, třetí straně typicky nelze prokázat, která strana zprávu vytvořila.
+
+\subsection*{4. Dostupnost}
+
+Dostupnost znamená, že informace, služby a výpočetní prostředky zůstávají přístupné pro autorizované použití tehdy, kdy jsou potřeba. Pro banku to znamená dostupné internetové bankovnictví, pro univerzitu dostupný informační systém, pro nemocnici dostupnou dokumentaci pacienta, pro firmu dostupné e- maily, ERP nebo výrobní systémy.
+
+Porušení dostupnosti je výpadek služby, zablokování účtů, smazání dat, ransomware, zahlcení serveru nebo dlouhý výpadek dodavatele.
+
+Dostupnost se zajišťuje jinými prostředky než důvěrnost. Když chráním důvěrnost, často přístup omezuji. Když chráním dostupnost, potřebuji zajistit, aby oprávnění uživatelé službu opravdu dostali.
+
+Používá se \textbf{redundance}, replikace, zálohování, testování obnovy, \textbf{failover}, \textbf{disaster recovery}, monitoring, kapacitní plánování, ochrana proti \textbf{DoS}, řízení změn, spolehlivý hardware a software, dokumentované provozní postupy a dohody s dodavateli. Zásadní je, že záloha není opatření dostupnosti sama o sobě, pokud není ověřeno, že z ní umíme obnovit provoz v požadovaném čase.
+
+K dostupnosti je dobré doplnit několik přesných pojmů. High availability, tedy vysoká dostupnost, je návrh, který minimalizuje výpadky, obvykle pomocí redundance a automatického failoveru, tedy přepnutí na záložní prvek při selhání. Clustering je propojení více serverů do celku, který se navenek tváří jako jedna služba a přežije výpadek uzlu.
+
+Je dobré odlišit zálohu od replikace: replikace udržuje další, často aktuální kopii dat kvůli dostupnosti a výkonu, ale chybu nebo smazání věrně zkopíruje také; záloha je oddělená historická kopie, ze které lze obnovit i starší stav.
+
+K plánování obnovy patří \textbf{RTO} (Recovery Time Objective), tedy za jak dlouho musí být služba opět dostupná, a \textbf{RPO} (Recovery Point Objective), tedy kolik posledních dat smíme nejvýše ztratit. Disaster recovery řeší technickou obnovu po havárii, kdežto \textbf{BCP} (Business Continuity Plan) řeší, jak organizace udrží klíčové činnosti i během výpadku.
+
+Dostupnost může být v napětí s jinými cíli. Příliš přísné bezpečnostní kontroly mohou zhoršit použitelnost nebo zablokovat oprávněné uživatele. Naopak příliš volný přístup může zvýšit dostupnost, ale snížit důvěrnost a integritu. Bezpečnost se proto musí řídit riziky a požadavky organizace, ne pouze maximalizovat jednu vlastnost.
+
+\subsection*{5. Autentizace, autorizace, odpovědnost a nepopiratelnost}
+
+Vedle \textbf{CIA} je potřeba umět přesně rozlišit autentizaci, autorizaci, odpovědnost a nepopiratelnost původu. Autentizace je ujištění, že subjekt, data nebo software jsou skutečně tím, za co se vydávají. U subjektu jde o autentizaci entity: ověřujeme, že uživatel, \textbf{proces}, služba nebo komunikující strana má tvrzenou identitu. U dat jde o autentizaci původu dat: ověřujeme, že data pochází z tvrzeného zdroje.
+
+Autorizace je něco jiného. Autentizace odpovídá na otázku "kdo jsi", zatímco autorizace odpovídá na otázku "co smíš dělat". Autorizace je rozhodnutí, zda ověřený subjekt smí provést konkrétní akci. Vynucuje se řízením přístupu, například pomocí ACL, rolí, databázových oprávnění, pravidel aplikace, síťových pravidel nebo fyzické kontroly vstupu.
+
+Ověřený uživatel tedy ještě automaticky nemusí mít právo číst nebo měnit konkrétní data. Accountability, tedy odpovědnost nebo zúčtovatelnost, znamená schopnost identifikovat subjekty odpovědné za minulé akce. V digitálním světě ji podporují logy, auditní stopy, záznamy transakcí, časová razítka, identifikátory účtů a digitální důkazy.
+
+Cílem je, aby bylo možné zpětně říct, kdo provedl změnu, kdo se přihlásil, kdo schválil transakci nebo kdo přistoupil k citlivým datům.
+
+Nepopiratelnost původu znamená, že původce zprávy nebo úkonu nemůže později věrohodně popřít, že zprávu nebo úkon vytvořil. Je to silnější vlastnost než integrita i běžná autentizace. Integrita říká, že data nebyla změněna. Autentizace původu říká, že data pochází z očekávaného zdroje. Nepopiratelnost navíc umožňuje před třetí stranou doložit, kdo je původcem.
+
+Typickým mechanismem je \textbf{digitální podpis} založený na soukromém klíči podepisující osoby a veřejném klíči pro ověření.
+
+\itzk{\textbf{Častá zkoušková past:} MAC zajistí integritu a autenticitu mezi stranami, které sdílí tajný klíč. Typicky ale neposkytuje nepopiratelnost vůči třetí straně, protože každá strana se sdíleným klíčem mohla MAC vytvořit. Digitální podpis nepopiratelnost podporuje, pokud je soukromý klíč pod kontrolou podepisující osoby a existuje důvěryhodná vazba na její identitu.}
+
+\subsection*{6. Kryptografické mechanismy: šifrování, hash, MAC, podpis, RSA}
+
+Symetrické šifrování používá jeden sdílený tajný klíč pro šifrování i dešifrování. Je rychlé a vhodné pro velké objemy dat, například šifrování disků, záloh, databází nebo síťového toku. Problémem je bezpečné sdílení klíče a skutečnost, že stejný klíč zná více stran. Symetrická kryptografie proto sama o sobě obvykle nedává nepopiratelnost.
+
+Asymetrická kryptografie používá dvojici klíčů: veřejný a soukromý. Veřejný klíč lze zveřejnit, soukromý musí zůstat tajný. Asymetrická kryptografie umožňuje šifrování pro konkrétního příjemce, výměnu nebo ustavení klíčů a digitální podpisy.
+
+Je ale pomalejší, proto se v praxi běžně používá \textbf{hybridní šifrování}: asymetrický mechanismus pomůže bezpečně ustavit nebo ochránit symetrický klíč a \textbf{symetrická} šifra potom rychle chrání samotná data. Tento princip je typický pro bezpečnou komunikaci, například TLS.
+
+Hashovací funkce převádí vstup libovolné délky na krátký otisk pevné délky. Bezpečná hashovací funkce má být jednosměrná, tedy z hashe nemá být prakticky možné zjistit původní vstup. Dále má být obtížné najít jiný vstup se stejným hashem a obtížné najít dvě různé zprávy se stejným hashem. Tomu se říká odolnost vůči druhému preimage a odolnost vůči kolizím.
+
+MD5 je historický příklad hashovací funkce, která se dnes pro bezpečnostní účely nepovažuje za bezpečnou kvůli kolizím. SHA je rodina hashovacích funkcí; starší SHA-1 je také problematická, zatímco SHA-2 a SHA-3 jsou běžné moderní rodiny.
+
+Samotný hash nestačí proti aktivnímu útočníkovi. Pokud útočník může změnit data a zároveň nechráněný hash, příjemce nic nepozná. Proto se používá MAC nebo digitální podpis. MAC, například \textbf{HMAC}, používá sdílený tajný klíč a poskytuje integritu a autenticitu mezi stranami, které klíč znají.
+
+Digitální podpis používá asymetrickou kryptografii: podepisující vytvoří podpis soukromým klíčem, ověřovatel použije \textbf{veřejný klíč}. Prakticky se často podepisuje hash dat, ne celá data přímo.
+
+\textbf{RSA} je klasické asymetrické kryptografické primitivum založené na obtížnosti faktorizace velkých čísel. Ve zkratce: veřejný klíč obsahuje modul vzniklý jako součin dvou velkých prvočísel a veřejný exponent, \textbf{soukromý klíč} souvisí se znalostí těchto prvočísel. Bez znalosti faktorizace má být obtížné odvodit soukromý klíč. RSA může sloužit pro šifrování nebo podpis, ale vždy záleží na správném použití výplní a protokolů. U zkoušky stačí princip: asymetrie, veřejný a soukromý klíč, obtížnost faktorizace, použití pro podpis a šifrování.
+
+\subsection*{7. Bezpečnostní politika, procedury, opatření a kontroly}
+
+Bezpečnostní politika je obecnější dokument, který říká, jaké bezpečnostní cíle organizace sleduje a jaká pravidla mají platit. Například může říkat, že přístup k osobním údajům je povolen pouze oprávněným zaměstnancům podle pracovní role, že všechny přístupy musí být logovány a že vzdálený přístup musí používat vícefaktorovou autentizaci. Procedura je konkrétnější postup, jak se pravidlo provede.
+
+Politika řekne "přístupy se pravidelně revidují", \textbf{procedura} řekne kdo, kdy, podle jakého seznamu, jak zaznamená výsledek a kdo schvaluje odebrání práv. Opatření lze dělit na preventivní, detekční a reaktivní. Preventivní opatření se snaží incidentu zabránit: řízení přístupu, šifrování, \textbf{hardening}, segmentace, školení, změnové řízení.
+
+Detekční opatření se snaží \textbf{incident} nebo porušení politiky odhalit: logování, monitoring, \textbf{IDS}, \textbf{SIEM}, auditní záznamy, kontrola integrity. Reaktivní nebo korektivní opatření omezují škody a obnovují stav: incident response, obnova ze záloh, disaster recovery, blokace účtu, oprava konfigurace, forenzní analýza a nápravná opatření.
+
+Bezpečnostní dokumentace má obvykle hierarchii a je dobré ji umět seřadit. Politika je nejvýše a určuje cíl a směr: co a proč chráníme a kdo nese odpovědnost; je závazná a obecná. Standard stanovuje konkrétní závazné požadavky, které z politiky plynou, například že hesla mají mít alespoň dvanáct znaků nebo že komunikace musí používat TLS. Směrnice upřesňuje pravidla pro určitou oblast nebo útvar.
+
+Procedura popisuje konkrétní postup krok za krokem, kdo co dělá a v jakém pořadí. Pracovní instrukce je nejdetailnější návod pro jednu konkrétní činnost, například jak přesně obnovit server ze zálohy. Guideline, tedy doporučení, je oproti tomu nezávazné doporučení dobré praxe, kterým se lze řídit, ale neukládá povinnost.
+
+Zjednodušeně: politika říká "proč a co", \textbf{standard} "jaké závazné požadavky", procedura a instrukce "jak přesně" a \textbf{guideline} "jak nejlépe, ale nepovinně".
+
+Z jiného pohledu rozlišujeme opatření technická, administrativní a fyzická. Technická opatření jsou například šifrování, firewall, MFA, ACL, antivirus, hardening nebo zálohovací systém. Administrativní opatření jsou politiky, procedury, školení, smlouvy s dodavateli, řízení rizik a řízení změn. Fyzická opatření jsou zámky, karty, ostraha, kamery, trezory, požární ochrana nebo kontrola vstupu do serverovny.
+
+Dobrý bezpečnostní systém je kombinuje, protože samotná technika nestačí.
+
+V přiložených materiálech se rozlišují countermeasures a controls. Protiopatření slouží k tomu, aby porušení bezpečnosti nevzniklo nebo bylo méně pravděpodobné. Kontroly pomáhají porušení detekovat, aby organizace mohla reagovat a omezit škodu. Obojí podporuje a vynucuje bezpečnostní politiku. Bez politiky ale není jasné, co vlastně opatření a kontroly vynucují.
+
+\subsection*{8. Organizace a řízení bezpečnosti}
+
+Tahle část je důležitá, protože otázka není jen o CIA a kryptografii. Informační bezpečnost se má zavádět v celé organizaci a má být integrovaná do jejích procesů. Musí se koordinovat logická bezpečnost, fyzická bezpečnost, personální bezpečnost, provoz, právní požadavky, nákup, dodavatelé a management.
+
+Bezpečnost má vycházet z řízení rizik: organizace má určit, jaká aktiva jsou důležitá, jaké hrozby jí reálně hrozí, jaká rizika je ochotná akceptovat a jak silná opatření jsou přiměřená.
+
+Vrcholové vedení odpovídá za organizaci jako celek. V oblasti bezpečnosti stanovuje strategii, priority, cíle a akceptovatelnou míru rizika, schvaluje zásadní politiky a poskytuje zdroje. Bez podpory vedení zůstane bezpečnost často jen formální dokumentací, protože pravidla nebudou mít autoritu ani rozpočet. Vedení musí také zajistit soulad s legislativou, regulatorními požadavky, smlouvami a interními pravidly.
+
+Bezpečnostní cíle by neměly být odtržené od podnikatelských cílů; měly by chránit provoz, důvěryhodnost, finanční stabilitu a odpovědnost organizace.
+
+Ve větších organizacích funguje řídicí výbor informační bezpečnosti. Je ustanoven nejvyšším managementem a sdružuje zástupce různých částí organizace. Jeho smyslem je koordinovat bezpečnost napříč organizační strukturou, aby IT, právní, provoz, HR, fyzická bezpečnost a vedení netáhly každý jiným směrem.
+
+Výbor stanovuje cíle informační bezpečnosti, schvaluje role a odpovědnosti, posuzuje metodiky a procesy, sleduje významné incidenty, kontroluje dostupnost zdrojů, sleduje změny v rizicích, schvaluje hlavní bezpečnostní iniciativy a kontroluje účinnost opatření.
+
+\textbf{CISO}, tedy manažer informační bezpečnosti, je klíčová výkonná role. Koordinuje činnosti související s informační bezpečností, připravuje a aktualizuje dokumentaci, koordinuje hodnocení rizik, navrhuje bezpečnostní opatření, sleduje hrozby a zranitelnosti, reportuje vedení, koordinuje reakci na incidenty, navrhuje školení a zvyšuje bezpečnostní povědomí. CISO musí rozumět nejen obecné bezpečnosti, ale také byznys procesům organizace, jejich rizikům, legislativě, regulatorním požadavkům a smluvním závazkům. Neměl by být z interního auditu, protože audit má být nezávislý a nemá kontrolovat oblast, kterou sám řídí.
+
+Bezpečnostní architekt navrhuje architekturu bezpečnostních opatření. Řeší například segmentaci, síťové zóny, autentizaci, řízení přístupu, šifrování, logování, bezpečný vývoj a integraci bezpečnostních mechanismů do systémů. IT oddělení a administrátoři opatření provozně implementují: spravují účty, hesla, oprávnění, zálohy, monitoring, aktualizace, konfigurace, změnové řízení a obnovu.
+
+Správci sítí odpovídají za bezpečné konfigurování sítí, firewally, síťová opatření a obnovu sítě. Správci areálů řeší fyzickou bezpečnost, vstupy, požární ochranu, zálohování energií a provozní zajištění prostor.
+
+Uživatelé nejsou mimo bezpečnostní systém. Musí znát a dodržovat politiku informační bezpečnosti: pravidla přihlašování, clean desk, práci s notebooky, zacházení s citlivými daty, zákaz sdílení hesel a povinnost hlásit incidenty. Třetí strany, například dodavatelé a outsourcingoví partneři, musí mít odpovědnosti stanovené smluvně a musí znát relevantní bezpečnostní procedury.
+
+Pokud má dodavatel vzdálený přístup nebo spravuje část infrastruktury, je z hlediska rizika stejně důležitý jako interní administrátor.
+
+Auditor má zvláštní postavení. Nezávisle ověřuje, zda bezpečnostní procesy, dokumentace a opatření odpovídají politice, standardům a požadavkům. Nemá být ten, kdo bezpečnost navrhuje nebo provozuje, protože by kontroloval vlastní práci. Audit může odhalit nesoulady, slabá místa a doporučit nápravná opatření. V ISMS je audit jedním z hlavních mechanismů, jak ověřit, že systém řízení bezpečnosti opravdu funguje a není jen formální.
+
+K rolím je dobré doplnit ještě několik dalších. Vlastník neboli garant aktiva je ten, kdo za konkrétní \textbf{aktivum} odpovídá, zná jeho hodnotu, určuje jeho klasifikaci a kdo k němu smí přistupovat. Vlastník rizika je role, která formálně přebírá odpovědnost za konkrétní \textbf{riziko} a rozhoduje o jeho ošetření nebo akceptaci; nemusí to být tatáž osoba jako vlastník aktiva.
+
+Provozní detekci a reakci často zajišťují specializované týmy: SOC (Security Operations Center) nepřetržitě monitoruje a vyhodnocuje bezpečnostní události, zatímco CSIRT (či CERT) je tým pro řešení bezpečnostních incidentů, který koordinuje reakci, analýzu a obnovu.
+
+U rolí je také vhodné rozlišit tři pojmy: odpovědnost je povinnost za něco ručit a nést důsledky, pravomoc je oprávnění rozhodovat a jednat (a měla by odpovědnosti odpovídat) a kompetence je skutečná způsobilost, tedy znalosti a dovednosti danou roli zvládnout.
+
+\begin{notebox}
+\textbf{Oficiální bezpečnostní role (zákon č. 264/2025 Sb. a vyhláška č. 409/2025 Sb., NÚKIB)} -- závazné pro poskytovatele regulované služby ve vyšším režimu:
+\begin{itemize}
+  \item \textbf{Výbor pro řízení kybernetické bezpečnosti} -- zřizuje ho vrcholové vedení; má v něm být alespoň jeden člen vrcholového vedení (nebo pověřená osoba) a manažer KB; určuje směřování a cíle a jedná alespoň jednou ročně.
+  \item \textbf{Manažer kybernetické bezpečnosti} (odpovídá roli CISO) -- řídí systém řízení bezpečnosti informací, pravidelně informuje vrcholové vedení, koordinuje rizika a incidenty; praxe alespoň 3 roky. \textbf{Nesmí zároveň odpovídat za provoz technických aktiv} regulované služby (oddělení řízení od provozu).
+  \item \textbf{Architekt kybernetické bezpečnosti} -- navrhuje implementaci bezpečnostních opatření a bezpečnou architekturu; praxe alespoň 3 roky.
+  \item \textbf{Auditor kybernetické bezpečnosti} -- provádí nezávislý a nestranný audit KB; praxe alespoň 3 roky. \textbf{Nesmí vykonávat žádnou jinou bezpečnostní roli} (ani manažera, architekta či garanta aktiva).
+  \item \textbf{Garant aktiva} -- zajišťuje rozvoj, použití a bezpečnost konkrétního aktiva (jeho důvěrnost, integritu a dostupnost) a podílí se na hodnocení rizik; v normách řady ISO/IEC 27000 mu odpovídá \textbf{vlastník aktiva}.
+\end{itemize}
+Role mohou být vykonávány i externě (outsourcing) a osoba nemusí být v zaměstnaneckém poměru; u manažera a architekta musí vedení zajistit \textbf{zastupitelnost}.
+\end{notebox}
+
+\subsection*{9. ISMS, ISO 27001/27002 a PDCA}
+
+Pro systematické řízení bezpečnosti se používá ISMS, tedy systém řízení bezpečnosti informací. Dobré shrnutí je, že ISMS je dokumentovaný, systematicky implementovaný a řízený systém, který je trvale přezkoumávaný, auditovaný, kontrolovaný a zlepšovaný. Nejde tedy o jednorázový projekt, ale o cyklus řízení. ISO/IEC 27001 stanoví požadavky na ISMS a je certifikovatelná.
+
+ISO/IEC 27002 je praktičtější kodex doporučených bezpečnostních opatření, který pomáhá při výběru a popisu kontrol.
+
+ISMS lze vysvětlit cyklem \textbf{PDCA}. Ve fázi Plan se stanoví kontext organizace, rozsah ISMS, politika informační bezpečnosti, cíle, systematický přístup k hodnocení rizik, plán zvládání rizik a prohlášení o aplikovatelnosti. Ve fázi Do se implementují opatření, procedury, školení, provozní procesy, reakce na incidenty a zdroje pro provoz ISMS.
+
+Ve fázi Check se monitoruje, měří, testuje a audituje výkon systému proti politice, cílům a praktickým zkušenostem. Ve fázi Act se zavádějí opravy, změny a vylepšení na základě výsledků měření, auditů a přezkoumání vedením.
+
+\begin{notebox}
+\textbf{PDCA v ISMS prakticky:}
+\begin{itemize}
+  \item \textbf{Plan (plánuj)} -- připravuje se celý systém řízení bezpečnosti: určí se bezpečnostní cíle, rozsah ISMS, relevantní systémy, pobočky a procesy, provede se analýza rizik, vybere se způsob zvládání rizik a sepíší se hlavní politiky, směrnice a \textbf{prohlášení o aplikovatelnosti} (SoA).
+  \item \textbf{Do (dělej)} -- plán se zavádí do praxe: implementují se technická a organizační opatření, například firewall, šifrování, řízení přístupů nebo zálohování; zaměstnanci se školí; bezpečnost se každodenně provozuje; dokumentace se udržuje a incidenty se řeší podle schválených postupů.
+  \item \textbf{Check (kontroluj)} -- ověřuje se, zda ISMS funguje: sledují se metriky, logy a účinnost opatření, provádějí se interní audity a vedení pravidelně přezkoumává, zda systém splňuje požadavky normy, politiky a potřeby organizace.
+  \item \textbf{Act (jednej)} -- na základě kontroly se systém zlepšuje: přijímají se nápravná opatření k odstranění příčin zjištěných neshod, preventivní opatření proti budoucím problémům a aktualizují se politiky, cíle, analýza rizik i opatření pro další cyklus.
+\end{itemize}
+\end{notebox}
+
+Moderní struktura \textbf{ISO 27001} se dá u zkoušky popsat jako kontext organizace, vůdčí role, plánování, podpora, provozování, hodnocení výkonnosti a zlepšování. Kontext znamená pochopení organizace a rozsahu ISMS. Vůdčí role znamená závazek vedení, politiku a role. Plánování znamená práci s riziky a bezpečnostní cíle. Podpora znamená zdroje, kompetence, povědomí a dokumentované informace.
+
+Provozování znamená řízení procesů, hodnocení a ošetření rizik. Hodnocení výkonnosti zahrnuje monitoring, audit a přezkoumání vedením. Zlepšování zahrnuje neshody, nápravná opatření a neustálé zlepšování.
+
+\subsection*{10. Model útočníka, model hrozeb a bezpečnostní analýza}
+
+Z přiložených materiálů je vhodné doplnit model útočníka a model hrozeb. Model útočníka popisuje, proti komu se bráníme. Zvažují se cíle útočníka, metody, schopnosti, výpočetní zdroje, znalosti, personál, příležitosti, úroveň financování a to, zda jde o outsidera nebo insidera. Insider má výhodu, protože má nějaký legitimní přístup, znalost prostředí nebo důvěru organizace. Bez modelu útočníka nevíme, proti komu je systém vlastně bezpečný.
+
+Model hrozeb identifikuje hrozby, původce hrozeb a vektory útoku, které jsou pro systém relevantní. Hrozby mohou být in scope, tedy organizace se proti nim chce bránit, nebo out of scope, ale v takovém případě by měly být výslovně zdůvodněny. Kvalitní model hrozeb se průběžně aktualizuje, protože technologie i útočníci se vyvíjejí.
+
+Praktickou pomůckou je \textbf{STRIDE}: spoofing, tampering, repudiation, information disclosure, denial of service a escalation of privilege. Tyto kategorie přímo odpovídají bezpečnostním funkcím: spoofing souvisí s autentizací, tampering s integritou, repudiation s nepopiratelností, information disclosure s důvěrností, denial of service s dostupností a escalation of privilege s autorizací.
+
+Bezpečnostní analýza se snaží identifikovat zranitelnosti v návrhu systému a přehlédnuté hrozby. Ideálně začíná už v rané fázi životního cyklu produktu a pokračuje při návrhu, implementaci a testování. Patří sem revize architektury, revize návrhových dokumentů, ruční revize zdrojového kódu a posouzení, zda stávající návrh splňuje bezpečnostní požadavky v konkrétním prostředí nasazení.
+
+Posouzení zranitelností hledá slabá místa v nasazených systémech a zahrnuje například skenování a penetrační testování. Penetrační test je praktická zkouška zneužitelnosti slabin a může být black-box, white-box nebo gray-box.
+
+\subsection*{11. Standardy, Common Criteria a hodnocení bezpečnosti}
+
+Standardy dávají bezpečnosti společný jazyk a měřítko. ISO 27001 a 27002 jsou důležité pro řízení bezpečnosti informací. CIS Benchmarks jsou praktičtější technické benchmarky pro bezpečnou konfiguraci systémů a aplikací. \textbf{Common Criteria} se používají pro formální bezpečnostní hodnocení produktů a systémů.
+
+Discordové materiály mohou Common Criteria řadit i sem, ale v rámci B-CS mají audit a hodnocení bezpečnosti silný přesah i do otázky o řízení rizik.
+
+Formální bezpečnostní evaluace může být vyžadována u systémů pro vládu, banky nebo kritickou infrastrukturu. Typicky ji provádí třetí strana podle stanovených kritérií, stojí čas a peníze a výsledkem je ověřená shoda se standardem. Po významných změnách může být nutná recertifikace. Naproti tomu penetrační testování je praktičtější ověření konkrétní zranitelnosti v nasazeném systému.
+
+Obě činnosti mají smysl, ale nejsou totéž: evaluace je formální důkaz shody, pen test je praktické hledání a ověření slabin.
+
+S hodnocením bezpečnosti souvisí rozdíl trusted a trustworthy. Trusted systém je systém, na který spoléháme. Pokud selže, ztratíme bezpečnostní záruky. Trustworthy systém je systém, který si důvěru zaslouží, protože spolehlivě splňuje požadavky. Samotná důvěra tedy nestačí; má být podložená politikou, správným návrhem, implementací, provozem, testováním, auditem nebo certifikací.
+
+\subsection*{12. Souvislé shrnutí pro komisi}
+
+U komise bych otázku uzavřel takto: Základní bezpečnostní funkce určují, jaké vlastnosti chceme u informací a systémů chránit. Důvěrnost znamená, že neveřejné informace jsou dostupné jen oprávněným subjektům; chrání se řízením přístupu, šifrováním, klasifikací, fyzickou ochranou a procedurami.
+
+Integrita znamená, že data, software nebo konfigurace nejsou neoprávněně změněny; chrání se autorizací změn, hashováním, MAC, digitálním podpisem, logováním, verzováním a změnovým řízením. Dostupnost znamená, že služby a informace jsou dostupné oprávněným uživatelům; chrání se redundancí, zálohami, monitoringem, obnovou, ochranou proti DoS a provozními postupy.
+
+Nepopiratelnost původu je schopnost prokázat, že data nebo úkon pocházejí od konkrétního subjektu, typicky pomocí digitálního podpisu. Není to totéž co integrita ani běžná autentizace. MAC zajišťuje integritu a autenticitu mezi stranami se sdíleným tajemstvím, ale typicky ne nepopiratelnost vůči třetí straně. Digitální podpis používá soukromý klíč k podpisu a veřejný klíč k ověření, a proto se hodí pro důkaz původu.
+
+Symetrická kryptografie je rychlá a používá sdílený klíč; \textbf{asymetrická} pracuje s dvojicí veřejný-soukromý klíč; v praxi se často používá hybridní šifrování. Hashovací funkce slouží k vytvoření otisku dat a má být jednosměrná a odolná vůči kolizím.
+
+Bezpečnost ale není jen technika. Musí být řízena organizačně. Bezpečnostní politika definuje, co je povoleno a zakázáno, jaká aktiva se chrání a jaké kontroly se používají. Procedury popisují konkrétní kroky. Vrcholové vedení stanovuje cíle, zdroje a akceptovatelnou míru rizika. Řídicí výbor koordinuje bezpečnost napříč organizací. CISO řídí bezpečnostní program, rizika, dokumentaci, incidenty, reporting a školení.
+
+Architekt navrhuje bezpečnostní řešení, administrátoři je provozují, uživatelé dodržují pravidla, třetí strany mají povinnosti ve smlouvách a \textbf{auditor} nezávisle kontroluje, zda systém funguje. ISMS podle ISO 27001 převádí bezpečnost do řízeného cyklu plánování, implementace, kontroly a zlepšování.
+
+\subsection*{13. Na co si dát pozor}
+
+Nejčastější chyba je zaměnit integritu, autentizaci a nepopiratelnost. Integrita je nezměněnost dat, autentizace je ověření identity nebo původu a nepopiratelnost je důkaz původu vůči třetí straně. Druhá chyba je tvrdit, že šifrování řeší všechno. Šifrování primárně řeší důvěrnost; integritu a autenticitu musí zajistit vhodný režim, MAC nebo podpis.
+
+Třetí chyba je mluvit jen o kryptografii a vynechat řízení bezpečnosti: role, odpovědnosti, politika, procedury, ISMS, audit, standardy a kultura bezpečnosti jsou součástí otázky.
+
+Když komise položí otázku na algoritmus, který splňuje důvěrnost a integritu, ale ne nepopiratelnost, odpověď je symetrické autentizované šifrování, například AES-GCM nebo šifrování doplněné MAC. Důvěrnost zajišťuje šifrování, integritu a autenticitu MAC nebo autentizovaný režim, ale protože jde o sdílené tajemství, nelze třetí straně spolehlivě prokázat, která ze stran zprávu vytvořila.
+
+\subsection*{14. Doplňující propojení k otázkám z komisí}
+
+Když se komise ptá na integritu dat, je dobré odpověď vést přes konkrétní příklad. U platebního příkazu nestačí, že ho nikdo cizí nevidí; musí být jisté, že částka, číslo účtu a příjemce nebyly změněny. Integritu lze ověřit hashem, ale pouze tehdy, pokud je hash sám chráněn. Proto v reálné komunikaci používáme MAC nebo digitální podpis.
+
+U uložených dat se integrita často kombinuje s logováním, verzováním a změnovým řízením, protože kryptografický důkaz sám neřekne, zda změna byla organizačně schválená.
+
+Když se komise ptá na digitální podpisy, je dobré říct celý řetězec: nejprve se spočítá hash dokumentu, tento hash se podepíše soukromým klíčem a ověřovatel ověří podpis veřejným klíčem. Důležitá je vazba veřejného klíče na identitu podepisující osoby, typicky pomocí certifikátu a důvěryhodné certifikační autority. Digitální podpis tedy podporuje integritu, autentizaci původu a nepopiratelnost, zatímco šifrování samo o sobě podpis nenahrazuje.
+
+Když se objeví MAC, je podstatné říct, že MAC je vhodný mezi stranami, které si důvěřují a sdílí tajný klíč. Například klient a server si mohou ověřit, že zpráva nebyla změněna a že ji vytvořila strana znalá tajemství. Ale právě proto, že obě strany znají stejný klíč, nelze vůči nezávislé třetí straně jednoduše dokázat, která z nich konkrétní MAC vytvořila. Tady je hranice mezi autenticitou ve vztahu dvou stran a nepopiratelností vůči okolí.
+
+Když se komise ptá na ochranu soukromí a anonymitu, dá se navázat na důvěrnost. Důvěrnost omezuje, kdo může data číst, ale soukromí řeší širší otázku, zda se data mají zpracovávat, k jakému účelu, jak dlouho a s jakými právy subjektu údajů. Anonymita znamená, že akci nebo údaj nelze rozumně spojit s konkrétní osobou.
+
+V bezpečnostním řízení ale bývá napětí mezi anonymitou a \textbf{accountability}: čím více chci zpětně určit odpovědnou osobu, tím méně anonymní systém obvykle je.
+
+Když se komise dotkne Common Criteria, stačí stručně: jde o formální hodnocení bezpečnosti konkrétního produktu nebo systému v určité konfiguraci. Neříká obecně, že produkt je bezpečný za všech okolností, ale že splnil deklarované bezpečnostní požadavky a úroveň zajištění v daném rozsahu. To je rozdíl proti běžnému auditu ISMS nebo penetračnímu testu, které se zaměřují na organizaci, procesy nebo praktické zneužitelnosti v konkrétním provozu.
+
+\subsection*{Použité podklady}
+
+Text je přepracovaný podle přiložených materiálů 9\_nejaka\_bezpecnost.pdf a Základní bezpečnostní funkce (2).pdf, původní šestistránkové verze otázky a doplněné čtyřstránkové verze s rozšířenou částí organizace a řízení bezpečnosti. Obsah je formulovaný jako souvislá odpověď pro opakování ke státnicím.
+
+\newpage
+

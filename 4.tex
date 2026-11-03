@@ -1,0 +1,333 @@
+\otazka{4. Sítě}{Modely vrstev počítačových sítí (ISO/OSI, TCP/IP), funkcionalita a součinnost vrstev, adresace. Fyzická vrstva, signály a jejich kódování, řízení přístupu k médiu. Propojování počítačových sítí. Síťové protokoly, přepínání a směrování, multicast. Zajištěný přenos dat, sestavení a ukončení spojení. Transportní protokoly.}{PB156, PB156cv}
+
+\subsection*{4. Sítě -- stručněji}
+Síť je systém, ve kterém zařízení komunikují pomocí vrstev, adres a protokolů. Dobrá odpověď má ukázat cestu dat: aplikace vytvoří zprávu, transport ji doručuje procesu, IP síť ji směruje mezi sítěmi, linková vrstva ji předá dalšímu hopu a fyzická vrstva ji pošle jako signál.
+
+\textbf{1. Vrstvy a jejich smysl}
+\begin{itemize}
+  \item ISO/OSI je sedmivrstvý referenční model, TCP/IP je praktičtější internetový model. Smysl vrstev je oddělit odpovědnosti a skrýt detaily nižších vrstev.
+  \item Zkoušková věta: L7 řeší význam zprávy, L4 porty a procesy, L3 IP adresy a směrování, L2 rámce a sousední uzel, L1 fyzický signál.
+\end{itemize}
+
+\textbf{2. Adresace}
+\begin{itemize}
+  \item MAC adresa je linková a platí v lokální síti. IP adresa je síťová a slouží k doručení přes více sítí. Port určuje aplikaci nebo proces na koncovém zařízení.
+  \item Privátní IPv4 rozsahy jsou 10.0.0.0/8, 172.16.0.0/12 a 192.168.0.0/16. Do Internetu se přímo nesměrují a typicky se používají za NATem.
+\end{itemize}
+
+\textbf{3. Fyzická a linková vrstva}
+\begin{itemize}
+  \item Fyzická vrstva řeší médium, signál, kódování a přenos bitů. Linková vrstva řeší rámce, MAC adresy, detekci chyb a přístup k médiu.
+  \item Ethernet dnes typicky používá switche a full-duplex, takže staré kolize přes huby už nejsou běžný model moderní LAN.
+\end{itemize}
+
+\textbf{4. Přepínání a směrování}
+\begin{itemize}
+  \item Switch přepíná rámce podle MAC adres v jedné síti. Router směruje pakety podle IP adres mezi sítěmi.
+  \item ARP mapuje IPv4 adresu na MAC adresu v lokální síti. DNS naopak mapuje jména na IP adresy a patří aplikačně výš.
+\end{itemize}
+
+\textbf{5. Transport}
+\begin{itemize}
+  \item TCP poskytuje spojovaný, spolehlivý a seřazený přenos s potvrzováním, řízením toku a zahlcení. Spojení se sestavuje třícestným handshake.
+  \item UDP je jednodušší a bez záruk doručení. Hodí se tam, kde aplikace chce nižší režii nebo si spolehlivost řeší sama, například DNS, VoIP nebo hry.
+  \item Multicast je doručení skupině příjemců, ne všem jako broadcast a ne jednomu jako unicast.
+\end{itemize}
+
+Modely vrstev počítačových sítí (\textbf{ISO/OSI}, \textbf{TCP/IP}), funkcionalita a součinnost vrstev, adresace, fyzická a linková vrstva, propojování sítí, síťové protokoly, přepínání, \textbf{směrování}, \textbf{multicast}, zajištěný přenos a transportní protokoly.
+
+\subsection*{Tento text je psaný jako souvislé opakování ke státnicím: cílem není jen vyjmenovat pojmy, ale umět mluvit o tom, co se s daty reálně děje při průchodu sítí. Zkouškově nejdůležitější osa je: L7 význam zprávy, L4 porty/procesy, L3 IP a směrování, L2 rámec a další hop, L1 signál.}
+
+\subsection*{1. Základní představa: co je síť a proč jsou vrstvy}
+
+Počítačová síť je skupina zařízení propojených komunikačními kanály, která umožňuje přenos dat a sdílení zdrojů. U přenosu sledujeme hlavně doručení, správnost a včasnost doručení. Kvalitu toku popisuje propustnost, ztrátovost paketů, \textbf{latence} a \textbf{jitter}. Propustnost říká, kolik dat se reálně přenese za sekundu; latence je zpoždění; jitter je kolísání zpoždění; ztrátovost říká, jaká část paketů nedorazí.
+
+Protokol určuje syntaxi, sémantiku a časování komunikace: tedy jak zprávy vypadají, co znamenají a kdy se posílají.
+
+Vrstvení existuje proto, aby se složitý problém rozdělil na menší části. Každá vrstva poskytuje službu vrstvě nad sebou, používá službu vrstvy pod sebou a při odesílání přidává vlastní řídicí informace. Při příjmu se postupuje opačně. Logicky spolu komunikují stejné vrstvy na obou koncích, ale fyzicky data vždy projdou přes nižší vrstvy.
+
+Příjem: L1 signál -> L2 \textbf{rámec} -> L3 \textbf{paket} -> L4 \textbf{segment} -> L7 data
+
+\subsection*{2. ISO/OSI a TCP/IP}
+
+ISO/OSI je sedmivrstvý referenční model. Je užitečný hlavně pro vysvětlení funkcí vrstev a pro slovník typu L1, L2, L3. \textbf{TCP}/IP je praktický model Internetu. V TCP/IP se L5 až L7 typicky sloučí do aplikační vrstvy, L4 odpovídá transportní vrstvě, L3 internetové vrstvě a L1-L2 vrstvě síťového rozhraní.
+
+Důvod je praktický: různé aplikace potřebují různé formáty, šifrování, relace a aplikační pravidla, takže si tyto funkce v TCP/IP často řeší aplikace, knihovny a aplikační protokoly.
+
+\begin{longtable}{p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}}
+\toprule
+\textbf{OSI} & \textbf{Funkce} & \textbf{TCP/IP pohled} & \textbf{Příklady} \\
+\midrule\endhead
+L7 aplikační & Význam aplikační komunikace: co si aplikace říkají. & Aplikační & HTTP, DNS, SMTP, IMAP, FTP, SSH \\
+\addlinespace
+L6 prezentační & Reprezentace dat: kódování, serializace, komprese, šifrování. & Aplikační & UTF-8, JSON/XML, gzip, TLS funkce \\
+\addlinespace
+L5 relační & Relace/dialog: stav komunikace, session, checkpointy. & Aplikační & TLS session, webová session, SSH session \\
+\addlinespace
+L4 transportní & Komunikace mezi procesy, porty, TCP/UDP, spolehlivost. & Transportní & TCP segment, UDP datagram \\
+\addlinespace
+L3 síťová & Doručení mezi sítěmi, IP adresy, směrování. & Internetová & IPv4/IPv6, ICMP, IGMP, ARP jako podpůrný mechanismus \\
+\addlinespace
+L2 linková & Doručení na jednom úseku, rámce, MAC, přístup k médiu. & Síťové rozhraní & Ethernet, Wi-Fi, switch \\
+\addlinespace
+L1 fyzická & Bity jako signál v médiu. & Síťové rozhraní & Kabel, optika, rádio, kódování signálu \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+\itzk{\textbf{Poznámka ke zkoušce:} když se řekne L1/L2/L3, jde obvykle o OSI číslování. V praxi se ale tato označení běžně používají i při popisu TCP/IP sítí.}
+
+\subsection*{3. Co dělají vrstvy při reálném odeslání dat}
+
+Při otevření webu aplikace nejprve vytvoří aplikační zprávu, například \textbf{HTTP} požadavek. Prezentační funkce ji převedou do společné podoby: text do \textbf{UTF-8}, objekt na JSON/XML, případně komprese nebo šifrování. Relační funkce drží kontext komunikace, například \textbf{TLS} session nebo webovou session. Transportní vrstva přidá porty a u TCP zajišťuje spolehlivý proud bajtů.
+
+Síťová vrstva přidá IP adresy a řeší, kam má paket dojít celkově. Linková vrstva zabalí IP paket do rámce pro jeden konkrétní úsek cesty. Fyzická vrstva rámec převede na bity/signál.
+
+HTTP request -> TCP segment: zdrojový port 51544, cílový port 443 -> IP paket: zdrojová IP, cílová IP serveru -> \textbf{Ethernet}/Wi-Fi rámec: zdrojová \textbf{MAC}, cílová MAC dalšího hopu -> elektrický/optický/rádiový signál
+
+Zásadní rozdíl: IP adresa označuje konečný stroj nebo rozhraní v síťové vrstvě, zatímco MAC adresa u Ethernetu/Wi-Fi řeší jen aktuální linkový úsek. Když je server mimo lokální síť, počítač nevkládá do rámce MAC adresu serveru, ale MAC adresu default gateway. Router rámec přijme, odstraní L2 obal, podívá se na cílovou IP, zvolí další hop, vytvoří nový L2 rámec a pošle paket dál.
+
+Proto je dobré být přesný: samotná IP komunikace je logicky mezi zdrojovým a cílovým uzlem (end-to-end), ale rozhodování o cestě probíhá hop-by-hop, tedy na každém routeru zvlášť. Na každém hopu navíc vzniká nový linkový rámec a MAC adresy v něm platí jen pro daný linkový úsek, ne pro celou cestu.
+
+\subsection*{Zkoušková věta: L3 řekne, kam to má dojít celkově; L2 řekne, komu to předám právě teď; L1 řekne, jak to fyzicky pošlu.}
+
+\subsection*{4. Adresace: MAC, IP, port}
+
+Na L2 se u Ethernetu a Wi-Fi používá MAC adresa, typicky zapisovaná jako šest bajtů v hexadecimálním tvaru. Patří síťovému rozhraní a slouží pro lokální doručení rámce. Na L3 se používá IP adresa. IPv4 má 32 bitů, IPv6 má 128 bitů. IP adresa se používá pro doručení mezi sítěmi a pro směrování. Na L4 jsou porty, 16bitová čísla, která identifikují aplikaci nebo službu na konkrétním uzlu.
+
+Aplikace v komunikaci se prakticky identifikuje dvojicí IP adresa:port.
+
+\begin{longtable}{p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}}
+\toprule
+\textbf{Vrstva} & \textbf{Adresace} & \textbf{Datová jednotka} & \textbf{Co znamená} \\
+\midrule\endhead
+L2 & MAC / linková adresa & rámec & Komu to předám na tomto úseku, např. počítač -> router. \\
+\addlinespace
+L3 & IP adresa & paket/datagram & Kam to má dojít přes sítě, např. na cílový server. \\
+\addlinespace
+L4 & port & segment/datagram & Kterému procesu/službě na stroji to patří. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+IPv4 adresace se historicky dělila do tříd, ale dnes je důležitější classless adresování, masky a \textbf{CIDR}. Maska říká, která část adresy je síťová a která hostitelská; adresa sítě vzniká jako IP AND maska.
+
+Subnetting dělí síť na podsítě, \textbf{supernetting}/agregace spojuje sousední bloky kvůli menším směrovacím tabulkám. \textbf{NAT} překládá privátní adresy a porty na veřejnou adresu, takže více zařízení v domácí síti může sdílet jednu veřejnou IPv4 adresu.
+
+\itbox{\textbf{Privátní IPv4 rozsahy podle RFC 1918:} do Internetu se přímo nesměrují a typicky se používají za NATem. Rychlá pomůcka je pamatovat si tři starty: \textbf{10, 172, 192}.}
+
+\begin{longtable}{p{0.22\linewidth}p{0.25\linewidth}p{0.46\linewidth}}
+\toprule
+\textbf{Pomůcka} & \textbf{CIDR rozsah} & \textbf{Jak si to zapamatovat} \\
+\midrule\endhead
+\textbf{Obří krabice} & \texttt{10.0.0.0/8} & Jakmile IPv4 adresa začíná na \textbf{10.}, je privátní. Hodí se pro velké organizace, laboratoře nebo rozsáhlé interní sítě. \\
+\addlinespace
+\textbf{Střední firemní krabice} & \texttt{172.16.0.0/12} & Začíná na \textbf{172.16.} až \textbf{172.31.}. Nestačí vidět číslo 172 někde v adrese; rozhoduje začátek a rozsah druhého oktetu 16--31. \\
+\addlinespace
+\textbf{Domácí krabice} & \texttt{192.168.0.0/16} & Klasické domácí routery: například \texttt{192.168.0.1} nebo \texttt{192.168.1.1}. Privátní je ale právě \textbf{192.168.*.*}, ne libovolná adresa začínající 192. \\
+\bottomrule
+\end{longtable}
+
+\itpr{\textbf{Rychlý test:} \texttt{8.8.8.8} nezačíná na 10, 172.16--31 ani 192.168, takže je veřejná. \texttt{77.75.75.172} má sice na konci 172, ale nezačíná privátním rozsahem, takže je veřejná. \texttt{10.150.12.3} začíná na 10, takže je privátní.}
+
+IPv6 rozšiřuje adresní prostor, nemá \textbf{broadcast} a místo něj používá multicastové skupiny; přidává také \textbf{anycast}, kde se data doručí nejbližšímu členovi skupiny.
+
+\textbf{ARP} slouží u IPv4 ke zjištění MAC adresy pro známou IP adresu v lokální síti. Pokud chce host poslat paket na IP v jiné síti, nehledá MAC cílového serveru, ale MAC své default gateway. Pošle ARP request broadcastem: kdo má IP 192.168.1.1? Odpoví pouze zařízení s touto IP a pošle ARP reply se svou MAC adresou.
+
+Aby host vůbec mohl komunikovat, potřebuje IP adresu a další parametry. Ty obvykle nezadává člověk ručně, ale přidělí je \textbf{DHCP} server. Průběh se shrnuje zkratkou \textbf{DORA}:
+\begin{enumerate}
+  \item \textbf{Discover} -- klient pošle broadcastem dotaz, kterým hledá DHCP server.
+  \item \textbf{Offer} -- server nabídne adresu.
+  \item \textbf{Request} -- klient o nabídnutou adresu požádá.
+  \item \textbf{Acknowledge} -- server přidělení potvrdí.
+\end{enumerate}
+
+DHCP klientovi typicky předá IP adresu, masku sítě, výchozí bránu (gateway) a adresy \textbf{DNS} serverů. Adresa se přiděluje na omezenou dobu, takzvanou lease, kterou si klient před vypršením obnovuje.
+
+Protože úvodní Discover je broadcast a ten se nešíří přes \textbf{router} do jiné podsítě, používá se v takovém případě DHCP relay: router nebo jiné zařízení DHCP požadavek zachytí a přepošle ho unicastem na centrální DHCP server v jiné síti.
+
+\subsection*{5. Fyzická vrstva: signály, média a kódování}
+
+Fyzická vrstva zajišťuje přenos jednotlivých bitů přes médium. Neřeší adresy ani význam dat. Řeší kódování bitů na signál, přenosovou rychlost, synchronizaci bitů, \textbf{multiplexing} a konkrétní fyzické médium. Média mohou být vedená, například kroucená dvojlinka, koaxiál nebo optické \textbf{vlákno}, nebo nevedená, například vzduch u rádiového přenosu. Signál je časová změna fyzikální veličiny.
+
+Může slábnout, být zkreslený nebo rušený šumem. Digitální data se mohou přenášet digitálním signálem nebo modulací analogového nosného signálu.
+
+Zásadní problém kódování je synchronizace vysílače a přijímače. Přijímač musí poznat, kde začínají a končí bity. Dlouhé posloupnosti stejných hodnot jsou problém, protože v signálu nemusí být dost změn pro synchronizaci hodin.
+
+\begin{longtable}{p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}}
+\toprule
+\textbf{Kódování} & \textbf{Princip} & \textbf{Výhoda} & \textbf{Nevýhoda} \\
+\midrule\endhead
+Přímé & Např. 1 je kladná amplituda, 0 nulová. & Jednoduché. & Není samosynchronizační. \\
+\addlinespace
+NRZ-L & Hodnota bitu je dána úrovní signálu. & Efektivní, jednoduché. & Dlouhé série stejných bitů kazí synchronizaci. \\
+\addlinespace
+NRZ-I & 1 znamená změnu polarity, 0 žádnou změnu. & Lepší práce se změnami. & Série nul bez změny je problém. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}}
+\toprule
+\textbf{Kódování} & \textbf{Princip} & \textbf{Výhoda} & \textbf{Nevýhoda} \\
+\midrule\endhead
+Manchester & Každý bit má přechod uprostřed bitového intervalu. & Plně samosynchronizační. & Na bit potřebuje dva signálové prvky, snižuje efektivní kapacitu. \\
+\addlinespace
+4B/5B & Čtyři bity se nahradí pětibitovým kódem s omezením dlouhých nul. & Lepší synchronizace, určitá detekce chyb. & Režie navíc; podobně fungují 8B/10B nebo 64B/66B. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+\itbox{\textbf{Manchester pro 010:} vždy řekni konvenci. Pokud vezmu konvenci 0 = low-high a 1 = high-low, potom 010 = LH | HL | LH. U opačné konvence se výsledek převrátí.}
+
+Multiplexing znamená sdílení kapacity média více komunikacemi. U analogových signálů jde například o \textbf{FDM}, kde má každý kanál jinou frekvenci, nebo \textbf{WDM} v optice, kde různé vlnové délky světla představují různé kanály. U digitálních signálů je typické \textbf{TDM}, kde se médium rozděluje v čase.
+
+\subsection*{6. Linková vrstva a řízení přístupu k médiu}
+
+Linková vrstva zajišťuje doručení rámce mezi sousedními uzly na jednom linkovém úseku. Vytváří rámce, používá linkové adresy, například MAC adresy u Ethernetu a Wi-Fi, může řešit detekci chyb, řízení toku a hlavně přístup ke sdílenému médiu. MAC v tomto kontextu znamená Medium Access Control: pravidla, která brání tomu, aby více stanic vysílalo do sdíleného média zároveň a rušilo se.
+
+U Ethernetu má rámec pevnou strukturu, kterou je dobré umět vyjmenovat. Začíná preambulí a oddělovačem SFD (Start Frame Delimiter), tedy sledem bitů, který slouží k synchronizaci přijímače a označení začátku rámce. Následuje cílová MAC adresa a zdrojová MAC adresa, tedy komu rámec na tomto úseku patří a kdo ho poslal. Pole \textbf{EtherType} (případně délka) říká, jaký protokol je uvnitř, typicky IPv4, IPv6 nebo ARP.
+
+Pak přichází payload, tedy přenášená data vyšší vrstvy, například IP paket. Rámec končí polem \textbf{FCS}, což je \textbf{CRC} kontrolní součet, kterým příjemce ověří, že se rámec cestou nepoškodil; pokud kontrola nesedí, rámec se zahodí.
+
+\textbf{Aloha} dovolí stanici vysílat, kdykoliv má rámec, a při kolizi čeká náhodnou dobu a zkouší znovu. \textbf{CSMA/CD} je typické pro starší sdílený kabelový Ethernet s huby: stanice nejdřív poslouchá, zda je médium volné, při vysílání detekuje kolizi a pak zkusí po náhodné době znovu. Dnes u přepínaného full-duplex Ethernetu kolize prakticky neřešíme stejně jako dřív. \textbf{CSMA/CA} se používá u Wi-Fi: stanice se snaží kolizím předcházet, protože v rádiovém médiu nemůže spolehlivě současně vysílat a poslouchat.
+
+\begin{longtable}{p{0.317\linewidth}p{0.317\linewidth}p{0.317\linewidth}}
+\toprule
+\textbf{Mechanismus} & \textbf{Kde/představa} & \textbf{Podstata} \\
+\midrule\endhead
+Aloha & Jednoduché sdílené médium & Vysílám kdykoliv, při kolizi opakuji. \\
+\addlinespace
+CSMA/CD & Starší kabelový Ethernet/huby & Poslouchám médium, vysílám při volnu, detekuji kolizi. \\
+\addlinespace
+CSMA/CA & Wi-Fi & Kolizím se snažím předcházet, typicky s čekáním/ACK. \\
+\addlinespace
+Polling/token/rezer vace & Řízený přístup & Vysílá ten, kdo dostane právo, token nebo časový interval. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+Topologie sítě popisuje fyzické nebo logické uspořádání stanic: sběrnice, kruh a hvězda. U sběrnice a kruhu může výpadek média shodit velkou část sítě a \textbf{kolizní doména} je společná. Hvězda s centrálním prvkem je běžnější; u hubu jsou všechny stanice v jedné kolizní doméně, u switche se provoz odděluje podle portů.
+
+\subsection*{7. Propojování sítí: hub, switch, bridge, router, gateway}
+
+Síťová zařízení se často rozlišují podle vrstvy, na které primárně pracují. Opakovač a \textbf{hub} jsou L1 prvky: opakují signál a nerozumí rámcům. Bridge a \textbf{switch} jsou L2 prvky: pracují s MAC adresami a rámci. Switch je v podstatě víceportový \textbf{bridge}; učí se, na kterém portu je jaká MAC adresa, podle zdrojových adres přijatých rámců.
+
+Router je L3 prvek: propojuje různé sítě a podle cílové IP adresy vybírá další hop. Gateway se často používá pro aplikační bránu nebo překlad mezi odlišnými protokoly.
+
+\begin{longtable}{p{0.317\linewidth}p{0.317\linewidth}p{0.317\linewidth}}
+\toprule
+\textbf{Prvek} & \textbf{Vrstva} & \textbf{Co řeší} \\
+\midrule\endhead
+Repeater & L1 & Obnovuje/opakuje fyzický signál. \\
+\addlinespace
+Hub & L1 & Posílá signál všem portům, jedna kolizní doména. \\
+\addlinespace
+Bridge & L2 & Propojuje segmenty, filtruje podle MAC. \\
+\addlinespace
+Switch & L2 & Víceportový bridge, učí se MAC tabulku. \\
+\addlinespace
+Router & L3 & Směruje pakety podle IP adres. \\
+\addlinespace
+Gateway & vyšší vrstvy & Překládá nebo zprostředkuje komunikaci mezi různými protokoly/systémy. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+\itbox{\textbf{Hardware/software:} L1 je hlavně hardware. L2 je síťová karta, switch, firmware a ovladače. L3 může být software v OS, ale routery často používají hardwarovou akceleraci. L4-L7 jsou převážně software v OS, knihovnách a aplikacích.}
+
+\subsection*{Switch podrobněji, VLAN a STP}
+
+Switch se chová chytře díky tomu, že si buduje MAC tabulku. Z každého příchozího rámce si zapamatuje zdrojovou MAC adresu a port, na kterém dorazila, a tím se naučí, kde které zařízení je. Když pak má přeposlat rámec na cílovou MAC, kterou už zná, pošle ho jen na příslušný port (forwarding známého unicastu).
+
+Pokud cílovou MAC ještě nezná, rozešle rámec na všechny porty kromě příchozího (flooding neznámého unicastu) a počká, kdo se ozve. Broadcast a multicast se z principu rozesílají na všechny porty daného segmentu. Záznamy v MAC tabulce po čase bez provozu vyprší (aging), aby tabulka odpovídala aktuálnímu stavu.
+
+Důležité je odlišit kolizní doménu od broadcastové domény: každý port switche je samostatná kolizní doména, ale všechny porty v jedné L2 síti tvoří jednu broadcastovou doménu.
+
+\textbf{VLAN}, tedy virtuální LAN, umožňuje na jednom fyzickém switchi vytvořit více oddělených logických L2 sítí. Port nastavený jako access patří do jedné konkrétní VLAN a připojuje koncové zařízení. Port nastavený jako trunk přenáší provoz více VLAN mezi switchi a každý rámec přitom nese značku 802.1Q tag, podle které se pozná, do které VLAN patří. Provoz mezi různými VLAN neprochází přímo na L2; musí přes směrování, takzvaný inter-VLAN routing na routeru nebo L3 switchi. Je dobré zdůraznit, že VLAN sama o sobě nenahrazuje \textbf{firewall}: odděluje sítě logicky, ale pravidla, kdo s kým smí komunikovat, musí stejně vynutit \textbf{ACL} nebo firewall.
+
+Protože switche neznají \textbf{TTL} jako routery, hrozí v zapojení s redundantními linkami L2 smyčka: rámec, hlavně broadcast, by mohl donekonečna kroužit a zahltit síť (broadcast storm). Tomu brání \textbf{STP}, tedy Spanning Tree Protocol. STP mezi switchi domluví logický strom bez smyček tak, že některé redundantní porty dočasně zablokuje; když aktivní linka vypadne, STP zablokovaný port aktivuje a obnoví spojení.
+
+Účelem STP je tedy umožnit redundanci, ale bez smyček.
+
+\subsection*{8. Přepínání okruhů, paketů a IP protokol}
+
+Přepínání okruhů vytváří předem vyhrazený komunikační kanál. Typický příklad je analogová telefonní síť. Výhodou je jednoduché zajištění kvality, nevýhodou neefektivita: okruh je vyhrazený i tehdy, když se zrovna neposílají data. Přepínání paketů místo toho posílá nezávislé datové jednotky. U virtuálních okruhů se cesta ustaví předem a pakety relace jdou stejnou trasou.
+
+U datagramového přístupu se každý paket řeší nezávisle; to je základ Internetu.
+
+IP je hlavní protokol síťové vrstvy. Poskytuje nespojovanou best-effort službu: uzly se snaží \textbf{datagram} doručit, ale IP nezaručuje doručení, pořadí, neexistenci duplicit ani spolehlivost. IPv4 hlavička obsahuje mimo jiné zdrojovou a cílovou adresu, TTL, protokol vyšší vrstvy, kontrolní součet hlavičky a fragmentační pole.
+
+TTL omezuje počet hopů a brání nekonečnému cyklení. \textbf{MTU} je maximální velikost dat přenositelná danou L2 technologií; když je datagram větší, u IPv4 může dojít k fragmentaci, u IPv6 fragmentuje pouze zdroj a používá se Path MTU Discovery. \textbf{ICMP} slouží pro chyby a diagnostiku, například destination unreachable, time exceeded nebo echo request/reply. \textbf{IGMP} spravuje členství v multicastových skupinách.
+
+\subsection*{9. Směrování a multicast}
+
+Směrování znamená výběr trasy pro IP paket. Router nezná nutně celou cestu v detailu; řeší další krok, tedy next hop, podle směrovací tabulky a metriky. Typicky se používá \textbf{longest prefix match}: z odpovídajících prefixů se vybere ten nejkonkrétnější. Statické směrování zadává administrátor ručně a je jednoduché, ale nepružné.
+
+Dynamické směrování reaguje na změny v topologii, ale může mít dočasné nekonzistence, cykly, černé díry nebo oscilace, dokud síť nezkonverguje.
+
+\textbf{Distance Vector} protokoly, například \textbf{RIP}, posílají informace sousedům a vycházejí z Bellman-Fordova algoritmu. Router zná hlavně vzdálenosti k cílům přes sousedy. \textbf{Link State} protokoly, například \textbf{OSPF}, šíří informace o stavech linek, každý router si sestaví mapu topologie a počítá nejkratší cesty Dijkstrovým algoritmem.
+
+Multicast je doručení stejných dat skupině příjemců, kteří o ně projevili zájem. V IPv4 se používá rozsah 224.0.0.0 až 239.255.255.255 a členství skupin řeší IGMP. Výhoda multicastu je, že síť nemusí posílat mnoho stejných kopií přes stejný spoj. Multicast je vlastnost sítě hop-by-hop, doručení není samo o sobě garantované a problémy jsou účtování, bezpečnost, \textbf{DoS} a kontrola členství.
+
+Přístupy jsou source-based tree, kde se šíření ořezává od zdroje, a shared/core-based tree, kde se používá jádro nebo meeting point.
+
+\subsection*{10. Zajištěný přenos a transportní protokoly}
+
+Zajištěný přenos neznamená kryptograficky bezpečný přenos. Znamená reliable/spolehlivý: data mají dorazit nepoškozená, bez ztrát, duplicit a ve správném pořadí.
+
+Základní mechanismy jsou sekvenční čísla, potvrzování ACK, timeouty, kontrolní součty a opakované odeslání. \textbf{Stop-and-Wait} pošle jeden paket a čeká na potvrzení, což je jednoduché, ale pomalé. \textbf{Go-Back-N} dovolí poslat více paketů v okně, ale při chybě se vrací. Selective Repeat umí opakovat jen konkrétní ztracené části a bufferovat data mimo pořadí.
+
+
+\subsection*{Zajištěný přenos a mechanismy ARQ}
+Zajištěný (spolehlivý) přenos znamená, že data dorazí \textbf{nepoškozená, bez ztrát, bez duplicit a ve správném pořadí}. Stojí na několika stavebních kamenech:
+\begin{itemize}
+  \item \textbf{sekvenční čísla} -- každý paket (resp. bajt) je očíslován, aby šlo poznat pořadí a duplicity;
+  \item \textbf{potvrzování} -- příjemce hlásí doručení: \textbf{pozitivní potvrzení (ACK)} značí úspěch, \textbf{negativní potvrzení (NACK)} hlásí chybu;
+  \item \textbf{timeout} -- když potvrzení nedorazí včas, odesílatel paket považuje za ztracený a pošle ho znovu (\textbf{retransmise});
+  \item \textbf{kontrolní součet} -- detekuje poškození dat při přenosu.
+\end{itemize}
+Tomuto schématu opakovaného vyžádání se říká \textbf{ARQ} (Automatic Repeat reQuest) a má tři základní varianty:
+\begin{itemize}
+  \item \textbf{Stop-and-Wait ARQ} -- nejjednodušší: odesílatel pošle jeden paket a čeká na jeho potvrzení, teprve pak pošle další. Pakety se číslují střídavě 0 a 1. Nevýhodou je nízká efektivita, protože linka většinu času čeká. Při obousměrném přenosu lze využít \textbf{piggybacking}, kdy se potvrzení přiloží k datovému paketu opačného směru místo samostatného ACK.
+  \item \textbf{Go-Back-N ARQ} -- posílá více paketů najednou bez čekání na každé potvrzení; kolik jich smí být "na cestě", určuje \textbf{posuvné okno (sliding window)}. Příjemce ovšem \textbf{zahazuje pakety mimo pořadí}, takže při ztrátě se znovu pošle ztracený paket i všechny následující. Je jednoduchý, ale neefektivní na hodně ztrátových linkách.
+  \item \textbf{Selective-Repeat ARQ} -- nejúspornější: příjemce má větší okno a \textbf{pakety mimo pořadí si ukládá do bufferu}, takže se znovu posílá jen konkrétní ztracený paket. Používá pozitivní i negativní potvrzení. Cenou je složitější správa oken na obou stranách.
+\end{itemize}
+
+\subsection*{Vybrané dobře známé porty (well-known ports)}
+Porty jsou 16bitová čísla identifikující aplikaci na uzlu. Rozsah \textbf{0--1023} přiděluje známým službám organizace IANA, \textbf{1024--49151} jsou registrované a \textbf{49152--65535} dynamické (typicky zdrojové porty klientů). Nejčastější:
+\begin{itemize}
+  \item \textbf{20/21} -- FTP (data/řízení), \textbf{22} -- SSH a SFTP, \textbf{23} -- Telnet;
+  \item \textbf{25} -- SMTP, \textbf{110} -- POP3, \textbf{143} -- IMAP, \textbf{993} -- IMAPS, \textbf{995} -- POP3S;
+  \item \textbf{53} -- DNS, \textbf{67/68} -- DHCP, \textbf{80} -- HTTP, \textbf{443} -- HTTPS, \textbf{3306} -- MySQL.
+\end{itemize}
+
+
+TCP je spojovaný a spolehlivý transportní protokol. Přenáší proud bajtů, ale pro IP ho rozděluje do segmentů. Nepočítá se primárně číslo segmentu, ale pořadí bajtů. Hlavička TCP obsahuje zdrojový a cílový port, sekvenční číslo, potvrzovací číslo, příznaky jako SYN/ACK/FIN, velikost okna, kontrolní součet a volby. TCP řeší spolehlivost, pořadí, řízení toku a řízení zahlcení.
+
+Řízení toku chrání příjemce, aby nedostal více dat, než zvládne zpracovat; řízení zahlcení chrání síť před přetížením.
+
+Klíčový mechanismus TCP je \textbf{posuvné okno} (\textbf{sliding window}): odesílatel smí mít "na cestě" více nepotvrzených bajtů najednou, místo aby čekal na potvrzení po každém. Velikost okna je daná dvěma věcmi. Receiver window (rwnd) je hodnota, kterou příjemce ohlašuje a která říká, kolik dat je ještě schopen přijmout; to je podstata řízení toku a chrání příjemce.
+
+Congestion window (cwnd) je naopak vnitřní odhad odesílatele, kolik dat snese síť, aby se nezahltila; to je řízení zahlcení a chrání síť. Skutečně se posílá podle menšího z obou oken. V tom je přesný rozdíl: \textbf{flow control} řeší kapacitu příjemce, \textbf{congestion control} řeší kapacitu sítě.
+
+Na začátku odesílatel kapacitu sítě nezná, a tak začíná opatrně a okno rychle zvětšuje, dokud nenarazí na ztráty; tomu se zhruba říká slow start. Ztrátu pozná dvěma způsoby: buď vyprší retransmission timeout (\textbf{RTO}), tedy nepřišlo potvrzení v očekávaném čase, nebo dorazí několik duplicitních ACK (duplicate ACK), kterými příjemce opakovaně potvrzuje totéž, a tím signalizuje, že mu nějaký segment chybí.
+
+Podle toho TCP data znovu odešle a sníží rychlost. Nakonec je dobré pamatovat, že TCP je proud bajtů (byte stream): nezachovává hranice aplikačních zpráv, takže jedno volání odeslání na jedné straně nemusí odpovídat jednomu přijetí na druhé a aplikace si musí hranice zpráv řešit sama.
+
+TCP \textbf{three-way handshake}: 1) klient -> server: SYN, seq = x 2) server -> klient: SYN + ACK, seq = y, ack = x + 1 3) klient -> server: ACK, ack = y + 1 Potom může téct aplikační přenos. Směrovače TCP spojení běžně nevidí jako stavovou end-to-end relaci.
+
+Ukončení TCP spojení se typicky děje pomocí FIN a ACK z obou stran, protože TCP je plně duplexní: každá strana uzavírá svůj směr toku dat. \textbf{UDP} je naopak nespojovaný a nezajištěný transportní protokol. Přidává k IP hlavně porty, tedy process-to-process komunikaci, a jednoduchý kontrolní součet. Nemá handshake, neudržuje stav spojení a neřeší doručení ani pořadí.
+
+Hodí se pro DNS, VoIP, videohovory, hry, streaming, multicast nebo protokoly, které si spolehlivost řeší samy.
+
+\subsection*{11. Praktické zkouškové poznámky}
+
+Ve Wiresharku se často zobrazuje "Frame", pod tím "Ethernet II", potom "IP" a "TCP". Ethernet není mimo rámec; Wireshark jen položkou Frame ukazuje metadata zachycené jednotky, například číslo, čas a délku. Skutečná L2 hlavička je Ethernet II a v ní jsou zdrojová a cílová MAC adresa. Pod ní je IP paket se zdrojovou a cílovou IP a pod ním TCP segment se zdrojovým a cílovým portem.
+
+Když máš popsat průchod dat sítí, mluv konkrétně: aplikace vytvoří zprávu, L4 přidá porty, L3 přidá IP adresy a řeší směrování, L2 vytvoří rámec pro další hop a L1 pošle signál. Router na cestě odstraní L2 rámec, podle cílové IP vybere next hop, zjistí linkovou adresu dalšího hopu, například přes ARP, vytvoří nový rámec a posílá dál. Switch typicky řeší MAC adresy, router IP adresy. Původní MAC adresa tvého notebooku se za první router neposílá.
+
+\subsection*{Minimum ke zkoušce: ISO/OSI vs TCP/IP mapování; MAC/IP/port; frame-packet-segment; ARP; CSMA/CD vs CSMA/CA; hub/switch/router/gateway; IP jako best-effort; směrování hop-by-hop; multicast základ; TCP vs UDP; TCP handshake; Manchester 010 s uvedenou konvencí; L1-L2 spíše hardware, vyšší vrstvy spíše software.}
+
+\newpage
+

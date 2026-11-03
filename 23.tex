@@ -1,0 +1,245 @@
+\otazka{23. Elektronický podpis a elektronická pečeť}{Právní úprava a druhy. Datové schránky - právní úprava a praxe používání.}{BI301K}
+
+\subsection*{23. Elektronický podpis, pečeť a datové schránky -- stručněji}
+Tuhle otázku je dobré držet jako čtyři různé věci: podpis váže dokument na fyzickou osobu, pečeť na právnickou osobu, časové razítko na čas a datová schránka je doručovací kanál.
+
+\textbf{1. Právní rámec}
+\begin{itemize}
+  \item eIDAS upravuje elektronickou identifikaci a služby vytvářející důvěru: podpisy, pečetě, časová razítka, certifikáty a důvěryhodné služby.
+  \item eIDAS 2.0 rozšiřuje rámec hlavně o evropskou peněženku digitální identity, tedy EUDI Wallet, a přeshraniční použití digitální identity a atributů.
+  \item Český rámec doplňují zákon o službách vytvářejících důvěru, zákon o elektronické identifikaci a zákon o elektronických úkonech a autorizované konverzi dokumentů.
+  \item DIA v praxi řeší dohled nad službami vytvářejícími důvěru, důvěryhodné seznamy, elektronickou identifikaci, datové schránky a koordinaci digitálních služeb státu.
+\end{itemize}
+
+\textbf{2. Technický princip podpisu}
+\begin{itemize}
+  \item Z dokumentu se spočítá hash. Podepisující použije soukromý klíč a ověřovatel veřejný klíč z certifikátu. Když se dokument změní, podpis už nesedí.
+  \item Certifikát váže veřejný klíč na identitu. U kvalifikovaných certifikátů je identita ověřena kvalifikovaným poskytovatelem služeb vytvářejících důvěru.
+\end{itemize}
+
+\textbf{3. Druhy podpisu}
+\begin{itemize}
+  \item Prostý elektronický podpis může být jméno v e-mailu, kliknutí nebo sken podpisu. Má právní účinky, ale slabší důkazní jistotu.
+  \item Zaručený podpis je kryptograficky vázán na podepisujícího, umožňuje jeho identifikaci, je pod jeho kontrolou a detekuje změny dokumentu.
+  \item Kvalifikovaný elektronický podpis je zaručený podpis založený na kvalifikovaném certifikátu a vytvořený kvalifikovaným prostředkem. Má účinky vlastnoručního podpisu v celé EU.
+  \item Český uznávaný elektronický podpis není totéž co QES. Zahrnuje QES a také zaručený podpis založený na kvalifikovaném certifikátu.
+\end{itemize}
+
+\textbf{4. Pečeť, razítko a datové schránky}
+\begin{itemize}
+  \item Elektronická pečeť slouží právnické osobě nebo orgánu k prokázání původu a integrity dokumentu. Nepodepisuje člověk, ale organizace.
+  \item Časové razítko dokládá, že data existovala v určitém čase. Nedokazuje pravdivost obsahu.
+  \item Datová schránka je systém elektronického doručování. Dodání a doručení nejsou totéž; u doručování orgánem veřejné moci může nastat fikce doručení.
+  \item Datová schránka není podpis uvnitř PDF. Odeslání z datové schránky může mít zákonem stanovené účinky podepsaného úkonu, ale technicky dokument nepodepisuje.
+\end{itemize}
+
+\textbf{5. Autorizovaná konverze}
+\begin{itemize}
+  \item Autorizovaná konverze převádí dokument mezi listinnou a elektronickou podobou se zachováním právních účinků formy.
+  \item Není to obyčejný sken a nepotvrzuje pravdivost obsahu. Potvrzuje shodu vstupu a výstupu a přidává konverzní doložku.
+\end{itemize}
+
+\subsection*{Kostra odpovědi}
+\begin{enumerate}
+  \item Právní rámec: eIDAS, eIDAS 2.0, český zákon o službách vytvářejících důvěru, datové schránky.
+  \item Druhy podpisů: prostý, zaručený, uznávaný, kvalifikovaný.
+  \item Rozdíl podpis, pečeť, časové razítko.
+  \item Datové schránky: dodání, doručení, fikce, účinky podání.
+  \item Autorizovaná konverze.
+\end{enumerate}
+
+\subsection*{Právní rámec}
+\begin{longtable}{p{0.28\linewidth}p{0.34\linewidth}p{0.30\linewidth}}
+\toprule
+\textbf{Předpis / instituce} & \textbf{Co z toho prakticky plyne} & \textbf{Příklad}\\
+\midrule
+\textbf{eIDAS} & Evropské pravidlo pro elektronickou identifikaci a služby vytvářející důvěru: podpisy, pečetě, časová razítka, certifikáty, doporučené doručování a důvěryhodné seznamy. Elektronickému podpisu se nesmí upřít účinky jen proto, že je elektronický. & Kvalifikovaný elektronický podpis českého občana musí být uznáván i v jiném státě EU a má účinky vlastnoručního podpisu.\\
+\addlinespace
+\textbf{eIDAS 2.0} & Přidává evropskou peněženku digitální identity (EUDI Wallet), atributy identity a větší přeshraniční použitelnost digitální identity. Nejde jen o podpis, ale i o prokazování údajů o osobě. & Člověk může v budoucnu prokázat věk, identitu nebo oprávnění jednat za firmu a případně podepsat dokument z peněženky.\\
+\addlinespace
+\textbf{Zákon o službách vytvářejících důvěru} & Český doplněk k eIDAS: říká, jak se v ČR používají a dohlížejí důvěryhodné služby. Prakticky řeší uznávaný elektronický podpis a požadavky vůči veřejné moci. & Když posílám podání českému úřadu e-mailem, řeším, zda potřebuji uznávaný elektronický podpis.\\
+\addlinespace
+\textbf{Zákon o elektronické identifikaci} & Upravuje prokazování totožnosti online přes kvalifikovaný systém elektronické identifikace a Národní bod. Prakticky jde o Identitu občana a prostředky jako NIA ID, Mobilní klíč eGovernmentu, bankovní identitu nebo eObčanku. & Přihlášení do Portálu občana nebo datové schránky přes Identitu občana není elektronický podpis; je to ověření totožnosti pro přístup ke službě.\\
+\addlinespace
+\textbf{Zákon o elektronických úkonech a autorizované konverzi dokumentů} & Upravuje datové schránky, doručování, podání vůči veřejné moci a autorizovanou konverzi mezi papírem a elektronickou podobou. & Podání poslané datovou schránkou může mít účinky podepsaného podání, i když PDF uvnitř nemá kryptografický podpis.\\
+\addlinespace
+\textbf{DIA} & Prakticky drží českou digitální infrastrukturu: zveřejňuje důvěryhodné seznamy kvalifikovaných poskytovatelů a služeb, řeší oblast elektronické identifikace, Národní bod/Identitu občana, datové schránky a agendu dohledu nad službami vytvářejícími důvěru. & Když chci vědět, zda je poskytovatel certifikátu nebo časového razítka kvalifikovaný, ověřuji ho v důvěryhodném seznamu zveřejněném DIA.\\
+\bottomrule
+\end{longtable}
+
+\pozor{Nepleť tři věci: elektronická identifikace znamená "prokázal jsem online, kdo jsem"; elektronický podpis znamená "podepsal jsem konkrétní dokument"; datová schránka znamená "poslal jsem dokument důvěryhodným doručovacím kanálem".}
+
+\subsection*{Druhy elektronického podpisu}
+\begin{longtable}{p{0.22\linewidth}p{0.34\linewidth}p{0.34\linewidth}}
+\toprule
+\textbf{Typ} & \textbf{Co to je} & \textbf{Kdy ho zmínit}\\
+\midrule
+\textbf{Prostý elektronický podpis} & Jméno v e-mailu, kliknutí na "Souhlasím", sken podpisu, podpis prstem na tabletu. & Má právní účinky, ale slabou důkazní jistotu. Ve sporu se dokazují okolnosti.\\
+\addlinespace
+\textbf{Zaručený elektronický podpis} & Kryptografický podpis svázaný s podepisujícím, umožní detekovat změnu dokumentu. Certifikát nemusí být kvalifikovaný. & Dobře chrání integritu, ale identita se může dokazovat dalším kontextem.\\
+\addlinespace
+\textbf{Uznávaný elektronický podpis} & Český pojem: kvalifikovaný podpis nebo zaručený podpis založený na kvalifikovaném certifikátu. & Důležitý pro komunikaci s českou veřejnou mocí. Není vždy totéž co QES.\\
+\addlinespace
+\textbf{Kvalifikovaný elektronický podpis (QES)} & Zaručený podpis s kvalifikovaným certifikátem vytvořený kvalifikovaným prostředkem. & Nejvyšší úroveň; má účinky vlastnoručního podpisu v celé EU.\\
+\bottomrule
+\end{longtable}
+
+\pravobox{Certifikát si technicky můžeš vytvořit sám, ale nebude kvalifikovaný. Kvalifikovaný certifikát musí vydat kvalifikovaný poskytovatel služeb vytvářejících důvěru po ověření identity. Pro QES navíc nestačí kvalifikovaný certifikát; podpis musí vzniknout kvalifikovaným prostředkem, například certifikovaným tokenem, kartou nebo vzdálenou kvalifikovanou službou.}
+
+\pozor{Uznávaný podpis není automaticky QES. Každý QES je uznávaný podpis, ale zaručený podpis založený na kvalifikovaném certifikátu může být uznávaný, aniž by byl kvalifikovaný podpis, pokud nebyl vytvořen kvalifikovaným prostředkem.}
+
+\subsection*{Pečeť a časové razítko}
+\begin{itemize}
+  \item \textbf{Elektronický podpis} patří fyzické osobě a zachycuje její jednání.
+  \item \textbf{Elektronická pečeť} patří právnické osobě a dokládá původ a integritu dokumentu od organizace.
+  \item \textbf{Časové razítko} prokazuje, že dokument nebo data existovala v určitém čase.
+\end{itemize}
+
+Pečeť není podpis konkrétního člověka. Hodí se třeba pro automaticky vydané potvrzení univerzity nebo úřadu. Podpis, pečeť ani razítko nedokazují pravdivost obsahu; dokazují původ, integritu a čas.
+
+\subsection*{Datové schránky}
+Datové schránky upravuje zákon o elektronických úkonech a autorizované konverzi dokumentů. Jsou důvěryhodný kanál pro doručování a podání, ne elektronický podpis.
+
+Nejdůležitější:
+\begin{itemize}
+  \item \textbf{dodání} - zpráva technicky dorazí do datové schránky,
+  \item \textbf{doručení} - adresát se přihlásí, případně nastane fikce doručení,
+  \item \textbf{fikce doručení} - typicky po 10 dnech u doručování orgánem veřejné moci,
+  \item \textbf{podání vůči veřejné moci} - odeslání z datové schránky může mít účinky podepsaného podání,
+  \item \textbf{datová schránka není archiv} - zprávy je potřeba ukládat včetně obálky a doručenky.
+\end{itemize}
+
+\pozor{Datová schránka nevytvoří podpis uvnitř PDF. Jen zákon může říct, že úkon odeslaný datovou schránkou má účinky podepsaného úkonu. Proto nepleť podepsaný dokument a dokument odeslaný datovou schránkou.}
+
+\subsection*{Autorizovaná konverze}
+Autorizovaná konverze převádí dokument mezi listinnou a elektronickou podobou se zachováním právních účinků formy. Není to obyčejný sken a nepotvrzuje pravdivost obsahu. Potvrzuje shodu podoby vstupu a výstupu a obsahuje konverzní doložku.
+
+\subsection*{Jak to říct u zkoušky}
+\begin{itemize}
+  \item Prostý podpis: právně možný, důkazně slabší.
+  \item Zaručený podpis: kryptografie, vazba na osobu, detekce změn.
+  \item Uznávaný podpis: český pojem důležitý pro veřejnou moc.
+  \item QES: nejvyšší úroveň, vlastnoruční podpis v celé EU.
+  \item Pečeť: právnická osoba, původ a integrita.
+  \item Razítko: důkaz času.
+  \item Datovka: doručovací kanál, ne podpis.
+  \item Konverze: převod listina/elektronicky, ne ověření pravdivosti.
+\end{itemize}
+
+\zkouska{Souvisle: elektronický podpis řeší identitu podepisujícího a integritu dokumentu, pečeť řeší původ dokumentu od právnické osoby, časové razítko řeší existenci v čase, datová schránka řeší doručovací kanál a autorizovaná konverze řeší převod formy dokumentu. Nejvyšší úroveň podpisu je QES, který má účinky vlastnoručního podpisu v celé EU.}
+
+\zdroje{eIDAS 910/2014; eIDAS 2.0 - nařízení 2024/1183; zákon o službách vytvářejících důvěru pro elektronické transakce; zákon o elektronické identifikaci; zákon o elektronických úkonech a autorizované konverzi dokumentů; DIA; přiložené PDF.}
+
+\iffalse
+\otazka{23. Elektronický podpis a elektronická pečeť}{Právní úprava a druhy. Datové schránky - právní úprava a praxe používání.}{BI301K}
+
+\subsection*{Kostra odpovědi}
+\begin{enumerate}
+  \item Vysvětlit technický princip podpisu: hash, soukromý a veřejný klíč, certifikát.
+  \item Vyložit eIDAS, eIDAS 2.0 a české zákony o službách vytvářejících důvěru, elektronické identifikaci a datových schránkách/autorizované konverzi.
+  \item Popsat druhy podpisu: prostý, zaručený, kvalifikovaný; český uznávaný podpis.
+  \item Popsat elektronickou pečeť a časové razítko.
+  \item Vyložit datové schránky: zřízení, dodání, doručení, fikce, vztah k podpisu.
+  \item Zmínit autorizovanou konverzi.
+\end{enumerate}
+
+\subsection*{Technický princip}
+Elektronický podpis využívá asymetrickou kryptografii. Z dokumentu se vypočte hash, tedy krátký otisk. Podepisující použije soukromý klíč k vytvoření podpisové hodnoty. Ověřovatel použije veřejný klíč, ověří podpis a znovu vypočte hash dokumentu. Pokud se dokument změní, hash nesedí a podpis neprojde.
+
+Veřejný klíč je spojen s osobou certifikátem. Certifikát vydává certifikační autorita. Ověření podpisu proto znamená nejen ověřit kryptografii, ale i řetězec certifikátů, platnost, účel certifikátu, revokaci a čas podpisu. Pro dlouhodobé ověřování je důležité časové razítko a uchování validačních dat.
+
+\subsection*{Právní rámec}
+Základem je eIDAS - nařízení EU 910/2014, novelizované eIDAS 2.0 nařízením 2024/1183. eIDAS upravuje elektronickou identifikaci, elektronické podpisy, pečetě, časová razítka, služby elektronického doporučeného doručování, certifikáty a důvěryhodné služby. Českou úpravu doplňuje zákon o službách vytvářejících důvěru pro elektronické transakce (č. 297/2016 Sb.), zákon o elektronické identifikaci (č. 250/2017 Sb.) a zákon o elektronických úkonech a autorizované konverzi dokumentů (č. 300/2008 Sb.).
+
+eIDAS stanoví důležitou zásadu: elektronickému podpisu nesmí být upírány právní účinky jen proto, že je elektronický. Kvalifikovaný elektronický podpis má stejné právní účinky jako vlastnoruční podpis. V ČR od roku 2023 vykonává úkoly orgánu dohledu v oblasti služeb vytvářejících důvěru Digitální a informační agentura (DIA); dříve tuto agendu vykonávalo Ministerstvo vnitra. NÚKIB tedy není obecným dozorovým orgánem pro elektronické podpisy a pečetě.
+
+eIDAS 2.0 přidává důraz na evropskou peněženku digitální identity (EUDI Wallet), atributy identity a praktičtější přeshraniční používání důvěryhodných služeb. Pro otázku na podpisy je pointa hlavně v tom, že se posiluje ekosystém elektronické identity a kvalifikovaných služeb: osoba se má umět důvěryhodně identifikovat, podepsat, prokazovat atributy a používat digitální doklady napříč EU. Peněženka nemá být jen "občanka v mobilu"; má umožnit online i offline prokazování identity, sdílení jen vybraných údajů, ukládání digitálních dokladů a vytváření právně závazných elektronických podpisů. Přesné načasování peněženek není dobré říkat jen jako "do konce 2026" bez kontextu: eIDAS 2.0 váže dostupnost peněženek na lhůty od vstupu relevantních prováděcích aktů v účinnost, takže před zkouškou je vhodné ověřit aktuální stav implementačních aktů a českého projektu DIA.
+
+\pravobox{eIDAS 2.0 v praxi: každý členský stát má zpřístupnit alespoň jednu evropskou peněženku digitální identity občanům, rezidentům a podnikům. Uživatel bude moci prokázat identitu nebo atribut, například věk či oprávnění jednat za firmu, aniž by pokaždé sdílel celý doklad. V ČR přípravu EUDI Wallet koordinuje DIA. Navazuje to na český ekosystém elektronické identity, například Identitu občana, ale eDoklady nelze jednoduše označit za totéž co EUDI peněženku - jde o samostatné národní řešení a jeho vztah k evropské peněžence se postupně formuje.}
+
+Pro podpisy je prakticky důležité, že peněženka má umožnit i vytváření elektronických podpisů. U fyzických osob se počítá s tím, že kvalifikovaný elektronický podpis pro neprofesní použití bude dostupný bez poplatku; neznamená to ale, že všechny podpisové služby pro firmy nebo profesní použití budou zdarma. eIDAS 2.0 také počítá s tím, že vybrané veřejné a soukromé služby budou muset peněženku přijímat, aby ji člověk mohl použít nejen vůči státu, ale i v běžných přeshraničních situacích, například u banky, telekomunikační služby nebo při prokazování kvalifikace.
+
+\priklad{Praktický výhled - EUDI Wallet: podle informačního webu DIA má evropská peněženka digitální identity sloužit k prokázání totožnosti, ukládání a správě údajů a digitálních dokladů a k předávání jen vybraných informací. Modelově může jít o prokázání věku bez sdílení rodného čísla, prokázání oprávnění jednat za právnickou osobu, předložení kvalifikace v jiné zemi EU nebo podpis dokumentu kvalifikovaným podpisem přímo z peněženky. Ke zkoušce: eDoklady, Identita občana, datová schránka, EUDI Wallet a elektronický podpis nejsou totéž; každé řeší jinou část digitální důvěry.}
+
+\subsection*{Druhy elektronického podpisu}
+Nejjednodušší je držet v hlavě dvě osy: \textbf{technika} a \textbf{právní důvěra}. Technicky může být podpis jen obrázek nebo kryptografický podpis. Právně je ale rozdíl, jestli identitu podepisujícího jen tvrdím, nebo ji ověřil kvalifikovaný poskytovatel služeb vytvářejících důvěru a jestli se podpis vytvořil kvalifikovaným prostředkem.
+
+\begin{longtable}{p{0.19\linewidth}p{0.32\linewidth}p{0.22\linewidth}p{0.19\linewidth}}
+\toprule
+\textbf{Typ podpisu} & \textbf{Co to technicky a certifikačně je} & \textbf{Právní síla v ČR} & \textbf{Kdy ho použít}\\
+\midrule
+\textbf{Prostý elektronický podpis} & Jakákoli elektronická data připojená k projevu vůle: jméno v e-mailu, kliknutí na "Souhlasím", vložený obrázek podpisu, podpis prstem na tabletu. Certifikát není potřeba. & Má právní účinky, ale nízkou důkazní jistotu. Ve sporu se musí jinými důkazy prokazovat, kdo podpis vytvořil a že chtěl právně jednat. & Interní schválení, dovolenky, převzetí zásilky, jednoduchá komunikace, situace s nízkým rizikem.\\
+\addlinespace
+\textbf{Zaručený elektronický podpis bez kvalifikovaného certifikátu} & Kryptografický podpis vytvořený soukromým klíčem; může být založen na interním, komerčním nebo i self-signed certifikátu. Splňuje vazbu na podepisujícího, identifikaci, výhradní kontrolu a detekci změn, ale certifikát není kvalifikovaný. & Střední a silně závislá na důkazech. Dobře chrání integritu dokumentu, ale identitu podepisujícího je nutné doložit smlouvou, interní PKI, předchozí komunikací nebo jiným kontextem. & B2B vztahy, faktury, objednávky, interní workflow, pokud si strany předem ujednají, že takový podpis přijímají.\\
+\addlinespace
+\textbf{Uznávaný elektronický podpis} & Český pojem: buď kvalifikovaný elektronický podpis, nebo zaručený podpis založený na kvalifikovaném certifikátu pro elektronický podpis. Certifikát vydal kvalifikovaný poskytovatel po ověření identity, ale podpis nemusí být vytvořen kvalifikovaným prostředkem. & Vysoká. Pro komunikaci s veřejnou mocí v ČR typicky postačuje, pokud zvláštní předpis nevyžaduje něco přísnějšího. Není ale automaticky totéž co QES. & Podání vůči českým úřadům, daňová přiznání, důležitější česká elektronická komunikace, nahrazení úředně ověřeného podpisu jen v zákonem dovolených situacích.\\
+\addlinespace
+\textbf{Kvalifikovaný elektronický podpis (QES)} & Zaručený podpis založený na kvalifikovaném certifikátu a vytvořený kvalifikovaným prostředkem pro vytváření podpisů (QSCD), například certifikovaným tokenem, kartou nebo vzdálenou kvalifikovanou službou. & Nejvyšší. Podle eIDAS má stejné právní účinky jako vlastnoruční podpis a musí být uznáván v celé EU. & Právní jednání vyžadující písemnou formu, přeshraniční styk v EU, velmi důležité smlouvy, situace, kde chceš nejvyšší důkazní jistotu.\\
+\bottomrule
+\end{longtable}
+
+\pravobox{Můžu si certifikát udělat sám? Technicky ano: můžeš si vytvořit vlastní pár klíčů a self-signed certifikát. Tím ale nevznikne kvalifikovaný certifikát ani kvalifikovaný podpis. Kvalifikovaný certifikát musí vydat kvalifikovaný poskytovatel služeb vytvářejících důvěru vedený v důvěryhodném seznamu; poskytovatel ověřuje totožnost žadatele, certifikát obsahuje identifikační údaje, veřejný klíč, dobu platnosti, sériové číslo, údaj o kvalifikovaném charakteru a informace potřebné pro ověření a zneplatnění. Pro QES navíc nestačí samotný kvalifikovaný certifikát: podpis musí být vytvořen kvalifikovaným prostředkem, tedy bezpečným certifikovaným zařízením nebo vzdálenou kvalifikovanou službou pod kontrolou podepisujícího.}
+
+\pozor{Nepleť tři věci: \textbf{kryptografický podpis} chrání integritu a vazbu na klíč; \textbf{kvalifikovaný certifikát} důvěryhodně váže veřejný klíč na ověřenou osobu; \textbf{kvalifikovaný prostředek} chrání vytvoření podpisu. Uznávaný podpis v českém právu může mít kvalifikovaný certifikát, ale nemusí být QES, pokud nebyl vytvořen kvalifikovaným prostředkem.}
+
+\priklad{Modelový příklad - podpis fyzické osoby: český občan podepisuje přeshraniční smlouvu s německým partnerem. Pokud použije kvalifikovaný elektronický podpis podle eIDAS, má podpis účinky vlastnoručního podpisu a uznává se v celé EU. Pokud do PDF jen vloží naskenovaný podpis, může jít pořád o elektronický podpis, ale důkazně bude slabší: bude se dokazovat, kdo ho vložil, s jakým úmyslem a zda se dokument nezměnil.}
+
+\priklad{Modelový příklad - "komerční" vs kvalifikovaný certifikát: firma si může zřídit interní certifikáty pro zaměstnance a podepisovat jimi objednávky uvnitř firemního systému. To může být důkazně dobře použitelné, pokud jsou jasná pravidla, logy a vazba certifikátu na zaměstnance. Není to ale kvalifikovaný certifikát pro elektronický podpis. Když stejný zaměstnanec potřebuje podat dokument úřadu jako uznávaně podepsaný, použije certifikát od kvalifikovaného poskytovatele, například podle aktuálního důvěryhodného seznamu DIA.}
+
+\subsection*{Elektronická pečeť a časové razítko}
+Elektronická pečeť je obdobou podpisu pro právnickou osobu nebo instituci, ale není to totéž co podpis. \textbf{Elektronický podpis} náleží fyzické osobě a typicky zachycuje její projev vůle. \textbf{Elektronická pečeť} náleží právnické osobě a dokládá původ a integritu dokumentu od této organizace. I pečeť může být prostá, zaručená nebo kvalifikovaná. Kvalifikovaná pečeť zakládá silnou domněnku původu a integrity, ale není ekvivalentem vlastnoručního podpisu fyzické osoby a sama o sobě neprokazuje, že konkrétní člověk učinil právní jednání.
+
+Elektronické časové razítko spojuje data s konkrétním časem a prokazuje, že data v dané podobě v daném čase existovala. Kvalifikované časové razítko má vyšší důkazní sílu. Dlouhodobá validace kombinuje podpis, certifikát, revokační informace a časová razítka tak, aby bylo možné podpis ověřit i po vypršení certifikátu nebo zestárnutí algoritmů.
+
+Podpis, pečeť ani časové razítko nedokazují pravdivost obsahu. Dokazují původ, integritu a čas. Dokument může být formálně správně podepsaný a přesto obsahovat nepravdu.
+
+U dlouhodobého uchování je důležité neponechat dokument jen jako "soubor s podpisem". Je potřeba zachovat validační data: certifikát, řetězec důvěry, informace o revokaci a časová razítka. V praxi se používají formáty a profily jako PAdES u PDF, XAdES u XML nebo ASiC kontejnery. Dlouhodobá validace ale neopraví podpis, který byl neplatný už v okamžiku vytvoření; jen umožňuje později doložit, že tehdy byl ověřitelný.
+
+\priklad{Modelový příklad - pečeť právnické osoby: univerzita automaticky vydává potvrzení o studiu z informačního systému a opatří je kvalifikovanou elektronickou pečetí. Pečeť dokládá, že dokument pochází od univerzity a od zapečetění se nezměnil. Neříká ale, který konkrétní úředník klikl na vydání potvrzení, a nenahrazuje podpis fyzické osoby tam, kde je vyžadován osobní projev vůle.}
+
+\priklad{Modelový příklad - časové razítko a archivace: firma podepíše smlouvu kvalifikovaným podpisem v roce 2026, ale spor vznikne až v roce 2034, kdy je certifikát dávno expirovaný. Pokud má dokument uložená validační data a navazující kvalifikovaná časová razítka, lze doložit, že podpis byl v době vytvoření platný a dokument se nezměnil. Bez dlouhodobé validace může být pozdější dokazování výrazně slabší.}
+
+\subsection*{Služby vytvářející důvěru}
+Podpisy, pečetě a razítka patří mezi služby vytvářející důvěru. Důležité je, že kvalifikovaný status se vztahuje vždy ke konkrétní službě, ne automaticky k celému poskytovateli. Poskytovatel může mít kvalifikovanou službu vydávání certifikátů pro podpisy, ale nemusí mít kvalifikovaná časová razítka nebo kvalifikovanou službu elektronického doporučeného doručování. Proto se v praxi ověřuje aktuální důvěryhodný seznam, místo aby se jen pamatoval název firmy.
+
+Kvalifikované elektronické doporučené doručování podle eIDAS je evropská kategorie důvěryhodné služby. Umí prokazovat odeslání, přijetí, čas, integritu a identifikaci stran. Není to totéž co česká datová schránka. Funkčně se podobají tím, že obě řeší prokazatelné doručování, ale mají jiný právní základ a jinou územní logiku: datové schránky jsou český národní systém, kvalifikované doporučené doručování je evropská služba podle eIDAS.
+
+\subsection*{Datové schránky}
+Datové schránky upravuje zákon o elektronických úkonech a autorizované konverzi dokumentů. Slouží k elektronickému doručování a k činění úkonů vůči orgánům veřejné moci. Informační systém datových schránek spravuje DIA a provozuje jej Česká pošta. Datová zpráva je dodána do schránky okamžikem dodání a doručena přihlášením oprávněné osoby. Fikce doručení po 10 dnech je typická hlavně u doručování orgánem veřejné moci; u soukromé komunikace a poštovních datových zpráv je potřeba rozlišit konkrétní režim a neříkat ji úplně univerzálně.
+
+Informační systém datových schránek je veřejnoprávní doručovací infrastruktura. Pro zkoušku je důležité rozlišovat \textbf{dodání} a \textbf{doručení}. Dodání znamená, že zpráva technicky dorazila do schránky. Doručení znamená právní okamžik, kdy se s ní adresát má seznámit - typicky přihlášením oprávněné osoby nebo fikcí po 10 dnech. U orgánů veřejné moci a soukromých osob se liší praktické režimy doručování a dostupnost některých služeb, ale základní pointa je stejná: datová schránka je důvěryhodný kanál, ne podpisový nástroj.
+
+Je dobré rozlišit tři komunikační situace. \textbf{Orgán veřejné moci} doručuje do datové schránky v režimu veřejnoprávního doručování. \textbf{Soukromá osoba vůči orgánu veřejné moci} typicky činí podání, kterému zákon přiznává účinky podepsaného úkonu. \textbf{Soukromá komunikace mezi soukromými osobami} funguje jako poštovní datová zpráva nebo soukromoprávní komunikace, kde se právní následky a fikce neposuzují úplně stejně jako u doručování orgánu veřejné moci. Proto je potřeba vždy říct, kdo komu doručuje a v jakém režimu.
+
+Datová schránka není elektronický podpis. Odeslání z datové schránky ale může mít účinky podepsaného úkonu, pokud to zákon připouští. Jde o zákonné nahrazení podpisu, ne o vytvoření podpisu uvnitř dokumentu. Proto je nutné rozlišit:
+\begin{itemize}
+  \item dokument podepsaný elektronickým podpisem,
+  \item dokument odeslaný datovou schránkou,
+  \item dokument autorizovaně konvertovaný,
+  \item běžný sken vlastnoručně podepsaného dokumentu.
+\end{itemize}
+
+Datové zprávy nejsou ve schránce uchovávány navždy. V praxi je nutné řešit archivaci, doručenky a dlouhodobé ověření dokumentů. Pro právní jistotu je vhodné ukládat nejen přílohu, ale i obálku datové zprávy a doručenku.
+
+Zřízení datové schránky se liší podle typu osoby. Orgány veřejné moci, právnické osoby zapsané v rejstřících, podnikající fyzické osoby a vybrané profese ji mají typicky zřízenou ze zákona; nepodnikající fyzická osoba ji má na žádost. Prakticky je důležité vědět i to, že ISDS není archiv. Zprávy se uchovávají jen omezenou dobu, řádově 90 dnů po doručení, a pro dlouhodobé uchování je potřeba spisová služba, Datový trezor, stažení celé zprávy včetně doručenky nebo autorizovaná konverze.
+
+\pozor{Datová schránka často prakticky nahradí podpis podání, ale nevytvoří elektronický podpis uvnitř PDF. Když později oddělíš přílohu od obálky datové zprávy a doručenky, můžeš přijít o důkazní kontext, kdy a odkud byla zpráva odeslána a doručena.}
+
+\priklad{Modelový příklad - orgán veřejné moci doručuje podnikateli: finanční úřad odešle rozhodnutí do datové schránky společnosti. Dodání je technický okamžik vložení zprávy do schránky, doručení nastane přihlášením oprávněné osoby nebo fikcí po 10 dnech, pokud se nikdo nepřihlásí. U zkoušky zdůrazni, že se počítají lhůty a že datová schránka nahrazuje papírové doručování v právně řízeném kanálu.}
+
+\priklad{Modelový příklad - osoba činí podání vůči soudu: fyzická osoba nebo advokát pošle žalobu či jiné podání datovou schránkou. Dokument nemusí být zvlášť elektronicky podepsaný, pokud zákon spojuje odeslání z datové schránky s účinky podepsaného podání. To ale neznamená, že PDF obsahuje kryptografický podpis; důkazní síla plyne z obálky datové zprávy, identifikace schránky a zákonné fikce.}
+
+\priklad{Modelový příklad - soukromá poštovní datová zpráva: dvě firmy si pošlou smluvní dokument datovou schránkou. Je nutné rozlišit doručovací účinky datové zprávy od podpisu samotného dokumentu. Pokud má být později prokázán obsah smlouvy, vůle konkrétní osoby a integrita dokumentu, může být vhodný i elektronický podpis nebo pečeť, nejen samotné doručení.}
+
+\subsection*{Autorizovaná konverze}
+Autorizovaná konverze převádí dokument mezi listinnou a elektronickou podobou se zachováním právních účinků formy. Není to obyčejný sken, tisk ani ověření pravdivosti obsahu. Konverze potvrzuje shodu podoby dokumentu. Při konverzi elektronického dokumentu se kontrolují elektronické prvky, například podpisy, pečetě a časová razítka.
+
+Výstup konverze obsahuje konverzní doložku. Ta říká, kdo, kdy a z čeho dokument převedl, a potvrzuje shodu podoby vstupu a výstupu. Neznamená to, že obsah dokumentu je pravdivý nebo že právní jednání v něm je platné. Konverze řeší formu a důkazní použitelnost, ne věcnou správnost.
+
+\priklad{Podání soudu lze učinit datovou schránkou; podpis se pak zpravidla nevyžaduje, protože zákon přiznává úkonu účinky podepsaného podání. Když stejný dokument pošlu obyčejným e-mailem bez uznávaného podpisu, účinky mohou být jiné.}
+
+\zkouska{Závěrečná věta může být: "Elektronický podpis řeší, kdo a s jakou integritou dokument podepsal; datová schránka řeší důvěryhodný kanál doručení a identifikaci schránky; autorizovaná konverze řeší převod formy dokumentu."}
+
+\zdroje{eIDAS 910/2014 a eIDAS 2.0 - nařízení 2024/1183; zákon o službách vytvářejících důvěru pro elektronické transakce (č. 297/2016 Sb.); zákon o elektronické identifikaci (č. 250/2017 Sb.); zákon o elektronických úkonech a autorizované konverzi dokumentů (č. 300/2008 Sb.); důvěryhodné seznamy a informace DIA ke kvalifikovaným poskytovatelům, certifikátům a prostředkům; přiložené PDF.}
+
+\fi

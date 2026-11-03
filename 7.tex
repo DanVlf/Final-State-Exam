@@ -1,0 +1,317 @@
+\otazka{7. Databáze}{Relační model, relační schéma, klíče relačních schémat, integritní omezení, relační algebra, spojování relací. Dotazovací jazyk SQL (příkaz select, spojování relací, agregační funkce). Zpracování dotazů. Indexování. Transakce. Vlastnosti transakčního zpracování.}{PB154 || PB168}
+
+\subsection*{7. Databáze -- stručněji}
+Databáze je řízené uložení dat tak, aby šla bezpečně sdílet, dotazovat, měnit a chránit proti nekonzistenci. Odpověď je dobré vést od relačního modelu přes SQL a indexy až k transakcím.
+
+\textbf{1. Relační model}
+\begin{itemize}
+  \item Relační databáze ukládá data do relací, prakticky tabulek. Řádek je záznam, sloupec je atribut a relační schéma říká, jaké atributy tabulka má.
+  \item Klíč jednoznačně identifikuje řádek. Primární klíč je zvolený hlavní identifikátor, cizí klíč odkazuje na řádek v jiné tabulce.
+  \item Integritní omezení hlídají smysluplnost dat: doménová omezení, NOT NULL, UNIQUE, primární a cizí klíče.
+\end{itemize}
+
+\textbf{2. Relační algebra a SQL}
+\begin{itemize}
+  \item Relační algebra je formální základ dotazování: selekce vybírá řádky, projekce sloupce, spojení kombinuje tabulky podle vztahu.
+  \item SQL je praktický dotazovací jazyk. Základní \texttt{SELECT} řeší \texttt{FROM}, \texttt{WHERE}, \texttt{JOIN}, \texttt{GROUP BY}, agregační funkce a \texttt{ORDER BY}.
+  \item Join není jen "slepení tabulek"; vyjadřuje vztah mezi daty, typicky přes cizí klíč.
+\end{itemize}
+
+\textbf{3. Zpracování dotazů a indexy}
+\begin{itemize}
+  \item Databáze dotaz parsuje, optimalizuje a vytvoří plán provedení. Optimalizátor vybírá pořadí spojení, použití indexů a způsob čtení dat.
+  \item Index zrychluje vyhledávání a řazení, ale zpomaluje zápisy a zabírá místo. Typický B+ strom umožní rychle hledat rozsahy i konkrétní hodnoty.
+  \item Index není kouzlo na všechno: špatně zvolený index se nemusí použít, nízká selektivita moc nepomůže a příliš mnoho indexů zhorší update/insert.
+\end{itemize}
+
+\textbf{4. Transakce}
+\begin{itemize}
+  \item Transakce je skupina operací, která má proběhnout jako jeden logický celek. Vlastnosti ACID znamenají atomicitu, konzistenci, izolaci a trvanlivost.
+  \item Atomicita: buď proběhne všechno, nebo nic. Izolace: souběžné transakce se nemají nebezpečně ovlivnit. Durability: po commitu data přežijí pád.
+  \item Izolační úrovně řeší anomálie jako dirty read, non-repeatable read a phantom read. Vyšší izolace je bezpečnější, ale může snižovat výkon a zvyšovat blokování.
+\end{itemize}
+
+\subsection*{Relační model, SQL, zpracování dotazů, indexování a transakce}
+
+Tato otázka spojuje dvě vrstvy databází: nejprve logický model dat, tedy \textbf{relační model}, schémata, klíče, \textbf{integritní omezení} a relační algebru, a potom praktickou práci v \textbf{SQL}, zpracování dotazů, indexování a transakční zpracování. U státnic je dobré nemluvit jen definice, ale pořád ukazovat, jak se z matematického pohledu dostaneme k tabulkám, dotazům a konkrétním problémům v praxi.
+
+Komise se podle zápisů opakovaně ptaly na SQL syntaxi, klíče, normalizaci, \textbf{ACID} a indexy, takže odpověď by měla mít i malé příklady.
+
+\subsection*{Relační model a relační schéma}
+
+Relační model je databázový model, ve kterém jsou data reprezentována jako relace. Matematicky je relace množina n-tic, tedy množina uspořádaných řádků hodnot. Pokud má relace n atributů, mluví se o n-ární relaci. Formálně lze relaci chápat jako podmnožinu kartézského součinu domén D1 x D2 x ... x Dn. Prakticky v databázi tomu odpovídá tabulka: atributy jsou sloupce, n- tice jsou řádky a doména je množina povolených hodnot daného sloupce.
+
+Například schéma Student(student\_id, jmeno, obor) říká, že relace Student má tři atributy. Jedna n-tice může být (1, Jan, Informatika). Z matematického pohledu je relace množina, takže neobsahuje duplicitní n-tice a nezáleží na pořadí řádků. Databázový pohled je implementační: tabulky mají datové typy, omezení, indexy a v SQL se mohou objevit duplicity, pokud jim nezabráníme klíčem nebo DISTINCT.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+Student(student_id, jmeno, obor)
+(1, Jan, Informatika)
+(2, Eva, Kyberbezpečnost)
+\end{verbatim}
+\end{codebox}
+
+Relační schéma je popis struktury relace: její název, seznam atributů a jejich domény. Samotná relace je až konkrétní aktuální množina řádků. Dobrá formulace ke zkoušce je: relační model je obecný princip práce s tabulkami, \textbf{relační schéma} je definice konkrétní tabulky a relace je aktuální obsah této tabulky.
+
+\subsection*{Klíče a integritní omezení}
+
+Klíče slouží k jednoznačné identifikaci řádků a ke spojování tabulek. Superklíč je libovolná množina atributů, která jednoznačně identifikuje řádek. Kandidátní klíč je minimální superklíč, tedy už z něj nejde odebrat atribut, aniž by se ztratila jednoznačnost. Primární klíč je jeden zvolený \textbf{kandidátní klíč}. Cizí klíč je atribut nebo množina atributů, které odkazují na klíč v jiné tabulce.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+Student(student_id PRIMARY KEY, uco UNIQUE, jmeno)
+Zapis(student_id FOREIGN KEY REFERENCES Student(student_id), predmet_id)
+\end{verbatim}
+\end{codebox}
+
+Integritní omezení hlídají správnost dat. Entitní \textbf{integrita} říká, že \textbf{primární klíč} musí jednoznačně identifikovat řádek a nemá být NULL. Referenční integrita říká, že \textbf{cizí klíč} musí odkazovat na existující řádek v odkazované tabulce, případně být NULL, pokud to schéma dovoluje.
+
+Doménová integrita omezuje hodnoty atributu podle typu a pravidel, například známka může být jen A až F. Prakticky se to v SQL vyjadřuje pomocí PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL nebo CHECK.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+CREATE TABLE Hodnoceni (
+  student_id INT NOT NULL,
+  predmet_id INT NOT NULL,
+  znamka CHAR(1) CHECK (znamka IN ('A','B','C','D','E','F')),
+  PRIMARY KEY (student_id, predmet_id)
+);
+\end{verbatim}
+\end{codebox}
+
+Komise může chtít nakreslit tabulku a ukázat klíče. U vztahu 1:N je cizí klíč na straně N. U vztahu M:N se vytvoří spojovací tabulka, která má dva cizí klíče a často složený primární klíč. U vztahu 1:1 je cizí klíč navíc unikátní, nebo je přímo primárním klíčem druhé tabulky.
+
+\subsection*{Relační algebra a spojování relací}
+
+Relační algebra je formální dotazovací jazyk nad relacemi. Je procedurálnější než SQL: popisuje, jaké operace se nad relacemi provedou. Každá operace bere na vstupu relaci nebo relace a vrací opět relaci. Základní operace, které je potřeba umět namapovat na SQL, jsou selekce, projekce a spojení. Selekce vybírá řádky podle podmínky a značí se sigma. V SQL odpovídá hlavně klauzuli WHERE. Projekce vybírá sloupce a značí se pi.
+
+V SQL odpovídá seznamu atributů za \textbf{SELECT}. Spojení relací propojuje řádky ze dvou tabulek podle podmínky, typicky podle primárního a cizího klíče.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+Relační algebra:  pi jmeno ( sigma obor = 'Informatika' (Student) )
+SQL: SELECT jmeno FROM Student WHERE obor = 'Informatika';
+\end{verbatim}
+\end{codebox}
+
+Join je v databázích zásadní, protože normalizované schéma je rozdělené do více tabulek. Běžný INNER \textbf{JOIN} vrátí jen řádky, kde existuje odpovídající záznam na obou stranách. LEFT OUTER JOIN vrátí všechny řádky z levé tabulky a k nim odpovídající řádky zprava; pokud odpovídající řádek neexistuje, doplní se NULL. RIGHT JOIN je opačný a FULL OUTER JOIN zachová neodpovídající řádky z obou stran.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+SELECT s.jmeno, p.nazev
+FROM Student s
+JOIN Zapis z ON s.student_id = z.student_id
+JOIN Predmet p ON z.predmet_id = p.predmet_id;
+\end{verbatim}
+\end{codebox}
+
+Přirozené spojení, NATURAL JOIN, automaticky spojuje podle všech stejně pojmenovaných atributů. Teoreticky odpovídá přirozenému spojení z relační algebry, ale prakticky je nebezpečné, protože může spojit i sloupce, které mají stejný název, ale jiný význam. U zkoušky je bezpečnější zdůraznit explicitní JOIN ON, kde přesně řeknu, podle čeho se tabulky spojují.
+
+Kromě selekce, projekce a spojení má \textbf{relační algebra} ještě několik operací. Kartézský součin ($\times$) zkombinuje každý řádek jedné relace s každým řádkem druhé; spojení je vlastně \textbf{kartézský součin} následovaný selekcí.
+
+Množinové operace pracují nad relacemi se stejnou strukturou, tedy stejnými atributy: sjednocení ($\cup$) vrátí řádky z obou relací, průnik ($\cap$) jen řádky společné oběma a rozdíl (-) řádky z první relace, které nejsou ve druhé. Přejmenování ($\rho$) změní jméno relace nebo atributů, což je užitečné například při spojení tabulky se sebou samou.
+
+Spojení podle obecné podmínky (nejen rovnosti) se nazývá theta join; když je podmínkou rovnost stejnojmenných atributů a duplicitní sloupce se sloučí, jde o přirozené spojení (natural join). Okrajově existuje i relační dělení ($\div$), které odpovídá dotazům typu "najdi studenty zapsané do všech předmětů z dané množiny".
+
+\subsection*{SQL: SELECT, DML, DDL a agregace}
+
+SQL je praktický jazyk pro práci s relační databází. Základní SELECT má tvar SELECT - FROM - WHERE. SELECT říká, které sloupce chceme vrátit, FROM určuje zdrojové tabulky a WHERE filtruje řádky. Pro spojování se používá JOIN ON. SQL je deklarativní: uživatel popíše, co chce získat, ale konkrétní plán provedení vybírá optimalizátor databázového systému.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+SELECT s.jmeno, COUNT(*) AS pocet_predmetu
+FROM Student s
+JOIN Zapis z ON s.student_id = z.student_id
+WHERE s.obor = 'Informatika'
+GROUP BY s.student_id, s.jmeno;
+\end{verbatim}
+\end{codebox}
+
+DML, Data Manipulation Language, pracuje s konkrétními daty. Patří sem SELECT, INSERT, UPDATE a DELETE. DDL, Data Definition Language, definuje strukturu databáze. Patří sem CREATE TABLE, ALTER TABLE, DROP TABLE a CREATE INDEX. Komise se podle zápisů ptala i na CREATE TABLE, INSERT, UPDATE a ALTER TABLE, takže je dobré umět aspoň jednoduchý příklad.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+CREATE TABLE Student (student_id INT PRIMARY KEY, jmeno VARCHAR(100));
+INSERT INTO Student VALUES (1, 'Jan');
+UPDATE Student SET jmeno = 'Jan Novak' WHERE student_id = 1;
+ALTER TABLE Student ADD email VARCHAR(100);
+\end{verbatim}
+\end{codebox}
+
+Agregační funkce počítají jednu souhrnnou hodnotu z více řádků. Typické jsou COUNT, SUM, AVG, MIN a MAX. Pokud chceme agregaci po skupinách, použijeme GROUP BY. Pokud chceme filtrovat jednotlivé řádky před seskupením, použijeme WHERE. Pokud chceme filtrovat až celé skupiny po agregaci, použijeme HAVING.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+SELECT dept_name, AVG(salary) AS prumerny_plat
+FROM Instructor
+GROUP BY dept_name
+HAVING AVG(salary) > 50000;
+\end{verbatim}
+\end{codebox}
+
+Doplňkově se mohou objevit triggery a uložené procedury. Trigger je databázový objekt, který se automaticky spustí při události, například INSERT, UPDATE nebo DELETE. Hodí se pro audit, kontrolu pravidel nebo automatické doplnění odvozených dat, ale může skrývat vedlejší efekty. Uložená \textbf{procedura} je pojmenovaný blok kódu uložený v databázi, který lze opakovaně volat.
+
+\subsection*{Normalizace a normální formy}
+
+Normalizace je \textbf{proces} návrhu relačního schématu, při kterém se tabulky rozkládají tak, aby se snížila \textbf{redundance} a odstranily anomálie při vkládání, mazání a aktualizaci. Typický problém nenormalizované tabulky je opakování stejných údajů na mnoha řádcích. Když se například u každé objednávky opakuje jméno a adresa zákazníka, změna adresy vyžaduje aktualizovat mnoho řádků.
+
+Pokud se některý řádek zapomene, vznikne inkonzistence. Normalizace se opírá o funkční závislosti. Zápis X -> Y znamená, že hodnota atributů X jednoznačně určuje hodnotu atributů Y. Například student\_id -> jmeno znamená, že pokud znám ID studenta, znám jeho jméno. Funkční závislosti nevznikají z názvů atributů, ale z významu dat a pravidel dané domény.
+
+Předpokladem u \textbf{2NF}, \textbf{3NF} a \textbf{BCNF} je existence netriviální funkční závislosti X -> Y:
+
+\begin{longtable}{p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}p{0.237\linewidth}}
+\toprule
+\textbf{Normální forma} & \textbf{Formální pravidlo pro X -> Y} & \textbf{Lidsky vysvětleno} & \textbf{Důraz na typy klíčů} \\
+\midrule\endhead
+1NF & (Neřeší se přes X -> Y) & Každá buňka obsahuje jen jednu nedělitelnou atomickou hodnotu. Žádná pole, seznamy ani opakující se skupiny. & Není relevantní. \\
+\addlinespace
+2NF & Pokud Y není součástí žádného klíče, X nesmí být jen ostrou podmnožinou klíče. & Obyčejný neklíčový údaj nesmí záviset pouze na kousku složeného klíče. & Levá strana nesmí být pouhá část kandidátního klíče. \\
+\addlinespace
+3NF & Platí alespoň jedno: X je superklíč, nebo Y je součástí kandidátního klíče. & Levá strana jednoznačně určuje celý řádek, nebo se aplikuje výjimka, protože vpravo je důležitá součást identifikátoru. & Vlevo superklíč, nebo jako výjimka vpravo atribut kandidátního klíče. \\
+\addlinespace
+BCNF & Musí vždy platit: X je superklíč. & Cokoliv, co v tabulce určuje něco jiného, musí umět určit úplně celý řádek. Bez výjimek. & Vlevo čistě jen superklíč; pravá strana se neřeší. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+Jednoduchý příklad porušení \textbf{1NF} je Student(student\_id, jmeno, telefony), kde je v jedné buňce seznam telefonů. Správně se telefony přesunou do samostatné tabulky Telefon(student\_id, telefon). Porušení 2NF typicky vzniká u tabulky PolozkaObjednavky(objednavka\_id, produkt\_id, nazev\_produktu, cena, mnozstvi), kde klíč je (objednavka\_id, produkt\_id), ale název a cena produktu závisí jen na produkt\_id.
+
+Porušení 3NF vzniká například u Student(student\_id, jmeno, obor\_id, nazev\_oboru), protože student\_id určuje obor\_id a obor\_id určuje nazev\_oboru. Název oboru proto patří do tabulky Obor.
+
+Vztah mezi normálními formami je hierarchický: BCNF implikuje 3NF, 3NF implikuje 2NF a 2NF implikuje 1NF. Opačně to neplatí. 3NF je slabší než BCNF, protože připouští výjimku, když je pravá strana funkční závislosti součástí kandidátního klíče. BCNF je čistší: levá strana každé netriviální funkční závislosti musí být superklíč.
+
+Normalizace typicky zlepšuje konzistenci dat, ale nemusí automaticky zvyšovat výkon, protože více tabulek znamená více spojování.
+
+\subsection*{Zpracování dotazů}
+
+Když uživatel napíše SQL dotaz, databázový systém ho nejdříve zparsuje a ověří, že syntaxe, tabulky a sloupce dávají smysl. Potom ho převede do interní reprezentace, často podobné relační algebře. Následuje optimalizace: databáze hledá vhodný plán provedení. Nakonec vykonávací engine plán provede.
+
+Důležité je, že SQL neříká přesný postup provedení. Jeden dotaz lze provést více způsoby: full table scanem, \textbf{index} scanem, různým pořadím joinů nebo různým způsobem materializace mezivýsledků. Optimalizátor se snaží minimalizovat náklady, hlavně počet načtených bloků z disku, práci s pamětí a velikost mezivýsledků. Typické heuristiky jsou provádět selekce co nejdříve, projekce co nejdříve a nejrestriktivnější operace před drahými joiny.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+SELECT z.jmeno, p.nazev
+FROM Zakaznik z
+JOIN Objednavka o ON z.id = o.zakaznik_id
+JOIN Polozka po ON o.id = po.objednavka_id
+JOIN Produkt p ON po.produkt_id = p.id
+WHERE z.mesto = 'Brno' AND p.kategorie = 'Notebook';
+\end{verbatim}
+\end{codebox}
+
+U tohoto dotazu je výhodné nejdříve vybrat zákazníky z Brna a produkty kategorie Notebook, a teprve potom spojovat. Pokud by databáze nejdřív spojila všechny zákazníky, objednávky, položky a produkty, vznikly by zbytečně velké mezivýsledky. Vyhodnocování může probíhat materializací, kdy se mezivýsledek uloží jako dočasná relace, nebo pipeliningem, kdy se řádky posílají dalším operátorům průběžně bez uložení celého mezivýsledku.
+
+Konkrétní operace v plánu mají různé fyzické implementace a právě mezi nimi optimalizátor vybírá. Přístup k tabulce může být \textbf{full table scan}, kdy se přečtou všechny bloky tabulky (vhodné, když dotaz vrací velkou část řádků nebo není použitelný index), nebo \textbf{index scan}, kdy se nejdřív najdou odkazy v indexu a načtou se jen vybrané řádky (vhodné, když podmínka vybírá málo řádků).
+
+Spojení dvou tabulek lze provést několika algoritmy. Nested-loop join pro každý řádek jedné tabulky projde druhou; je jednoduchý a dobrý pro malé tabulky. Index \textbf{nested-loop join} je jeho zrychlení, kdy se k vyhledání odpovídajících řádků druhé tabulky použije index, což se hodí, když je vnější tabulka malá a vnitřní má index na spojovacím sloupci.
+
+Hash join si z menší tabulky postaví hašovací tabulku podle spojovacího klíče a druhou tabulkou jí prožene řádky; je výborný pro velké tabulky a spojení přes rovnost. Sort-merge join obě tabulky seřadí podle spojovacího klíče a pak je naráz prochází; vyplatí se, když jsou data už seřazená nebo když stejně potřebujeme seřazený výsledek.
+
+Aby se optimalizátor mohl rozhodnout, je \textbf{cost-based}, tedy odhaduje náklady jednotlivých plánů. K tomu používá statistiky o datech (počty řádků, počty různých hodnot, rozložení hodnot), z nichž odhaduje selektivitu podmínky, tedy jakou část řádků podmínka propustí, a kardinalitu, tedy kolik řádků bude mít daný mezivýsledek. Z toho spočítá očekávaný počet přístupů na disk a vybere nejlevnější plán.
+
+Když je potřeba seřadit velký výsledek, který se nevejde do paměti, použije se external sorting (vnější třídění), které řadí po částech na disku a pak je slévá. Špatné nebo zastaralé statistiky jsou častou příčinou toho, že optimalizátor zvolí pomalý plán.
+
+U dřívějšího dotazu na zákazníky z Brna a notebooky lze stejnou logiku provést různými fyzickými plány. Jedna možnost: index scan vybere zákazníky z Brna a produkty kategorie Notebook a pak se postupně index nested-loop joiny napojí objednávky a položky přes indexy na cizích klíčích. Druhá možnost při velkých tabulkách: full table scany s následnými \textbf{hash} joiny přes rovnost klíčů.
+
+Třetí možnost, pokud jsou data vhodně seřazená: \textbf{sort-merge join}. Všechny vrátí stejný výsledek, ale liší se náklady, a právě proto optimalizátor potřebuje statistiky.
+
+\subsection*{Indexování, hašování a B+ stromy}
+
+Index je pomocná datová struktura, která urychluje hledání dat podle vyhledávacího klíče. Místo toho, aby databáze procházela celou tabulku, najde hodnotu v indexu a podle odkazu načte odpovídající řádek nebo blok. Trade-off je zásadní: indexy zrychlují čtení, hledání, joiny a často ORDER BY, ale zabírají místo navíc a zpomalují INSERT, UPDATE a DELETE, protože se musí aktualizovat nejen tabulka, ale i indexy.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+CREATE INDEX idx_zakaznik_email ON Zakaznik(email);
+SELECT * FROM Zakaznik WHERE email = 'jan@example.com';
+\end{verbatim}
+\end{codebox}
+
+Hustý index obsahuje položku pro každou hodnotu vyhledávacího klíče nebo přímo pro každý záznam. U neunikátních hodnot může jedna hodnota ukazovat na více řádků. Řídký index obsahuje položky jen pro některé hodnoty, typicky pro první hodnotu v bloku. Aby řídký index fungoval, musí být datový soubor fyzicky seřazený podle vyhledávacího klíče; jinak by index nevěděl, kde hledat další hodnoty.
+
+Primární nebo shlukovací index je takový, jehož klíč určuje fyzické pořadí záznamů v souboru. Proto může být řídký. Sekundární index je index nad jiným atributem, než podle kterého jsou data fyzicky uložena. Proto bývá hustý, protože odpovídající řádky mohou být rozházené po celé tabulce. Například tabulka je uložená podle student\_id, ale vytvoříme sekundární index nad jmeno.
+
+Hash index používá hashovací funkci, která hodnotu klíče mapuje do bucketu. Je vhodný pro přesné hledání podle rovnosti, například WHERE email = ... nebo WHERE id = ..., protože databáze spočítá hash a jde rovnou do bucketu. Nehodí se ale pro rozsahové dotazy a řazení, protože hash nezachovává pořadí hodnot. Proto se pro rozsahy používá spíše stromový index, typicky B+ strom.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+Hash index: dobrý pro WHERE id = 123
+B+ strom: dobrý pro WHERE datum BETWEEN ... AND ..., ORDER BY datum i WHERE id = 123
+\end{verbatim}
+\end{codebox}
+
+B+ strom je vyvážená stromová struktura používaná pro databázové indexy. Vnitřní uzly slouží k navigaci a listy obsahují klíče s odkazy na záznamy; listy jsou navíc propojené, což pomáhá rozsahovým dotazům.
+
+Na otázku, proč se pro databázové indexy nepoužívá MD5 nebo SHA1, je odpověď: kryptografický hash je dobrý pro otisk hodnoty, ale nezachovává pořadí, neřeší přirozeně rozsahy a jeho cílem není fyzická organizace databázových stránek ani efektivní průchod listy jako u B+ stromu.
+
+U indexů je dobré znát ještě několik praktických pojmů. Shlukovací (clustered) index určuje fyzické pořadí řádků v tabulce, takže jich může být jen jeden; neshlukovací (non-clustered) index je oddělená struktura s odkazy na řádky a může jich být víc.
+
+Složený (composite) index je index nad více sloupci najednou a velmi záleží na pořadí sloupců: index nad (prijmeni, jmeno) pomůže dotazu podle samotného příjmení nebo podle příjmení a jména, ale ne dotazu jen podle jména. Pokrývající (covering) index obsahuje přímo všechny sloupce, které dotaz potřebuje, takže databáze odpověď přečte z indexu a vůbec nemusí sáhnout do tabulky.
+
+Jak už bylo řečeno, indexy nejsou zadarmo: každý další index zpomaluje INSERT, UPDATE i DELETE, protože se při změně dat musí aktualizovat i všechny indexy.
+
+\subsection*{Transakce a vlastnosti transakčního zpracování}
+
+Transakce je logická jednotka práce nad databází. Typický příklad je převod peněz mezi účty: částka se musí z jednoho účtu odečíst a na druhý přičíst. V SQL transakci typicky ohraničíme pomocí BEGIN TRANSACTION, COMMIT a případně ROLLBACK. Databázový systém potom zajišťuje vlastnosti ACID: \textbf{atomičnost}, konzistenci, izolaci a trvalost.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+BEGIN TRANSACTION;
+UPDATE Ucet SET zustatek = zustatek - 1000 WHERE id = 'A';
+UPDATE Ucet SET zustatek = zustatek + 1000 WHERE id = 'B';
+COMMIT;
+\end{verbatim}
+\end{codebox}
+
+Atomičnost znamená, že \textbf{transakce} proběhne celá, nebo vůbec. Když se převod přeruší po odečtení z účtu A, musí se změna vrátit, protože by se peníze ztratily. Konzistence znamená, že transakce převádí databázi z jednoho konzistentního stavu do druhého a respektuje integritní omezení. Izolace znamená, že souběžné transakce nemají vidět nekonzistentní mezistavy jiných transakcí. Trvalost znamená, že po commitu změny přežijí i pád systému.
+
+Formálním kritériem \textbf{izolace} je \textbf{serializovatelnost}. Souběžný plán je serializovatelný, pokud jeho výsledek odpovídá nějakému sériovému pořadí transakcí. Transakce se tedy mohou fyzicky prokládat, ale výsledek musí být stejný, jako kdyby běžely jedna po druhé. Konfliktní operace jsou operace různých transakcí nad stejnou položkou, kde alespoň jedna je zápis: read-write, write- read nebo write-write.
+
+Konkrétní problémy souběhu je dobré umět pojmenovat. Dirty read nastane, když transakce čte nepotvrzená data jiné transakce, která se pak může rollbacknout. Lost update nastane, když dvě transakce přečtou stejnou hodnotu, obě ji upraví a jedna aktualizace přepíše druhou. Non-repeatable read nastane, když transakce přečte stejný řádek dvakrát a pokaždé dostane jinou hodnotu, protože jiná transakce mezi tím commitovala změnu.
+
+Phantom read nastane, když opakovaný dotaz s podmínkou vrátí jinou množinu řádků, protože jiná transakce vložila nebo smazala řádky splňující podmínku.
+
+Souběhové problémy se nejčastěji řeší zamykáním. Sdílený zámek (shared, S) slouží pro čtení a může ho na téže položce držet více transakcí zároveň. Výlučný zámek (exclusive, X) slouží pro zápis a smí ho držet jen jedna transakce; je nekompatibilní jak s dalším X, tak s S zámkem. Tato kompatibilita zámků zajišťuje, že se zápis nepotká se souběžným čtením ani jiným zápisem téže položky.
+
+Aby zamykání zaručilo serializovatelnost, používá se dvoufázové zamykání (\textbf{two-phase locking}, 2PL). Každá transakce má rostoucí fázi (growing phase), ve které jen získává zámky, a klesající fázi (shrinking phase), ve které je už jen uvolňuje; jakmile jednou nějaký zámek uvolní, nesmí získat žádný nový.
+
+Zamykání ale může vést k deadlocku mezi transakcemi: T1 drží zámek na A a čeká na B, zatímco T2 drží B a čeká na A. Databáze \textbf{deadlock} detekuje (typicky v grafu čekání) a jednu z transakcí zruší a rollbackne.
+
+V praxi se míra izolace nastavuje pomocí izolačních úrovní, které dovolují kompromis mezi výkonem a přísností: READ UNCOMMITTED (dovolí i \textbf{dirty read}), READ COMMITTED (zakáže dirty read), REPEATABLE READ (zakáže i non-repeatable read) a SERIALIZABLE (nejpřísnější, brání i phantomům). Nižší úrovně jsou rychlejší, ale připouštějí více anomálií.
+
+Mnoho moderních databází navíc používá \textbf{MVCC} (multiversion concurrency control): místo aby čtení a zápisy blokovaly jeden druhého, drží se více verzí řádku a každá transakce čte konzistentní snímek (\textbf{snapshot}) dat z určitého okamžiku. Čtenáři tak neblokují zapisovatele a naopak, což výrazně zlepšuje souběžnost.
+
+Rollback znamená zrušení transakce a vrácení databáze do stavu před jejím začátkem. S tím souvisí obnovitelnost plánů: pokud T2 čte hodnotu zapsanou T1, měla by T1 commitnout dříve než T2. Jinak by T2 mohla potvrdit výsledek založený na datech, která se později rollbacknou. Kaskádový rollback nastává, když selhání jedné transakce vyvolá rollback dalších transakcí, které četly její nepotvrzená data.
+
+Pro obnovu po selhání se používá logování. Databáze si do logu zapisuje, co transakce změnily, a při obnově provádí UNDO u nepotvrzených transakcí a REDO u potvrzených transakcí. Aby obnova nemusela procházet celý log od začátku, databáze pravidelně vytváří \textbf{checkpoint}, tedy bod, ke kterému jsou změny bezpečně zapsané; po pádu pak stačí log procházet zhruba od posledního checkpointu.
+
+Důležitý princip je \textbf{write-ahead} logging: log o změně se musí zapsat dříve než samotná změněná databázová \textbf{stránka}. Alternativou jsou stínové databáze neboli shadow paging: původní stránky se nepřepisují, změny se dělají do kopií a při commitu se atomicky přepne \textbf{ukazatel} na novou verzi. Výhodou je jednoduchý rollback, nevýhodou režie, \textbf{fragmentace} a horší souběžnost.
+
+\subsection*{Krátká závěrečná osnova odpovědi}
+
+U zkoušky bych odpověď uzavřel takto: Databáze v relačním modelu ukládá data jako relace, tedy tabulky, jejichž strukturu popisuje relační schéma. Řádky jsou n-tice, sloupce atributy a hodnoty atributů patří do domén. Správnost a jednoznačnost zajišťují klíče a integritní omezení. Nad relacemi formálně pracuje relační algebra, hlavně selekce, projekce a spojení, což se v SQL projeví jako SELECT, WHERE a JOIN.
+
+SQL dále umožňuje agregace pomocí COUNT, SUM, AVG, MIN a MAX, definici schématu pomocí DDL a změny dat pomocí DML. Dotazy se v DBMS parsují, optimalizují a provádějí podle vybraného plánu. Indexy urychlují hledání, ale stojí prostor a zpomalují zápisy; hash index je dobrý na rovnost, B+ strom i na rozsahy.
+
+Transakce zajišťují ACID, izolace se formálně váže na serializovatelnost, při chybě se použije rollback a obnova se řeší logováním nebo stínovými databázemi.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+Materiál vytvořen jako souvislé opakování k otázce 7 podle dodaného PDF a stop z databáze komisí.
+\end{verbatim}
+\end{codebox}
+
+\newpage
+

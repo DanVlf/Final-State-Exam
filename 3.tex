@@ -1,0 +1,316 @@
+\otazka{3. Souborové systémy}{Blokové zařízení, bloková vrstva, I/O plánovač, RAID, šifrování disku. Obyčejné soubory, alokace volného místa, fragmentace. Adresářová struktura a její reprezentace na disku. Vstup a výstup mapovaný do paměti.}{PB152, PV004}
+
+\subsection*{3. Souborové systémy -- stručněji}
+Souborový systém je abstrakce, která ze surových bloků na médiu udělá soubory, adresáře, metadata a pravidla přístupu. U otázky je dobré postupovat od blokového zařízení přes metadata, alokaci a konzistenci až k RAIDu, šifrování a \texttt{mmap}.
+
+\textbf{1. Základní definice}
+\begin{itemize}
+  \item Bez souborového systému by disk nebo SSD byl pro OS jen pole očíslovaných bloků bez jmen, vazeb a hierarchie.
+  \item Souborový systém říká, kde jsou data souboru, kde jsou metadata, co je adresář, které bloky jsou volné a jak se cesta přeloží na konkrétní data.
+\end{itemize}
+
+\textbf{2. Cesta od programu k disku}
+\begin{itemize}
+  \item Program volá \texttt{open}, \texttt{read}, \texttt{write} nebo \texttt{close}. VFS najde obecný objekt souboru a konkrétní ovladač, například ext4, přeloží offset v souboru na bloky zařízení.
+  \item Bloková vrstva sjednocuje přístup k diskům, SSD, RAIDu a šifrovaným svazkům. I/O plánovač může požadavky řadit kvůli výkonu.
+\end{itemize}
+
+\textbf{3. Metadata a adresáře}
+\begin{itemize}
+  \item Metadata popisují soubor: vlastník, práva, velikost, časy, typ a odkazy na datové bloky. V unixových FS jsou typicky v i-nodech.
+  \item Adresář je speciální soubor, který mapuje jméno na objekt souborového systému. Proto hard link znamená více jmen pro stejný i-node, zatímco symlink obsahuje cestu k cíli.
+\end{itemize}
+
+\textbf{4. Alokace, fragmentace a konzistence}
+\begin{itemize}
+  \item Při vytvoření souboru FS najde volný i-node a volné bloky, označí je v bitmapě a přidá záznam do adresáře.
+  \item Fragmentace znamená, že bloky jednoho souboru nejsou souvisle. Vnitřní fragmentace je nevyužitý zbytek posledního bloku, vnější fragmentace je rozptýlené volné místo.
+  \item Žurnálování chrání konzistenci po pádu: nejdřív se zapíše záměr změny do žurnálu a pak se provede změna.
+\end{itemize}
+
+\textbf{5. RAID, šifrování a mmap}
+\begin{itemize}
+  \item RAID řeší výkon, kapacitu nebo redundanci, ale není záloha. RAID 0 zrychluje bez redundance, RAID 1 zrcadlí, RAID 5/6 používá paritu.
+  \item Šifrování disku chrání data v klidu, například při krádeži vypnutého notebooku. Nechrání před malwarem v odemčeném běžícím systému.
+  \item \texttt{mmap} mapuje soubor do adresního prostoru procesu. Program pracuje jako s pamětí, ale OS přes page faulty načítá a zapisuje stránky souboru.
+\end{itemize}
+
+\subsection*{Co je souborový systém}
+Souborový systém je \textbf{abstrakce nad paměťovým médiem nebo blokovým zařízením}, která z obyčejných očíslovaných bloků dělá pojmenované soubory, adresáře a metadata. Je to zároveň soubor pravidel a datových struktur, podle kterých operační systém ví, kde soubor začíná, z jakých bloků se skládá, kdo k němu smí přistupovat a jak se najde podle cesty typu \texttt{/home/petr/dokument.txt}.
+
+Hlavní myšlenka:
+\begin{itemize}
+  \item Bez přítomnosti souborového systému by paměťové médium bylo pro operační systém pouze polem surových datových bloků bez vzájemných vazeb a hierarchie.
+  \item Souborový systém těmto blokům přidá význam: řekne, které bloky patří jednomu souboru, které jsou volné, kde jsou adresáře, kde jsou metadata a jak se z lidského jména dostaneme ke skutečným datům.
+  \item Uživatel a programy pak nepracují s čísly bloků, ale s pohodlnou abstrakcí: soubor, adresář, cesta, práva, vlastník, velikost, čas změny a operace typu \texttt{open}, \texttt{read}, \texttt{write}, \texttt{close} nebo \texttt{mmap}.
+  \item Na disku jsou kvůli tomu uložené konkrétní struktury, například superblok, i-uzly nebo MFT/FAT tabulky, adresářové záznamy, datové bloky, bitmapy volného místa a extenty.
+  \item Souborový systém tedy řeší pojmenování a hierarchii souborů, alokaci volného místa, metadata, přístupová práva, konzistenci po pádu, výkon a spolupráci s blokovou vrstvou operačního systému.
+\end{itemize}
+Zjednodušeně řečeno: disk sám umí jen číst a zapisovat bloky; souborový systém z nich udělá strom adresářů a souborů, kterému rozumí operační systém i člověk. Konkrétními souborovými systémy jsou například FAT, ext4 nebo NTFS.
+
+\subsection*{3. Souborové systémy}
+
+Souvislý text k opakování: bloková zařízení, \textbf{bloková vrstva}, \textbf{I/O plánovač}, \textbf{RAID}, šifrování, soubory, alokace, \textbf{fragmentace}, adresáře na disku a \textbf{mmap}
+
+\subsection*{Souborový systém jako příběh od programu k disku}
+
+Souborový systém dává uživateli a programům pohodlnou iluzi, že data jsou uložena jako pojmenované soubory v adresářích. Reálně je pod tím ale úložiště, které umí číst a zapisovat bloky.
+
+Smysl celé otázky je umět propojit několik vrstev: aplikace používá systémová volání jako open, read, write, close nebo mmap; jádro přes VFS a konkrétní ovladač souborového systému najde metadata souboru; bloková vrstva z toho udělá požadavky na \textbf{blokové zařízení}; I/O plánovač může požadavky seřadit; a ovladač zařízení nakonec komunikuje s diskem, \textbf{SSD} nebo RAID polem.
+
+U zkoušky je dobré mluvit právě takto postupně: ne jen "soubor je na disku", ale jak se abstrakce souboru překládá na bloky a jak OS řeší výkon, spolehlivost a konzistenci.
+
+Oficiální rozsah se ptá na blokové zařízení, blokovou vrstvu, I/O plánovač, RAID, šifrování disku, obyčejné soubory, alokaci volného místa, fragmentaci, adresářovou strukturu a vstup a výstup mapovaný do paměti. V komisích se podle zápisů opakoval hlavně RAID, typy RAIDu, fragmentace, ext/\textbf{FAT}/\textbf{NTFS} a i-nody.
+
+Proto je vhodné odpověď stavět na několika pevných osách: \textbf{souborový systém} jako datová struktura na disku, souborový systém jako kód v jádře, bloková vrstva jako mezivrstva k zařízení, RAID přes výkon-redundanci-kapacitu a mmap jako propojení souborového systému s virtuální pamětí.
+
+\subsection*{Blokové zařízení, bloková vrstva a I/O plánovač}
+
+Blokové zařízení je zařízení, ze kterého se data čtou a na které se data zapisují po blocích. Typickým příkladem je pevný disk, SSD, USB flash disk nebo oddíl na disku. Na rozdíl od znakových zařízení, jako je terminál nebo sériový port, je blokové zařízení adresovatelné: můžeme požadovat čtení nebo zápis konkrétního bloku.
+
+Souborový systém se obvykle vytváří právě na blokovém zařízení nebo na logickém zařízení, které se jako blokové zařízení tváří, například na RAID poli nebo šifrovaném oddílu.
+
+Blok je jednotka práce souborového systému a blokové vrstvy. Souborový systém neukládá každý bajt zvlášť; přiděluje a čte celé bloky. U starších zařízení se často mluvilo o 512B sektorech, u moderních zařízení je běžná velikost fyzického sektoru nebo bloku 4096 B. Důležité je neplést blok souborového systému se stránkou virtuální paměti.
+
+Blok je jednotka na úložném zařízení nebo ve FS, zatímco \textbf{stránka} je jednotka virtuální paměti. Obě mohou mít například 4 KiB, ale patří do jiné vrstvy.
+
+Bloková vrstva je část jádra, která sjednocuje přístup k blokovým zařízením. Konkrétní souborový systém, třeba \textbf{ext4}, nemusí znát detaily konkrétního SSD, SATA řadiče nebo NVMe zařízení. Vytváří požadavky typu "přečti tyto bloky" nebo "zapiš tyto bloky" a bloková vrstva je předá dál příslušnému ovladači.
+
+Bloková vrstva tedy poskytuje abstrakci a jednotné API mezi souborovými systémy, RAIDem, šifrováním, cachemi, I/O plánovačem a ovladači zařízení.
+
+Pořadí I/O požadavků je důležité kvůli výkonu. U mechanických disků je náhodný přístup drahý, protože hlavička se musí fyzicky přesouvat mezi stopami. Pokud přijdou zápisy v pořadí A1, B1, C1, A2, B2, C2, A3, B3, C3, je výhodnější je podle možnosti seřadit jako A1, A2, A3, B1, B2, B3, C1, C2, C3, protože vzniknou delší sekvenční zápisy.
+
+I/O plánovač proto může požadavky přeuspořádat, slučovat menší požadavky do větších, oddalovat zápisy v bufferu a zlepšovat propustnost. U SSD není problém mechanický seek, ale pořád se řeší paralelismus, fronty, IOPS, \textbf{latence} a slučování požadavků.
+
+Důležitá je také bloková \textbf{cache} a zapisovací buffery. Když \textbf{proces} čte data, OS se nejdřív může podívat, zda už nejsou v cache v \textbf{RAM}. Pokud ano, nemusí se na disk. Když proces zapisuje, write nemusí nutně okamžitě znamenat fyzický zápis na disk; data mohou nejprve skončit ve vyrovnávací paměti a systém je později flushne.
+
+To zvyšuje výkon, protože lze spojit více malých zápisů do většího, ale zároveň to znamená, že při výpadku napájení mohou být nezapsaná data ztracena, pokud není použito \textbf{fsync}, \textbf{žurnálování}, bateriově zálohovaná cache nebo jiný ochranný mechanismus.
+
+Tady je vhodné upřesnit dvojici pojmů, která se plete. Historicky se mluvilo o blokové (buffer) cache, tedy cache pojmenované podle bloků zařízení. Moderní Linux ale pro data souborů používá hlavně \textbf{page cache}, která se identifikuje podle konkrétního souboru a indexu stránky v rámci tohoto souboru, nikoli podle čísla bloku zařízení.
+
+Dirty stránky page cache přitom slouží zároveň jako zapisovací buffer: zápis se odloží do nich a teprve později se propíše na disk. Page cache nemá nic společného s cache procesoru a stejně tak je nutné odlišovat blok souborového systému od stránky virtuální paměti, i když obojí může mít například 4 KiB.
+
+\itbox{\textbf{VFS vs. konkrétní souborový systém:} VFS myslí v logických pojmech jako soubor, adresář, cesta, oprávnění, file descriptor, offset a stránka v page cache. Nerozumí ale tomu, kde přesně má ext4 na disku superblok, blokové skupiny, bitmapy, tabulky i-nodů nebo extenty. Tuto fyzickou a formátovou mapu zná až ovladač konkrétního souborového systému, například ext4, XFS, FAT nebo NTFS. VFS tedy řekne přibližně: "potřebuji metadata k tomuto jménu" nebo "potřebuji bajty od offsetu 0 do 4096 z tohoto souboru"; ext4 to přeloží na konkrétní i-node, extenty a bloky zařízení.}
+
+U \textbf{open("/dokument.txt")} VFS nejdřív pracuje s cestou a s adresářovým stromem. Když potřebuje zjistit, co znamená jméno \texttt{dokument.txt} v kořenovém adresáři, zavolá operace konkrétního souborového systému. Ext4 ví, jak je kořenový adresář uložený, jak z adresářového záznamu získat číslo i-nodu a kde v tabulce i-nodů tento i-node leží. Ze struktur na disku vytáhne metadata, například typ objektu, vlastníka, práva, velikost a odkazy na data, a naplní univerzální kernelovou strukturu \texttt{struct inode}, se kterou už VFS umí pracovat. VFS tedy rozumí obecnému pojmu i-node, ale neví samo od sebe, jak se ext4 i-node čte z konkrétního místa na disku.
+
+U \textbf{read()} je nejdůležitější rozdíl mezi logickým místem v souboru a fyzickým místem na disku. VFS neříká "načti blok 55432", protože to číslo nezná. Řekne konkrétnímu souborovému systému: "pro tento otevřený soubor potřebuji data od tohoto offsetu a v této délce". Ovladač ext4 se podívá do metadat souboru, typicky do extentů, a přeloží logický rozsah bajtů souboru na logické bloky blokového zařízení. Teprve potom vytvoří požadavek pro blokovou vrstvu, která ho pošle přes I/O scheduler a ovladač zařízení na disk nebo SSD. Bitmapy se při obyčejném čtení existujícího souboru typicky nepoužívají k nalezení dat; jsou důležité hlavně při alokaci, tedy při vytváření nebo zvětšování souboru.
+
+Konkrétní cestu čtení je dobré umět projít krok po kroku a u každého kroku pojmenovat komponentu:
+\begin{enumerate}
+  \item Aplikace zavolá read nad otevřeným file descriptorem.
+  \item Knihovna libc z toho připraví \textbf{systémové volání} a CPU přejde do \textbf{kernel mode}.
+  \item Virtuální souborový systém (VFS) podle file descriptoru najde otevřený soubor.
+  \item VFS pracuje s logickým požadavkem: tento soubor, tento offset, tato délka.
+  \item Kernel se nejdřív podívá, zda požadovaná stránka už není v page cache.
+  \item Při \textbf{cache miss} ovladač konkrétního souborového systému, například ext4, přeloží offset v souboru přes \textbf{i-node} a jeho odkazy nebo extenty na konkrétní logické bloky zařízení.
+  \item Ext4 zabalí požadavek do struktur pro blokovou vrstvu, typicky do BIO požadavků: "načti tyto bloky a ulož výsledek do těchto stránek page cache".
+  \item Bloková vrstva požadavek sjednotí, případně rozdělí, uspořádá a předá níže.
+  \item Ovladač NVMe nebo SATA připraví příkaz a \textbf{DMA} přenos a řadič zařízení přenese data přímo do RAM.
+  \item Po dokončení vyvolá zařízení \textbf{přerušení} a ovladač s blokovou vrstvou požadavek dokončí.
+  \item Kernel nakonec zkopíruje potřebné bajty z page cache do bufferu v uživatelském prostoru, načež se read vrátí.
+\end{enumerate}
+
+Symetricky vypadá cesta zápisu:
+\begin{enumerate}
+  \item Aplikace zavolá write.
+  \item Kernel zkopíruje data z uživatelského bufferu do page cache a příslušné stránky označí jako dirty.
+  \item Volání write se přitom může vrátit dřív, než data fyzicky dosednou na disk.
+  \item Později writeback předá dirty bloky blokové vrstvě a ovladač zařízení nastaví přenos.
+  \item Zařízení po dokončení potvrdí zápis přerušením a stránky pak mohou být označeny zpět jako clean.
+\end{enumerate}
+
+Pokud aplikace potřebuje jistotu, že data jsou opravdu na disku, zavolá fsync, který si vynutí dokončení zápisu. I tak je třeba počítat s tím, že samo zařízení může mít vlastní cache, kterou je nutné korektně flushnout, jinak by data mohla zůstat jen v cache disku.
+
+\subsection*{Souborový systém: soubory, metadata a adresářový strom}
+
+Souborový systém je perzistentní kolekce souborů a adresářů, typicky uložená na jednom blokovém zařízení nebo logickém svazku. Uživatel vidí hierarchickou stromovou strukturu: kořenový adresář, podadresáře a soubory. Adresáře jsou vnitřní uzly stromu, obyčejné soubory jsou často listy.
+
+Souborový systém ale není jen "strom jmen". Je to sada datových struktur na disku, které říkají, kde jsou metadata, kde jsou datové bloky, které bloky jsou volné, které jsou obsazené a jak se z cesty typu /home/petr/dokument.txt dostaneme k obsahu konkrétního souboru.
+
+Obyčejný soubor je z pohledu OS sekvence bajtů plus metadata. Operační systém obecně neinterpretuje význam bajtů v běžném souboru; jestli jde o text, JPEG nebo databázový soubor, je většinou věcí aplikace. Výjimkou jsou některé speciální případy, například spustitelné soubory, kde OS musí umět načíst program do paměti.
+
+Metadata obsahují například vlastníka, oprávnění, velikost, čas poslední změny, typ objektu a odkazy na datové bloky. V POSIXových souborových systémech jsou tato metadata reprezentována i-uzly.
+
+Adresář je speciální soubor, jehož obsah interpretuje operační systém. Neobsahuje běžná uživatelská data, ale záznamy, které mapují jméno na objekt souborového systému. V unixovém pohledu adresář typicky obsahuje dvojice jméno - číslo i-uzlu. Proto název souboru obvykle není vlastností samotného i-uzlu; je uložen v adresáři. Jeden \textbf{i-uzel} tedy může mít více jmen, což vede k tvrdým odkazům. U adresáře má navíc právo \textbf{execute (x)} jiný význam než u souboru: neznamená spuštění, ale možnost do adresáře vstoupit a přistupovat k jeho položkám (projít skrz). Bez x se k souborům uvnitř nedostanu, ani když znám jejich jména; samotné r naopak umožní jen vypsat seznam jmen.
+
+Když procházíme cestu /usr/include/stdio.h, OS začne v kořeni, najde záznam usr, ověří, že jde o adresář, v něm najde include a v něm stdio.h.
+
+\subsection*{Superblok, i-nody, datové bloky a bitmapy}
+
+Klasický unixový souborový systém se dá vysvětlit přes čtyři základní pojmy: \textbf{superblok}, i-nody, datové bloky a bitmapy volného místa. Superblok je důležitá struktura popisující souborový systém jako celek. Obsahuje například velikost souborového systému, velikost bloků, počet i-nodů, umístění tabulek i-nodů a bitmap, a stav souborového systému. Protože je kritický, bývá u některých souborových systémů uložen ve více kopiích.
+
+I-node je datová struktura reprezentující soubor, adresář, \textbf{symbolický odkaz} nebo speciální soubor. Obsahuje metadata a informace nutné k nalezení dat. Typicky v něm najdeme vlastníka, práva, časové značky, velikost a odkazy na datové bloky. I-node má fixní velikost, takže nemůže obsahovat libovolně dlouhý seznam všech bloků velkého souboru přímo. Proto se používají přímé odkazy, nepřímé odkazy nebo moderněji extenty.
+
+Přímé odkazy míří přímo na datové bloky a jsou efektivní pro malé soubory. Nepřímý blok neobsahuje data souboru, ale seznam adres dalších bloků. Extent ukládá souvislý rozsah bloků jako začátek a délku, což je efektivní pro velké soubory a omezuje množství metadat.
+
+Datové bloky obsahují skutečná data souboru nebo obsah adresáře. Bitmapy volného místa říkají, které bloky a které i-nody jsou volné a které obsazené. Jeden bit může reprezentovat jeden blok: 0 znamená volný, 1 znamená obsazený, nebo naopak podle implementace. Díky bitmapě nemusí souborový systém při každé alokaci procházet celý disk.
+
+U velkých souborových systémů se místo jednoduchých bitmap nebo spolu s nimi používají i složitější struktury, například vyvážené stromy nebo B+ stromy, které umožňují rychle hledat vhodné volné oblasti.
+
+Tuto část je dobré říct velmi konkrétně: když vytvářím nový soubor, souborový systém najde volný i-node, zapíše do něj metadata, najde volné datové bloky, označí je v bitmapě jako obsazené a do adresáře přidá záznam, který mapuje jméno souboru na číslo i-uzlu. Když soubor čtu, OS podle cesty najde adresářové záznamy, dojde k i-uzlu, z i-uzlu zjistí, které bloky patří souboru, a ty potom načte přes blokovou vrstvu.
+
+\subsection*{Oddíly, formátování a připojení (mount)}
+
+Je dobré odlišit rozdělení disku na oddíly, anglicky partitioning, od formátování. Partitioning jen rozdělí fyzický disk na logické oblasti a zapíše tabulku oddílů; říká, kde který oddíl začíná a končí, ale neříká nic o tom, jak budou uvnitř uložené soubory. Formátování je až další krok: na oddílu vytvoří struktury konkrétního souborového systému.
+
+Při formátování souborový systém založí své základní datové struktury: superblok popisující celek, bitmapy volného místa, tabulky i-nodů a kořenový adresář. Teprve potom do něj lze ukládat soubory. Aby s oddílem operační systém uměl pracovat, musí mít ovladač daného souborového systému; bez ovladače pro NTFS nebo ext4 systém oddíl sice vidí, ale jeho obsah nepřečte.
+
+Zpřístupnění souborového systému ve stromu adresářů se děje připojením do bodu připojení, takzvaného \textbf{mount} pointu: po připojení se obsah svazku objeví pod určitým adresářem.
+
+Důležitý praktický detail je, že rychlé formátování obvykle nepřepisuje všechny datové bloky. Vytvoří jen nové prázdné struktury souborového systému a stará data tím prohlásí za volná, ale jejich obsah na médiu fyzicky zůstává, dokud ho něco nepřepíše. Plné formátování oproti tomu může datové bloky procházet a přepisovat, což trvá podstatně déle.
+
+\subsection*{Reprezentace adresářů a B+ stromy}
+
+Adresářová struktura může být na disku reprezentována různě. Nejjednodušší varianta je neuspořádaný sekvenční seznam záznamů, například dvojic jméno - i-node. Nový záznam se přidá na konec, při mazání vznikají díry a vyhledání položky může vyžadovat projít celý seznam. To je jednoduché, ale pro velké adresáře neefektivní.
+
+Modernější souborové systémy proto používají efektivnější datové struktury. Hashované adresáře použijí \textbf{hash} jména souboru k nalezení bucketu, ve kterém se má záznam nacházet. V průměru pak může stačit načíst málo bloků. Nevýhodou jsou kolize a horší přirozené procházení v abecedním pořadí, protože hash rozbije lexikální uspořádání.
+
+Stromové struktury, například B-stromy nebo B+ stromy, mají horší průměrný případ než ideální hash, ale dávají lepší garantované chování v nejhorším případě, podporují uspořádané procházení a dobře se hodí pro bloková zařízení, protože uzel stromu může odpovídat diskovému bloku.
+
+B+ strom je v souborových systémech důležitý hlavně proto, že kombinuje vyváženost, relativně malou hloubku a dobré sekvenční procházení listů. Může se používat nejen pro adresáře, ale i pro mapování extents nebo volného místa. U zkoušky stačí vědět, že staré adresáře mohou být prostý seznam, hashování dává rychlé průměrné vyhledávání a B+ stromy dávají uspořádanou, škálovatelnou strukturu pro velké souborové systémy.
+
+\subsection*{Hard linky, symbolické linky a cesty}
+
+Z toho, že adresář mapuje jména na i-nody, vyplývá tvrdý odkaz. Hard link není speciální soubor, ale situace, kdy dva nebo více adresářových záznamů odkazují na stejný i-node. Soubor tak může mít více jmen. I-node si drží počet odkazů. Když smažu jedno jméno příkazem unlink, reálně se sníží počet odkazů; data se smažou až ve chvíli, kdy počet odkazů klesne na nulu a žádný proces už soubor nemá otevřený.
+
+Proto smazání souboru z adresáře nemusí okamžitě znamenat fyzické odstranění datových bloků.
+
+Symbolický odkaz je naopak speciální objekt s vlastním i-nodem, který obsahuje cestu k cíli. Když OS narazí na symlink, přečte cílovou cestu a pokračuje v rozlišení cesty tam. Výhodou je, že symlink může odkazovat i na adresář nebo na jiný souborový systém. Nevýhodou je, že se může stát neplatným, pokud se cílový soubor přesune nebo smaže. Tomu se říká dangling link.
+
+\subsection*{FAT, ext3/ext4 a NTFS}
+
+FAT je jednoduchý souborový systém založený na File Allocation Table. Soubor je reprezentován jako řetězec clusterů, kde tabulka říká, který cluster následuje po kterém. Adresář obsahuje jméno souboru a odkaz na první cluster. Výhodou FAT je jednoduchost a široká kompatibilita, proto se používá například u USB disků, SD karet a zařízení, kde je důležitá interoperabilita.
+
+Nevýhodou je slabší práce s metadaty, horší robustnost, horší škálování a větší náchylnost k fragmentaci. FAT nemá klasické unixové i-nody v tom smyslu, jak je známe z ext souborových systémů.
+
+Ext3 a ext4 jsou linuxové souborové systémy vycházející z unixového modelu s i-nody. Ext3 přinesl žurnálování, což znamená, že se změny metadat nebo operací zapisují do žurnálu, aby bylo možné po pádu systém rychleji uvést do konzistentního stavu. Ext4 je modernější, podporuje větší soubory a souborové systémy, extents, efektivnější alokaci, lepší výkon a nižší fragmentaci.
+
+U ext4 je důležité zmínit, že místo mnoha jednotlivých odkazů na bloky může ukládat rozsahy bloků jako extenty, což je efektivnější pro velké soubory.
+
+NTFS je typický souborový systém Windows. Je komplexnější než FAT, má žurnálování, bohatá metadata, oprávnění, podporu velkých souborů, kompresi a některé šifrovací schopnosti na úrovni souborů. Základní strukturou NTFS je Master File Table, která obsahuje záznamy o souborech a adresářích.
+
+Pro zkoušku stačí orientačně: FAT je jednoduchý a kompatibilní, ext3/ext4 jsou linuxové i-nodové souborové systémy, ext4 je modernější a používá extenty, NTFS je hlavní Windows souborový systém s MFT a pokročilými metadaty.
+
+\subsection*{Konzistence a žurnálování}
+
+Protože se zápisy kvůli výkonu odkládají v page cache, hrozí, že pád systému nebo výpadek napájení nastane uprostřed změny a souborový systém zůstane v nekonzistentním stavu, například s i-uzlem, který odkazuje na blok, jenž ještě nebyl označen jako obsazený. Tomu brání žurnálování.
+
+Princip je \textbf{write-ahead}, tedy zápis napřed: souborový systém nejdřív zapíše do žurnálu záměr, co se chystá změnit, a teprve potom provede vlastní změnu na jejím místě. Po pádu pak stačí projít žurnál a nedokončené operace buď dokončit, nebo zahodit, čímž se rychle obnoví konzistentní stav (recovery), aniž by se musel kontrolovat celý disk.
+
+Rozlišuje se, co všechno se do žurnálu zapisuje. Metadata \textbf{journaling}, což je běžný výchozí režim, žurnáluje jen metadata, tedy i-nody, bitmapy a adresáře; je rychlé a zaručí konzistenci struktur, ale obsah souboru může být po pádu starý nebo jen částečně zapsaný. Data journaling rámcově žurnáluje i samotná data, takže je bezpečnější, ale pomalejší, protože se data fakticky zapisují dvakrát.
+
+Tomu, že souborový systém po pádu zůstane v platném stavu, se říká crash consistency.
+
+Je dobré vidět vztah mezi žurnálem, page cache a fsync. Běžné zápisy končí v page cache jako dirty stránky a žurnál řeší pořadí a \textbf{atomičnost} jejich propsání. fsync říká, že konkrétní data a metadata mají být skutečně bezpečně uložena; vynutí propsání příslušných dirty stránek a uzavření odpovídajících žurnálových záznamů.
+
+Žurnál tedy nechrání před ztrátou dat, která aplikace nikdy nenechala flushnout, ale chrání před nekonzistencí souborového systému jako celku.
+
+\subsection*{Alokace volného místa a fragmentace}
+
+Souborový systém musí při vytváření nebo zvětšování souborů rychle najít volné datové bloky. Zároveň je výhodné, aby bloky jednoho souboru byly co nejvíce u sebe, protože sekvenční přístup je rychlejší než náhodný. To platí výrazně pro \textbf{HDD}, ale do určité míry i pro SSD, kde fragmentace zvyšuje množství metadat a počet operací.
+
+FS tedy řeší alokaci volného místa pomocí bitmap, alokačních skupin, stromů volných rozsahů a heuristik typu first fit nebo best fit.
+
+Vnitřní fragmentace vzniká kvůli tomu, že souborový systém alokuje prostor po blocích. Pokud má blok 4 KiB a soubor má 1 KiB, zbytek posledního bloku není pro jiný soubor využitelný. To je cena za jednoduchost a rychlost blokové alokace. Vnější fragmentace znamená, že volné místo je rozptýlené po disku v malých nesouvislých úsecích.
+
+Celkově může být volného místa dost, ale pro nový velký soubor nemusí existovat jeden souvislý rozsah. Soubor se pak rozdělí na více fragmentů a přístup k němu je méně efektivní.
+
+Fragmentace dat znamená, že bloky jednoho souboru nejsou uloženy souvisle. U HDD to vede k častému pohybu hlavičky a vyšší latenci. U SSD je fyzický \textbf{dopad} menší, ale pořád může růst počet mapování, I/O požadavků a metadat. Proti fragmentaci pomáhá alokovat bloky dopředu, používat extents, delayed allocation, alokační skupiny a defragmentaci.
+
+Důležité je říct, že ukládání dat "natěsno" maximalizuje kapacitu, ale často zhoršuje budoucí růst souborů a zvyšuje fragmentaci; souborový systém proto používá kompromisy a heuristiky.
+
+\subsection*{RAID: výkon, redundance a kapacita}
+
+RAID znamená Redundant Array of Independent Disks. Jde o způsob, jak více fyzických disků spojit do jednoho logického zařízení. To logické zařízení se pak vyšším vrstvám může tvářit jako jeden disk. RAID může být hardwarový, přes specializovaný kontroler, nebo softwarový, implementovaný operačním systémem v blokové vrstvě. U zkoušky je nutné RAID vysvětlovat přes tři osy: výkon, \textbf{redundance} a využitelná kapacita.
+
+Výkon říká, jak rychle lze číst a zapisovat. Redundance říká, zda pole přežije selhání disku. Kapacita říká, kolik celkové fyzické kapacity lze použít na data.
+
+RAID 0 je striping bez redundance. Data se rozdělují po blocích mezi více disků: jeden blok na disk A, další na disk B, další na disk C a tak dál. Výhodou je výkon a využití celé kapacity, protože lze číst a zapisovat paralelně na více disků. Nevýhodou je nulová redundance. Pokud selže jeden disk, ztratí se celé pole, protože části souborů byly rozloženy i na tomto disku. RAID 0 tedy zlepšuje výkon a kapacitu, ale zhoršuje spolehlivost.
+
+RAID 1 je mirroring, tedy zrcadlení. Stejná data jsou uložena na dvou nebo více discích. Když jeden disk selže, data jsou pořád na druhém. Čtení může být rychlejší, protože lze číst z více kopií, ale zápis se musí provést na všechny kopie. Při dvou discích je využitelná kapacita jen kapacita jednoho disku. RAID 1 tedy dává redundanci, může pomoci se čtením, ale stojí hodně kapacity.
+
+RAID 5 kombinuje striping a distribuovanou paritu. Potřebuje minimálně tři disky. Data jsou rozložena přes disky a zároveň se ukládá \textbf{parita}, která umožní dopočítat data při selhání jednoho disku. Využitelná kapacita je zhruba N minus jeden disk. Například ze tří 1TB disků dostaneme přibližně 2 TB pro data a kapacitu jednoho disku zabere parita.
+
+Čtení bývá dobré, ale zápis je složitější, protože je potřeba aktualizovat data i paritu. U malých zápisů vzniká penalizace, protože se často musí číst stará data a stará parita, spočítat nová parita a zapsat data i parita.
+
+RAID 10, tedy RAID 1+0, je kombinace zrcadlení a stripingu. Nejprve se vytvoří zrcadlené páry a přes tyto páry se provede striping. Vyžaduje minimálně čtyři disky. Přináší dobrý výkon i redundanci. Čtení i zápis mohou být rychlé, protože se používá striping, a zároveň pole přežije selhání disku v každém zrcadleném páru, pokud neselžou oba disky stejného páru.
+
+Nevýhodou je kapacita: typicky lze využít jen polovinu fyzické kapacity. Když se komise zeptá na RAID složený z RAIDů, právě RAID 10 je dobrý příklad: je to RAID 0 nad několika RAID 1 zrcadly. RAID 01 je opačná kombinace, tedy zrcadlení striped polí, ale v praxi se častěji preferuje RAID 10.
+
+Proč se u RAIDu čte a zapisuje z více disků? Protože data jsou rozložena po blocích mezi více zařízení. Při čtení lze jednotlivé části získávat paralelně, takže roste propustnost. Při zápisu záleží na RAID úrovni: u RAID 0 se zapisuje paralelně bez parity, u RAID 1 se zapisují kopie, u RAID 5 se kromě dat musí řešit parita. Proto nelze říct, že RAID vždy všechno zrychlí.
+
+RAID 0 maximalizuje výkon bez ochrany, RAID 1 maximalizuje jednoduchou redundanci, RAID 5 je kapacitní kompromis s paritou a RAID 10 je výkonný, ale kapacitně dražší kompromis.
+
+RAID 6 je obměna RAID 5 se dvěma nezávislými paritami místo jedné. Potřebuje aspoň čtyři disky a obětuje kapacitu dvou disků, ale zato přežije současné selhání dvou disků. To je dnes důležité u velkých disků, kde obnova trvá dlouho.
+
+Když v poli s redundancí selže disk, pole přejde do degradovaného režimu (\textbf{degraded mode}): dál funguje, ale chybějící data se musí dopočítávat z parity nebo ze zrcadla, takže je pomalejší a bez další rezervy. Po výměně disku probíhá rebuild, tedy obnova obsahu nového disku z ostatních.
+
+Rebuild velkých disků trvá hodiny i dny a celé pole je při něm intenzivně zatížené; právě tehdy je zvýšené \textbf{riziko}, že selže další disk, a u RAID 5 by to znamenalo ztrátu celého pole. To je jeden z hlavních důvodů pro RAID 6.
+
+U paritních RAIDů existuje takzvaná \textbf{write hole}: pokud dojde k výpadku napájení mezi zápisem dat a zápisem odpovídající parity, mohou být data a parita nekonzistentní a po výpadku se z nich dopočítají špatná data. Řeší se to žurnálem RAIDu, bateriově zálohovanou cache řadiče nebo souborovým systémem, který to ošetří. Hlavní větu je ale potřeba říct jasně: RAID není záloha.
+
+Chrání proti selhání disku, ale ne proti smazání souboru, ransomwaru, lidské chybě nebo poškození dat, protože ty se okamžitě promítnou do všech kopií i do parity. Zálohy je proto nutné dělat zvlášť.
+
+\subsection*{Šifrování disku}
+
+Šifrování disku chrání data v klidu, tedy data uložená na vypnutém nebo uzamčeném zařízení. Typický scénář je krádež notebooku nebo vyjmutí disku. Bez klíče by útočník neměl být schopen přečíst obsah. Šifrování může být na úrovni celého disku nebo oddílu, například LUKS nebo BitLocker, případně na úrovni jednotlivých souborů.
+
+U šifrování celého disku se šifrují bloky tak, aby velikost bloku zůstala stejná: blok plaintextu se změní na stejně velký blok ciphertextu. Prakticky se používá \textbf{symetrická} kryptografie, například \textbf{AES}.
+
+Důležité je říct, co šifrování nechrání. Jakmile je systém spuštěný a disk odemčený, operační systém a procesy s daty pracují v dešifrované podobě. Malware běžící pod uživatelem, který má k souborům oprávnění, si je může přečíst stejně jako uživatel. Šifrování nenahrazuje zálohování, protože nechrání před smazáním nebo poškozením dat. Také nemusí skrývat všechna metadata podle konkrétní technologie.
+
+Při běhu systému je hlavní klíč nějakou dobu v RAM, takže proti některým útokům na běžící nebo uspávaný stroj šifrování samo nestačí.
+
+Moderní diskové šifrování často používá dvouvrstvou práci s klíči. Data nejsou šifrována přímo heslem uživatele. Disk má náhodně vygenerovaný master key, kterým se šifrují data. Tento master key je pak zašifrován klíčem odvozeným z hesla, TPM nebo jiné autentizační metody. Výhoda je, že změna hesla nevyžaduje přešifrovat celý disk; stačí znovu zašifrovat master key.
+
+\subsection*{Klasické I/O: open, read, write, close}
+
+Klasické vstupně-výstupní operace fungují tak, že proces nejprve otevře soubor pomocí open a získá file descriptor. File descriptor je malé číslo v tabulce procesu, kterým proces odkazuje na otevřený soubor, socket, pipe nebo zařízení. Při read kernel podle file descriptoru zjistí, o jaký objekt jde, najde příslušné bloky souboru, zkontroluje cache a případně zadá I/O na blokovou vrstvu.
+
+Data se načtou do page cache nebo blokové cache v jádře a poté se zkopírují do uživatelského bufferu procesu. Při write se data z uživatelského bufferu kopírují do kernelové cache a později se zapisují na disk. To znamená, že klasické I/O může mít dvě kopie dat: jednu v uživatelském prostoru a jednu v cache jádra.
+
+Knihovny jako stdio mohou navíc přidat další bufferování v uživatelském prostoru, aby se nesvolávalo systémové volání pro každý bajt. Výhodou klasického read/write je jednoduchost, univerzálnost a jasné řízení toku dat. Nevýhodou je kopírování mezi user space a kernel space a režie systémových volání.
+
+\subsection*{Memory mapped I/O - mmap}
+
+Memory mapped I/O, typicky pomocí mmap, mapuje soubor do virtuálního adresního prostoru procesu. Proces potom s obsahem souboru pracuje jako s pamětí: dereferencuje adresy, čte bajty a případně zapisuje. Nemusí pro každý kus dat volat read nebo write. Důležité ale je, že soubor se při mmap obvykle nenačte celý hned.
+
+OS jen vytvoří popis mapování, takzvanou oblast virtuální paměti (\textbf{VMA}), který říká, že daný rozsah adres odpovídá danému souboru. Nemusí přitom hned vytvořit platné záznamy ve stránkové tabulce (PTE) pro všechny stránky. Když proces poprvé přistoupí na stránku mapovaného souboru, která ještě není namapovaná na fyzickou paměť, vznikne \textbf{page fault}.
+
+Kernel stránku najde v page cache, nebo ji načte z disku, a teprve potom vytvoří konkrétní mapování na fyzickou stránku ve stránkové tabulce a proces pokračuje.
+
+Výhodou mmap je menší počet kopií a systémových volání. Data mapovaného souboru mohou být sdílena mezi page cache jádra a adresním prostorem procesu. Pokud více procesů mapuje stejný soubor, mohou fyzicky sdílet stejné stránky v RAM.
+
+To je výhodné například pro sdílené knihovny nebo velké soubory, ke kterým se přistupuje náhodně. mmap zároveň používá mechanismy virtuální paměti: lazy loading, page fault, dirty pages a případně \textbf{copy-on-write}.
+
+U mmap je potřeba rozlišit soukromé a sdílené mapování. U MAP\_PRIVATE se změny procesu nemají zapsat do původního souboru. Stránky mohou být označeny jako read-only a při prvním zápisu vznikne copy-on-write: kernel vytvoří kopii stránky v RAM a proces dál mění vlastní kopii. Původní soubor se nezmění. U MAP\_SHARED se změny promítají do sdílených stránek a mohou být později zapsány zpět do souboru.
+
+Změněné stránky se označují jako dirty pages a OS je flushuje na disk podle potřeby nebo na žádost přes msync.
+
+Rizika mmap spočívají v tom, že práce se souborem se tváří jako práce s pamětí, ale stále závisí na souborovém systému a disku. Přístup na stránku může vyvolat page fault a tím pomalý diskový přístup. Chyby při zápisu mohou přijít asynchronně.
+
+U sdílených mapování je potřeba synchronizovat přístup více procesů nebo vláken, jinak mohou vzniknout race conditions. mmap je tedy efektivní, ale není automaticky jednodušší než read/write; je potřeba vědět, kdy se hodí.
+
+\subsection*{Jak bych to řekl u státnic v jednom toku}
+
+Kdybych měl odpovídat souvisle, začal bych tím, že souborový systém je abstrakce nad blokovým zařízením. Uživatel vidí soubory a adresáře, ale na disku jsou datové struktury: superblok, i-nody, datové bloky a bitmapy volného místa. Program otevře soubor, dostane file descriptor a přes read nebo write požádá kernel o data.
+
+Kernel přes VFS a konkrétní souborový systém najde metadata souboru, z i-nodu zjistí datové bloky, bloková vrstva z požadavku vytvoří I/O operace, I/O \textbf{scheduler} je může seřadit a ovladač je pošle na zařízení. Bloková cache a write buffery zrychlují čtení a zápis, ale znamenají, že fyzický zápis na disk může proběhnout později.
+
+Potom bych přešel k reprezentaci. Superblok popisuje FS jako celek, i-node reprezentuje soubor nebo adresář a obsahuje metadata a odkazy na data, adresář mapuje jména na i-nody a bitmapy nebo stromy evidují volné bloky. Ext3/ext4 používají unixový i-nodový model, ext3 přidává žurnálování a ext4 extenty a lepší alokaci. FAT je jednoduchý systém s tabulkou řetězení clusterů, vhodný hlavně kvůli kompatibilitě.
+
+NTFS je komplexní Windows souborový systém s Master File Table a bohatými metadaty. U velkých adresářů a moderních FS se mohou používat hashovací struktury nebo B+ stromy, aby vyhledávání nebylo lineární.
+
+U RAIDu bych jasně řekl, že se musí vysvětlovat přes výkon, redundanci a využitelnou kapacitu. RAID 0 rozkládá data přes disky a zvyšuje výkon, ale nemá redundanci. RAID 1 zrcadlí data a chrání proti selhání disku, ale využije jen polovinu kapacity při dvou discích. RAID 5 používá striping s distribuovanou paritou, přežije selhání jednoho disku a má kapacitu N minus jeden disk, ale zápisy jsou dražší kvůli paritě.
+
+RAID 10 kombinuje zrcadlení a striping, má dobrý výkon a redundanci, ale využije asi polovinu kapacity. Pokud se ptají na RAID složený z RAIDů, uvedu RAID 10 jako RAID 0 nad RAID 1 páry.
+
+Nakonec bych doplnil fragmentaci, šifrování a mmap. Fragmentace vzniká, když volné místo nebo data souborů nejsou souvislá. Vnitřní fragmentace je nevyužité místo v posledním bloku, vnější fragmentace je rozdrobení volného prostoru.
+
+Šifrování disku chrání data v klidu proti offline útoku, například při krádeži vypnutého notebooku, ale nechrání před malwarem v běžícím odemčeném systému a nenahrazuje zálohy. mmap mapuje soubor do adresního prostoru procesu. Proces pak pracuje s pamětí, ale OS přes page faulty načítá stránky souboru a dirty stránky později zapisuje zpět. Tím se propojuje souborový systém s virtuální pamětí.
+
+Závěrečná zkoušková osa: blokové zařízení -> bloková vrstva/I/O scheduler -> superblok/i-nody/datové bloky/bitmapy -> adresáře a cesty -> FAT/ext/NTFS -> alokace a fragmentace -> RAID přes výkon, redundanci a kapacitu -> šifrování disku -> mmap jako soubor namapovaný do virtuální paměti procesu.
+
+\newpage
+

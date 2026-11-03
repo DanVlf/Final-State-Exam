@@ -1,0 +1,280 @@
+\otazka{10. Metody autentizace a řízení přístupu}{Biometrické metody autentizace, jejich dopady a problémy. Elektronický podpis a jeho použití. Autentizace strojů a aplikací.}{PV080, PV157}
+
+\subsection*{10. Autentizace a řízení přístupu -- stručněji}
+Otázka stojí na rozdílu mezi identifikací, autentizací a autorizací. Identifikace je tvrzení identity, autentizace ověření identity a autorizace rozhodnutí, co smí ověřený subjekt dělat.
+
+\textbf{1. Faktory autentizace}
+\begin{itemize}
+  \item Faktory jsou něco, co vím (heslo), co mám (token, karta, telefon), co jsem (biometrie) a případně kde/jak se chovám.
+  \item MFA kombinuje více nezávislých faktorů. Smyslem je, aby kompromitace jednoho prvku nestačila k přihlášení.
+  \item Challenge-response znamená, že server pošle výzvu a klient prokáže znalost tajemství nebo soukromého klíče, aniž by poslal samotné heslo v otevřené podobě.
+\end{itemize}
+
+\textbf{2. Hesla, tokeny a moderní přihlášení}
+\begin{itemize}
+  \item Hesla se mají ukládat jako solené pomalé hashe, ne jako plaintext. Rizikem jsou reuse, phishing, slabá hesla a únik databáze.
+  \item TOTP je symetrický princip: server i aplikace mají sdílené tajemství a z času počítají jednorázový kód. FIDO2/WebAuthn je asymetrický: server má veřejný klíč a soukromý klíč zůstává u uživatele.
+  \item Passkeys jsou praktické použití asymetrické autentizace. Jsou odolnější proti phishingu, protože podpis je vázán na konkrétní doménu.
+\end{itemize}
+
+\textbf{3. Biometrie}
+\begin{itemize}
+  \item Biometrie ověřuje vlastnost člověka, například otisk prstu, obličej, duhovku nebo hlas. Výhoda je pohodlí, nevýhoda je neodvolatelnost a riziko chyb.
+  \item Biometrie není tajemství jako heslo. Otisk prstu po úniku nevyměním. Proto se má ukládat šablona, chránit lokálně a dobře řešit fallback.
+  \item Chyby se popisují jako FAR a FRR: falešné přijetí neoprávněného a falešné odmítnutí oprávněného.
+\end{itemize}
+
+\textbf{4. Řízení přístupu}
+\begin{itemize}
+  \item Autorizace se dá řídit přes DAC, MAC, RBAC nebo ABAC. Prakticky se často používají role a atributy: uživatel, oddělení, čas, zařízení, citlivost dat.
+  \item Zásada nejmenších oprávnění říká, že subjekt má mít jen ta práva, která potřebuje. Privilegované účty mají být oddělené, auditované a chráněné MFA.
+  \item ACL je seznam práv ke konkrétnímu objektu, například kdo smí číst nebo zapisovat soubor.
+\end{itemize}
+
+\textbf{5. Elektronický podpis a stroje}
+\begin{itemize}
+  \item Elektronický podpis není primárně přihlášení, ale prokázání původu a integrity dokumentu nebo úkonu.
+  \item Stroje a aplikace se autentizují certifikáty, API klíči, tokeny, mTLS nebo servisními účty. I strojová identita musí mít životní cyklus, rotaci tajemství a omezená oprávnění.
+\end{itemize}
+
+Biometrické metody \textbf{autentizace}, \textbf{elektronický podpis}, autentizace strojů a aplikací
+
+Tahle otázka je dobré začít tím, že autentizace a řízení přístupu nejsou jedna věc, ale navazující řetězec. Nejdřív musíme vědět, kdo nebo co se snaží do systému vstoupit, potom musíme ověřit, že tvrzená identita je pravdivá, a teprve nakonec rozhodujeme, co daný subjekt smí dělat.
+
+Uživatel, \textbf{proces}, server nebo aplikace tedy nejdřív vystupuje jako nějaký subjekt, předloží tvrzení o identitě, systém ho autentizuje a následně podle politiky přístupu autorizuje konkrétní operace.
+
+Na zkoušce je potřeba pečlivě oddělit čtyři slova: \textbf{identifikace}, autentizace, \textbf{autorizace} a audit. Identifikace znamená, že subjekt řekne nebo systém zjistí, o jakou identitu jde. Autentizace znamená ověření, že subjekt skutečně je tím, za koho se vydává. Autorizace znamená rozhodnutí, jaká práva má po úspěšném ověření.
+
+Audit nebo accounting znamená zpětné zaznamenání toho, kdo co dělal, aby bylo možné kontrolovat odpovědnost, řešit incidenty a případně prokazovat zneužití.
+
+\subsection*{1. Identita, částečná identita a atributy}
+
+Identita není jen přihlašovací jméno. V informačních systémech je identita soubor atributů, podle kterých systém rozlišuje subjekt. U člověka to může být jméno, uživatelské ID, e-mail, role, číslo zaměstnance, oddělení, \textbf{certifikát}, telefonní číslo nebo biometrický znak. U stroje nebo aplikace to může být certifikát, \textbf{veřejný klíč}, hostname, service account, klientské ID, API \textbf{token} nebo identita workloadu v cloudu.
+
+Důležitý je pojem částečná identita. Člověk v různých kontextech nevystupuje vždy celou svojí občanskou identitou. Ve škole může vystupovat jako student s UČO, v bance jako klient, v e-shopu jako zákazník a v diskusním fóru jako pseudonymní účet. Každá taková částečná identita obsahuje jen část atributů. Z pohledu soukromí je výhodné, když systém vyžaduje jen atributy, které skutečně potřebuje.
+
+Například při ověření věku není vždy nutné znát jméno a rodné číslo; často stačí důkaz, že osoba splňuje podmínku.
+
+Atributy identity se často spravují centrálně v adresářových službách. Typickým příkladem je LDAP nebo Microsoft Active Directory. LDAP je protokol a adresářová služba pro ukládání a vyhledávání identit, skupin, rolí a atributů. V organizaci může aplikace při přihlášení ověřit uživatele vůči LDAP/AD a potom si z adresáře načíst jeho skupiny nebo role, podle kterých provede autorizaci.
+
+LDAP tedy není sám o sobě jen "přihlášení", ale infrastruktura pro správu identit a jejich atributů.
+
+\subsection*{2. Metody autentizace}
+
+Autentizace je ověření identity subjektu. Klasicky se rozlišují autentizační faktory. První faktor je něco, co vím, například heslo, PIN nebo přístupová fráze. Druhý faktor je něco, co mám, například čipová karta, hardwarový token, mobilní telefon, FIDO klíč nebo certifikát uložený v tokenu. Třetí faktor je něco, co jsem, tedy biometrická charakteristika, například otisk prstu, obličej, duhovka, hlas nebo dynamika podpisu.
+
+Někdy se doplňuje i faktor někde, kde jsem, tedy poloha, síťové umístění nebo fyzická přítomnost v určitém prostředí. Pokud systém kombinuje alespoň dva nezávislé faktory, mluvíme o vícefaktorové autentizaci.
+
+Nejznámější metoda je autentizace heslem. Heslo má ale zásadní problém: pro člověka musí být zapamatovatelné, ale pro útočníka těžko uhodnutelné. Proto se nemá ukládat v otevřeném tvaru. Ukládá se výsledek pomalé jednosměrné funkce, typicky s náhodnou solí. Sůl brání efektivnímu použití předpočítaných tabulek a zajišťuje, že dvě stejná hesla nemusí mít stejný uložený otisk.
+
+U moderních systémů se používají funkce pro derivaci klíče z hesla, například PBKDF2, \textbf{bcrypt}, \textbf{scrypt} nebo Argon2. Někdy se používá i pepper, tedy tajná hodnota uložená odděleně od databáze hesel.
+
+Útoky na hesla mohou být online, kdy útočník zkouší hesla přímo proti službě, nebo offline, kdy získá databázi hashů a může hádat bez omezení systémem. Online útoky se brzdí rate limitingem, zamykáním účtů, detekcí anomálií nebo nástroji typu Fail2Ban. Offline útoky se brzdí silnou hashovací funkcí, solí a dostatečně silnými hesly. Praktickou pomůckou je správce hesel, protože umožní mít pro každou službu dlouhé, náhodné a unikátní heslo.
+
+Autentizace pomocí tokenu používá objekt, který má uživatel u sebe. Může to být čipová karta, autentizační kalkulátor, mobilní aplikace, YubiKey nebo FIDO2 token. Token je lepší než samotné heslo v tom, že tajemství z něj obvykle nejde jednoduše opsat nebo zapamatovat, a ztrátu fyzického tokenu si uživatel často všimne. Nevýhodou je, že token může být ztracen, rozbit, odcizen nebo může vyžadovat čtečku.
+
+U čipových karet je navíc důležité, aby byly odolné proti logickým i fyzickým útokům, například proti útokům přes API, časové analýze, výkonové analýze, indukci chyb nebo invazivnímu čtení paměti. U moderní autentizace je velmi důležitý princip, že uživatel nemá jen poslat tajemství po síti. Pokud by útočník zachytil heslo nebo autentizační cookie, mohl by je znovu použít. Tomu se říká \textbf{replay attack}, útok přehráním.
+
+Obrana spočívá v tom, že autentizační důkaz je vázán na aktuální výzvu a je použitelný jen jednou nebo jen krátkou dobu.
+
+Ještě dvě věci k heslům je dobré umět vysvětlit. Hesla se nikdy nemají ukládat v otevřené podobě ani reverzibilně zašifrovaná: kdyby útočník nebo i správce získal šifrovací klíč, dostal by rovnou všechna hesla. Proto se ukládá jen jednosměrný otisk, ze kterého heslo nejde získat zpět.
+
+A právě proto nestačí rychlý kryptografický \textbf{hash} jako SHA-256: ten je navržen, aby byl rychlý, takže útočník s ukradenou databází může zkoušet miliardy hesel za sekundu. Pomalé funkce (\textbf{Argon2id}, bcrypt, scrypt) jsou naopak záměrně výpočetně a paměťově náročné, aby každý pokus stál čas a hádání bylo neúnosně drahé.
+
+Samostatnou kapitolou je obnova hesla (recovery): je to častý slabý článek, protože když jde heslo snadno resetovat přes e-mail nebo bezpečnostní otázky, útočník může obejít i silné heslo; proto má být obnova chráněná stejně pečlivě jako přihlášení, ideálně druhým faktorem.
+
+\subsection*{3. Challenge-response a čerstvost autentizace}
+
+Protokoly typu výzva-odpověď řeší problém čerstvosti. Ověřovatel pošle náhodnou výzvu, typicky \textbf{nonce}, a autentizovaný subjekt z ní vypočítá odpověď pomocí svého tajemství. Když odpověď sedí, ověřovatel ví, že druhá strana zná tajemství, ale samotné tajemství nemuselo být posláno po síti. Důležité je, že stará zachycená odpověď nejde použít znovu, protože při dalším přihlášení přijde jiná výzva.
+
+Čerstvost lze zajistit několika způsoby. Nejčastější je náhodné číslo - nonce. Může se použít také monotónně rostoucí sekvence, kde si strany pamatují poslední použitou hodnotu, nebo časové razítko, kde musí mít strany synchronizované a důvěryhodné hodiny. Pokud se používá nonce, musí být dostatečně náhodné a neopakovatelné. Jinak by útočník mohl čekat na opakování výzvy a zneužít dříve zachycenou odpověď.
+
+U symetrického \textbf{challenge-response} protokolu sdílejí obě strany stejný tajný klíč. Bob pošle Alici náhodnou výzvu, Alice z výzvy vypočítá \textbf{MAC} pomocí sdíleného klíče a Bob si stejný MAC vypočítá také. Pokud se hodnoty shodují, Alice pravděpodobně zná sdílený klíč. Nevýhodou je, že obě strany mají stejný klíč, takže Bob by teoreticky mohl vytvořit stejný důkaz jako Alice.
+
+Proto symetrický MAC obvykle nezajišťuje \textbf{nepopiratelnost} vůči třetí straně.
+
+U asymetrického challenge-response protokolu má autentizovaná strana \textbf{soukromý klíč} a ověřovatel zná odpovídající veřejný klíč. Ověřovatel pošle nonce a subjekt ji podepíše soukromým klíčem. Ověřovatel podpis ověří veřejným klíčem. Tím se dokazuje držení soukromého klíče bez jeho odhalení. Tento princip je typický pro \textbf{SSH} klíče, klientské certifikáty, čipové karty, FIDO tokeny nebo podepisování dat.
+
+\itpr{\textbf{Mini box: challenge-response může být symetrický i asymetrický.} Pointa není konkrétní algoritmus, ale čerstvá výzva a odpověď, kterou útočník neumí znovu použít.}
+
+\begin{longtable}{p{0.23\linewidth}p{0.39\linewidth}p{0.31\linewidth}}
+\toprule
+\textbf{Varianta} & \textbf{Jak vzniká odpověď} & \textbf{Příklady a rizika} \\
+\midrule\endhead
+\textbf{Symetrická} & Klient i server znají stejné tajemství. Server pošle nonce, klient spočítá odpověď typicky jako \textbf{HMAC/MAC} z výzvy a sdíleného klíče, server spočítá totéž a porovná. & CHAP, NTLM, některé tokeny. Výhoda: rychlé a jednoduché. Nevýhoda: server musí mít tajemství nebo ekvivalentní ověřovací hodnotu; únik databáze může být vážný. \\
+\addlinespace
+\textbf{Asymetrická} & Server zná jen veřejný klíč klienta. Pošle nonce, klient ji \textbf{podepíše soukromým klíčem} a server podpis ověří veřejným klíčem. & SSH klíče, klientské certifikáty, čipové karty, FIDO2/WebAuthn/YubiKey. Výhoda: server neukládá soukromé tajemství klienta. \\
+\addlinespace
+\textbf{TOTP} & Je to symetrický princip, ale výzvou není náhodné číslo ze serveru, nýbrž \textbf{aktuální časový blok}, typicky 30 sekund. Mobil i server mají stejný seed a z času počítají kód přes HMAC, často HMAC-SHA1. & Google Authenticator, Microsoft Authenticator apod. Riziko: pokud útočník ukradne TOTP seed ze serveru nebo zařízení, umí generovat stejné kódy. \\
+\bottomrule
+\end{longtable}
+
+Ještě dál jdou zero-knowledge protokoly, kde jedna strana prokáže, že zná určitou informaci, aniž by ji přímo odhalila. Myšlenka je podobná: neukazovat tajemství, ale prokázat schopnost odpovědět na náhodné testy. Opakováním protokolu klesá pravděpodobnost, že by podvodník uspěl náhodou.
+
+\subsection*{4. Biometrické metody autentizace}
+
+Biometrické metody jsou automatizované metody identifikace nebo ověření identity podle měřitelných fyziologických nebo behaviorálních vlastností člověka. Fyziologické biometriky jsou například otisk prstu, tvar ruky, obličej, duhovka, sítnice nebo DNA. Behaviorální biometriky jsou založené na chování, například hlas, dynamika podpisu nebo dynamika psaní na klávesnici.
+
+Zvláštnost biometrik je v tom, že biometrický vzorek není nikdy úplně stejný. Heslo je buď stejné, nebo není, ale otisk prstu, hlas nebo obličej se pokaždé snímá s určitou variabilitou.
+
+Biometrika může fungovat ve dvou režimech. Verifikace je režim 1:1: uživatel tvrdí identitu a systém ověřuje, zda biometrický vzorek odpovídá uloženému vzorku této identity. Typicky telefon ověřuje, zda otisk odpovídá majiteli zařízení. Identifikace je režim 1:N: systém nezná předem tvrzenou identitu a porovnává vzorek s databází, aby zjistil, kdo osoba je.
+
+Identifikace je náročnější, citlivější na soukromí a s rostoucí databází roste i \textbf{riziko} chyb.
+
+Proces použití biometriky má dvě hlavní fáze. Nejdříve proběhne registrace, kdy se nasnímá biometrický znak, vytvoří se z něj registrační vzorek nebo šablona a ta se uloží. Při pozdější verifikaci nebo identifikaci se znak znovu nasnímá, extrahují se charakteristiky a ty se porovnají s uloženou šablonou. U otisku prstu se například pracuje s markanty, tedy specifickými body otisku, jako jsou zakončení linií nebo rozdvojení.
+
+Biometrické systémy se hodnotí podle chybovosti. \textbf{FAR} je false acceptance rate, tedy falešné přijetí neoprávněné osoby. To je chyba, která přímo ohrožuje bezpečnost. \textbf{FRR} je false rejection rate, tedy falešné odmítnutí oprávněného uživatele. To snižuje použitelnost. \textbf{EER} je bod, kde se FAR a FRR rovnají, a často slouží jako hrubé srovnání přesnosti. Prahová hodnota určuje, jak přísný systém je.
+
+Pokud nastavíme systém přísněji, snížíme FAR, ale zvýšíme FRR. Pokud ho nastavíme benevolentněji, zlepšíme použitelnost, ale může růst riziko falešného přijetí.
+
+Další chyby jsou FTE, tedy failure to enrol, když se biometrickou charakteristiku nepodaří získat už při registraci, a FTA, failure to acquire, když se ji nepodaří zpracovat při ověřování. Chybovost závisí na typu snímače, prostředí, osvětlení, kvalitě vzorku, počtu pokusů i na uživatelích. Proto samotné číslo FAR nebo FRR bez znalosti testovacích podmínek nestačí.
+
+Biometrie má výhody: uživatel ji nemůže zapomenout, často je rychlá a pohodlná a může snížit náklady proti správě fyzických tokenů. Má ale zásadní problémy. Biometrické znaky nejsou tajné. Otisky necháváme na předmětech, obličej ukazujeme veřejně a hlas lze nahrát. Pokud dojde ke kompromitaci biometrické šablony, nelze ji jednoduše změnit jako heslo.
+
+Další problém je ochrana soukromí, protože biometrická data mohou být velmi citlivá a mohou umožnit sledování osoby napříč systémy. Systém musí řešit i \textbf{liveness detection}, tedy zda vzorek pochází od živé osoby, například měřením teploty, odporu kůže nebo pulsu. To ale zvyšuje cenu a může zvyšovat i falešné odmítnutí.
+
+Na zkoušce je dobré říct, že biometrika sama o sobě nemusí automaticky zvýšit bezpečnost. Je vhodná hlavně jako doplňkový faktor nebo jako lokální odemčení tajného klíče uloženého v zařízení či tokenu. Biometrika autentizuje člověka, nikoli zprávu, data, server nebo aplikaci. Proto pro podpis dokumentu nebo autentizaci stroje stále potřebujeme kryptografické klíče a protokoly.
+
+\subsection*{5. Řízení přístupu}
+
+Po úspěšné autentizaci nastupuje řízení přístupu. Autentizace odpovídá na otázku "kdo jsi", zatímco autorizace a řízení přístupu odpovídají na otázku "co smíš". Systém musí podle bezpečnostní politiky rozhodnout, zda subjekt smí číst soubor, měnit záznam, spustit službu, přistoupit do databáze nebo spravovat uživatele.
+
+Základní mechanismus je \textbf{ACL}, access control list. ACL je seznam práv u konkrétního objektu. U objektu je uvedeno, kteří uživatelé nebo skupiny mají právo číst, zapisovat, spouštět, mazat nebo měnit oprávnění. Výhodou ACL je, že u objektu vidíme, kdo k němu má přístup. Nevýhodou je, že se hůř zjišťuje, ke kterým všem objektům má přístup konkrétní uživatel, což je problém při změně pracovního zařazení nebo odchodu zaměstnance.
+
+Podle toho, kdo rozhoduje o přístupu, se rozlišuje několik modelů. \textbf{DAC}, discretionary access control, je volitelné řízení přístupu, kde o právech typicky rozhoduje vlastník objektu. Je flexibilní, ale méně odolné proti chybám uživatelů a šíření dat. MAC, mandatory access control, je povinné řízení přístupu, kde práva prosazuje systémová \textbf{politika} nezávislá na vůli vlastníka. Klasickým teoretickým modelem MAC pro důvěrnost je \textbf{Bell-LaPadula} se dvěma pravidly: \emph{no read up} (subjekt nesmí číst data s vyšší úrovní utajení, než na jakou má oprávnění) a \emph{no write down} (subjekt nesmí zapisovat do nižší úrovně, aby z ní neunikla tajná informace).
+
+Používá klasifikace a bezpečnostní úrovně, typicky v prostředích s vysokými nároky na ochranu. \textbf{RBAC}, role-based access control, přiřazuje práva rolím a uživatelům přiřazuje role. V organizacích je praktické, protože práva odpovídají pracovním funkcím: účetní, student, administrátor, \textbf{auditor}, manažer.
+
+Kromě DAC, MAC a RBAC existují i další modely. \textbf{ABAC} (attribute-based access control) rozhoduje podle atributů: vlastností subjektu, objektu, akce i kontextu, například "lékař smí číst záznam pacienta jen na svém oddělení a jen v pracovní době". Je pružnější než RBAC, ale složitější na správu.
+
+Capability-based access control obrací pohled ACL: subjekt drží "klíč" (\textbf{capability}), tedy nepadělatelný token opravňující ke konkrétní operaci nad objektem, a přístup prokazuje jeho předložením. S \textbf{least privilege} úzce souvisí princip \textbf{need-to-know}: přístup k informaci dostane jen ten, kdo ji ke své práci skutečně potřebuje, i kdyby měl jinak dostatečnou úroveň oprávnění.
+
+Velmi důležitý je princip nejmenších oprávnění. Uživatel, proces i aplikace mají mít jen ta práva, která skutečně potřebují. Stejně důležitá je separace povinností. Například člověk, který zadává platbu, by neměl být jediný, kdo ji schvaluje. U privilegovaných účtů je potřeba zvláštní opatrnost: administrátor, root, doménový správce nebo databázový administrátor může mít přístup k citlivým datům, konfiguraci, účtům i logům.
+
+Proto se používá oddělení běžného a administrátorského účtu, MFA, \textbf{just-in-time} přístupy, logování administrátorských akcí, pravidelné revize oprávnění a zákaz sdílených admin účtů.
+
+Pro správu privilegovaných účtů existuje samostatná kategorie nástrojů \textbf{PAM} (Privileged Access Management).
+
+Kromě odděleného administrátorského účtu a vícefaktorové autentizace přidává další ochrany: just-in-time přidělení oprávnění jen na nezbytnou dobu, session recording, tedy nahrávání administrátorských relací pro audit, rotaci tajemství (pravidelnou výměnu hesel a klíčů, ideálně po každém použití) a takzvaný \textbf{break-glass} účet, tedy nouzový privilegovaný přístup pro krizové situace, jehož použití je přísně logované a vyvolá poplach.
+
+\subsection*{6. Elektronický a digitální podpis}
+
+Elektronický podpis je právně širší pojem než \textbf{digitální podpis}. Elektronickým podpisem může být v nejširším smyslu jakýkoliv elektronický údaj použitý jako podpis, například napsané jméno na konci e-mailu. Takový podpis ale nemusí spolehlivě spojovat dokument s konkrétní osobou. Proto se rozlišuje zaručený a kvalifikovaný elektronický podpis.
+
+Zaručený elektronický podpis musí být jednoznačně spojen s podepisující osobou, umožnit její identifikaci a být k podepsaným datům připojen tak, aby bylo možné odhalit následnou změnu dat. Kvalifikovaný elektronický podpis je silnější právní forma. Je založen na kvalifikovaném certifikátu a vytvořen kvalifikovaným prostředkem pro vytváření podpisů. V evropském kontextu má kvalifikovaný elektronický podpis právní účinek vlastnoručního podpisu.
+
+Technickým mechanismem je digitální podpis. Ten používá asymetrickou kryptografii. Podepisující má soukromý klíč, který musí chránit, a veřejný klíč, kterým mohou ostatní podpis ověřit. Z důvodu efektivity se obvykle nepodepisuje celý dokument. Nejprve se z dokumentu spočítá hash, tedy krátký otisk dokumentu, a ten se podepíše soukromým klíčem.
+
+Příjemce spočítá hash přijatého dokumentu, ověří podpis veřejným klíčem a porovná hodnoty. Pokud sedí, ví, že dokument nebyl po podpisu změněn a že podpis odpovídá soukromému klíči.
+
+Digitální podpis zajišťuje integritu dat, autentizaci původu a při správně nastavené infrastruktuře také nepopiratelnost. Nezajišťuje ale \textbf{důvěrnost}. Podepsaný dokument může číst každý, kdo ho získá. Pokud chceme i důvěrnost, musíme použít šifrování. Prakticky se nejdříve podepíše a potom zašifruje, podobně jako když nejdříve podepíšeme dopis a potom ho vložíme do obálky.
+
+Aby veřejný klíč dával smysl, potřebujeme vědět, komu patří. K tomu slouží certifikát. Certifikát je veřejný klíč spolu s údaji o držiteli, podepsaný důvěryhodnou třetí stranou, certifikační autoritou. Běžným standardem je \textbf{X.509}. Certifikát obsahuje mimo jiné identifikaci vydavatele a držitele, veřejný klíč, sériové číslo, dobu platnosti, případná omezení použití a podpis vydavatele.
+
+Celý systém správy veřejných klíčů se nazývá \textbf{PKI}. Patří do něj \textbf{certifikační autorita}, registrační autorita, adresářová služba pro distribuci certifikátů a seznamy zneplatněných certifikátů, například CRL. Elektronický podpis se používá pro podepisování dokumentů, smluv, podání vůči úřadům, podepisování e-mailů, podepisování kódu a také pro autentizaci v protokolech.
+
+Je důležité nezaměnit digitální podpis s šifrováním. Podpis říká, kdo dokument podepsal a zda se nezměnil; šifrování říká, kdo ho může číst.
+
+\subsection*{7. Autentizace strojů a aplikací}
+
+Autentizace se netýká jen lidí. V moderních systémech se navzájem autentizují také servery, aplikace, služby, skripty, kontejnery, API klienti a zařízení. U strojů nemá smysl mluvit o hesle v lidském smyslu, ale o kryptografických klíčích, certifikátech, tokenech nebo service accounts.
+
+Nejslabší možností je autentizace podle adresy, například podle IP nebo MAC adresy. To je problematické, protože IP i MAC adresu lze podvrhnout nebo změnit. Historickým příkladem je mechanismus `.rhosts`, kde určitým vzdáleným strojům důvěřujeme, že správně tvrdí uživatelské jméno. Takový přístup je křehký, protože stojí na důvěře v adresu a vzdálený stroj.
+
+Silnější autentizace strojů používá kryptografické tajemství. Typickým příkladem je SSH. Klient si pamatuje veřejný klíč serveru v `known\_hosts`, aby poznal, že se připojuje ke správnému serveru a ne k útočníkovi. Server zase může znát veřejný klíč klienta v `authorized\_keys`. Klient při přihlášení prokáže, že vlastní odpovídající soukromý klíč, obvykle právě formou výzva-odpověď.
+
+Pokud by se klient autentizoval heslem, heslo se posílá až uvnitř zabezpečeného kanálu po autentizaci serveru a ustanovení klíčů relace.
+
+Další základní protokol je \textbf{TLS}. V běžném \textbf{HTTPS} se autentizuje hlavně server. Server pošle certifikát, klient ověří, zda certifikát platí, zda ho vydala důvěryhodná certifikační autorita a zda odpovídá jménu serveru. Potom se v handshaku ustanoví symetrický klíč pro rychlé šifrování komunikace. TLS tak typicky poskytuje autentizaci serveru, důvěrnost a integritu přenosu. U novějšího \textbf{TLS 1.3} je to už jinak: pro výměnu klíčů se používá efemérní \textbf{ECDHE}, takže dlouhodobý klíč z certifikátu slouží jen k autentizaci serveru, ale už ne k odvození symetrického klíče relace -- ten vzniká z čerstvých efemérních klíčů. Díky tomu má TLS 1.3 \textbf{forward secrecy} (z později prozrazeného dlouhodobého klíče nejde zpětně dešifrovat dříve zachycený provoz) a zároveň rychlejší handshake (typicky jediný round-trip).
+
+Pokud se použije klientský certifikát, mluvíme o vzájemné autentizaci, tedy \textbf{mTLS}. To se často používá mezi službami, mikroservisami nebo v interních API.
+
+U aplikací se často používají service accounts, API klíče, OAuth klientská tajemství, JWT tokeny, certifikáty nebo podepsané požadavky. Důležité je, aby tajemství nebyla uložená přímo ve zdrojovém kódu, aby měla omezená práva, aby se pravidelně rotovala a aby bylo možné je rychle zneplatnit. Aplikace má mít stejně jako člověk jen minimální oprávnění potřebná ke své práci.
+
+Autentizace aplikací může znamenat také ověření původu a integrity samotného softwaru. K tomu slouží podepisování kódu, například Microsoft Authenticode. Spustitelný soubor je digitálně podepsán. Pokud je podpis platný a certifikát důvěryhodný, systém může uživateli ukázat vydavatele a ověřit, že soubor nebyl po podpisu změněn. Pokud podpis chybí nebo nesedí, je to varovný signál.
+
+Podepisování kódu ale neznamená, že program je automaticky bezpečný; znamená hlavně to, že známe vydavatele a integritu balíčku od podpisu.
+
+\subsection*{8. Protokoly v praxi: Kerberos, TLS, IPsec}
+
+Praktickým příkladem centrální autentizace je \textbf{Kerberos}. Stojí na důvěryhodné třetí straně, Key Distribution Center, které se skládá z Authentication Serveru a Ticket Granting Serveru. Klient se nejdřív prokáže vůči autentizačnímu serveru a získá ticket-granting ticket. Když potom chce přistoupit ke konkrétní službě, použije tento lístek k získání service ticketu. Služba pak ověří service ticket a pustí klienta.
+
+Výhodou je, že uživatel se nemusí opakovaně autentizovat heslem ke každé službě a heslo se nemusí posílat jednotlivým serverům.
+
+Moderní obdobou centrální autentizace na webu je federace identit a jednotné přihlášení (\textbf{SSO}). Klíčové role jsou identity provider (\textbf{IdP}), který spravuje identity a provádí autentizaci, a service provider neboli relying party (SP/RP), tedy aplikace, která se na ověření spoléhá.
+
+Uživatel se přihlásí jednou u IdP a do dalších služeb se dostane bez opětovného zadávání hesla. \textbf{SAML} je starší \textbf{standard} založený na XML pro federaci a SSO, typický v podnikovém a univerzitním prostředí.
+
+Často se pletou OAuth 2.0 a \textbf{OpenID Connect}, proto je dobré je přesně rozlišit. OAuth 2.0 je primárně autorizační framework: řeší delegované oprávnění, tedy jak aplikaci bezpečně udělit přístup k nějakému zdroji jménem uživatele, aniž by dostala jeho heslo. Sám o sobě tedy není autentizační protokol a není správné mluvit o "přihlášení přes OAuth" ve smyslu ověření identity.
+
+Ověřování identity nad OAuth 2.0 řeší až OpenID Connect (OIDC), který přidává ID token s informacemi o uživateli. V OAuth a OIDC se navíc pracuje se dvěma typy tokenů: \textbf{access token} je krátkodobý a opravňuje k přístupu ke zdroji, kdežto \textbf{refresh token} je dlouhodobější a slouží k získání nového access tokenu, aniž by se uživatel musel znovu přihlašovat.
+
+TLS se používá hlavně pro zabezpečení aplikační komunikace, například HTTPS, e-mail nebo \textbf{VPN} nad TLS. V handshaku se dohodnou algoritmy, ověří certifikát serveru, případně klienta, a ustanoví se symetrické klíče. Pro samotná data se používá \textbf{symetrická} kryptografie, protože je rychlá; \textbf{asymetrická} kryptografie a certifikáty se používají hlavně pro autentizaci a ustanovení klíčů.
+
+To je typické hybridní použití kryptografie.
+
+\textbf{IPsec} pracuje na síťové vrstvě a zabezpečuje IP komunikaci mezi hostiteli nebo sítěmi. Může poskytovat autentizaci původu dat, integritu, ochranu proti replay attacku a podle zvoleného režimu také důvěrnost. AH poskytuje autentizaci a integritu bez šifrování, ESP poskytuje i šifrování. IPsec se používá hlavně ve VPN a může fungovat v transportním nebo tunelovém režimu.
+
+\textbf{Diffie-Hellman} je důležitý pro ustanovení sdíleného tajemství přes nezabezpečený kanál. Sám o sobě ale neříká, s kým tajemství ustanovujeme. Pokud není autentizovaný, je zranitelný vůči man-in-the-middle útoku. Proto se v praxi kombinuje s autentizací, například certifikáty nebo digitálním podpisem.
+
+\subsection*{9. Co si pohlídat u zkoušky}
+
+U této otázky je nejčastější chyba zaměnit autentizaci a autorizaci. Autentizace je ověření identity, autorizace je povolení konkrétní činnosti. Druhá častá chyba je tvrdit, že biometrika je tajemství. Není. Biometrika je spíš měřitelná vlastnost člověka, která může být zneužita a kterou nejde snadno změnit. Třetí častá chyba je zaměnit elektronický podpis a digitální podpis.
+
+Elektronický podpis je právní širší pojem, digitální podpis je kryptografický mechanismus. Čtvrtá chyba je zapomenout, že digitální podpis nezajišťuje důvěrnost.
+
+Kdyby se komise zeptala na replay attack, odpověď je: útočník zachytí platnou autentizační zprávu a později ji přehraje. Obrana je výzva-odpověď s čerstvou hodnotou, například nonce, sekvence nebo timestamp. Čerstvost znamená, že důkaz je vázán na aktuální výzvu a starý důkaz nejde znovu použít.
+
+Kdyby se komise zeptala, proč MAC nezajišťuje nepopiratelnost, odpověď je: protože MAC vzniká ze sdíleného tajného klíče. Obě strany, které klíč znají, mohou MAC vytvořit. Třetí strana tedy nemůže jednoznačně říct, kdo přesně zprávu vytvořil. Digitální podpis je jiný: vzniká soukromým klíčem podepisujícího a ověřuje se veřejným klíčem, takže může sloužit jako silnější důkaz původu.
+
+Kdyby se komise zeptala na algoritmus nebo protokol pro autentizaci stroje nebo aplikace, vhodné příklady jsou SSH klíče, TLS serverový certifikát, klientský certifikát v mTLS, Kerberos service ticket, podepsaný JWT token nebo code signing certifikát u aplikace. Vždy je dobré dodat, že klíče musí být chráněné, rotované, s omezenou platností a s minimálními oprávněními.
+
+\subsection*{Krátká mluvená verze}
+
+Kdybych to měl u státnic říct souvisle, začal bych tím, že autentizace a řízení přístupu tvoří řetězec. Identifikace určí, kdo subjekt tvrdí, že je, autentizace tuto identitu ověří, autorizace rozhodne, co subjekt smí, a audit zaznamená, co subjekt skutečně dělal. Identitou přitom nemusí být jen jméno; může jít o částečnou identitu složenou z atributů, například uživatelské ID, role, skupiny, certifikátu nebo service accountu.
+
+Tyto atributy se v organizacích často spravují přes LDAP nebo Active Directory.
+
+Autentizace může být založená na tom, co znám, co mám nebo co jsem. Hesla jsou jednoduchá, ale problémová, proto se ukládají jen jako solený výsledek pomalé hashovací funkce a chrání se proti online i offline útokům. Tokeny přidávají fyzický prvek, například čipovou kartu nebo FIDO klíč. Biometrika ověřuje člověka podle fyziologických nebo behaviorálních znaků, například otisku prstu, obličeje, hlasu nebo dynamiky podpisu.
+
+U biometriky je nutné znát FAR, FRR, EER, FTE a FTA a hlavně říct, že biometrika není stoprocentní, není tajná a při kompromitaci ji nelze snadno změnit.
+
+Proti replay attacku se používají protokoly výzva-odpověď. Ověřovatel pošle čerstvou výzvu, například náhodné nonce, a druhá strana odpoví hodnotou vypočtenou pomocí tajemství. U symetrické varianty je to typicky MAC se sdíleným klíčem, u asymetrické varianty podpis výzvy soukromým klíčem. Smysl je v tom, že odposlechnutá stará odpověď už příště neplatí.
+
+Po autentizaci řešíme řízení přístupu. ACL uvádí, kdo má jaká práva ke konkrétnímu objektu. DAC nechává rozhodnutí na vlastníkovi objektu, MAC prosazuje centrální systémovou politiku a RBAC přiřazuje práva rolím. U privilegovaných uživatelů je potřeba zvláštní režim, protože administrátor může změnit konfiguraci, číst data nebo ovlivnit logy.
+
+Elektronický podpis je širší právní pojem, zatímco digitální podpis je kryptografický mechanismus. Digitální podpis se vytvoří tak, že se dokument zahashuje a hash se podepíše soukromým klíčem. Ověření probíhá veřejným klíčem. Certifikát váže veřejný klíč ke konkrétnímu subjektu a PKI řeší správu certifikátů, certifikační autority, registrační autority a zneplatnění certifikátů.
+
+Podpis zajišťuje integritu a původ, ale ne důvěrnost; pro důvěrnost je potřeba šifrování.
+
+Nakonec je potřeba říct, že autentizujeme nejen lidi, ale i stroje a aplikace. Slabá autentizace podle IP nebo MAC adresy je podvrhnutelná. Silnější je autentizace pomocí certifikátů, klíčů, service accounts a tokenů.
+
+SSH používá známé veřejné klíče serverů a klientské klíče, TLS používá serverové a případně klientské certifikáty, Kerberos pracuje s lístky vydanými důvěryhodným KDC a podepisování kódu ověřuje integritu a původ aplikace. Tím se otázka propojí od člověka přes přístupová práva až ke strojům a aplikacím.
+
+\subsection*{Mini tahák k rozdílům}
+
+\begin{longtable}{p{0.317\linewidth}p{0.317\linewidth}p{0.317\linewidth}}
+\toprule
+\textbf{Pojem} & \textbf{Co řeší} & \textbf{Typická chyba u zkoušky} \\
+\midrule\endhead
+Autentizace & Ověření identity - kdo jsi. & Zaměnit s autorizací. \\
+\addlinespace
+Autorizace & Rozhodnutí, co smíš dělat. & Myslet si, že přihlášení automaticky znamená všechna práva. \\
+\addlinespace
+Biometrika & Ověření člověka podle vlastnosti těla/chování. & Tvrdit, že je tajná nebo stoprocentní. \\
+\addlinespace
+MAC & Integrita a autenticita se sdíleným klíčem. & Přisoudit mu nepopiratelnost. \\
+\addlinespace
+Digitální podpis & Integrita, původ a při PKI i nepopiratelnost. & Myslet si, že šifruje obsah. \\
+\addlinespace
+TLS/SSH/Kerberos & Praktické protokoly pro autentizaci a bezpečný kanál. & Zapomenout na čerstvost a ověření veřejných klíčů/certifikátů. \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+Poslední kontrolní věta: autentizace není jednorázové slovo pro celé přihlášení. U člověka může být založena na hesle, tokenu a biometrice; u stroje spíš na klíči, certifikátu, tokenu nebo service accountu. Řízení přístupu potom určuje práva a audit zpětně kontroluje, co se stalo.
+
+Když se ptají na čerstvost, řekni nonce, sekvence nebo timestamp. Když se ptají na biometriku, řekni FAR, FRR, EER a nemožnost výměny biometrického znaku. Když se ptají na podpis, řekni hash dokumentu, soukromý klíč, veřejný klíč, certifikát a PKI. Když se ptají na aplikace a stroje, řekni SSH, TLS/mTLS, Kerberos, service accounts a code signing.
+
+\newpage
+

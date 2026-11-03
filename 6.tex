@@ -1,0 +1,319 @@
+\otazka{6. Principy programování}{Strukturované programování v imperativním jazyce. Paměťový model programu; správa paměti, dynamická alokace, práce s uživatelskými datovými strukturami. Nízkoúrovňová práce s pamětí, ukazatel, pole a ukazatelová aritmetika. Způsoby ladění programu (debugging). Bezpečné programování a vývoj SW.}{PB071, PV080}
+
+\subsection*{6. Principy programování -- stručněji}
+Otázka je hlavně o tom, jak program řízeně pracuje s výpočtem a pamětí. U nízkoúrovňového jazyka, typicky C, je důležité umět vysvětlit nejen algoritmus, ale i kde data leží a kdo odpovídá za jejich životnost.
+
+\textbf{1. Strukturované imperativní programování}
+\begin{itemize}
+  \item Imperativní program říká počítači posloupnost kroků, které mění stav programu. Základ jsou proměnné, přiřazení, podmínky, cykly a funkce.
+  \item Strukturované programování se snaží stavět program z čitelných bloků bez chaotických skoků. Cílem je, aby šel tok řízení sledovat a testovat.
+\end{itemize}
+
+\textbf{2. Paměťový model programu}
+\begin{itemize}
+  \item Běžně rozlišujeme kód, globální/statická data, haldu a zásobník. Zásobník drží lokální proměnné a návratové adresy, halda slouží pro dynamicky alokovaná data.
+  \item Dynamická alokace znamená, že program za běhu žádá paměť, například přes \texttt{malloc}, a musí ji později uvolnit přes \texttt{free}. Chyby vedou k leakům, use-after-free nebo double free.
+\end{itemize}
+
+\textbf{3. Ukazatele, pole a struktury}
+\begin{itemize}
+  \item Ukazatel je proměnná obsahující adresu. Dereference znamená přístup k hodnotě na dané adrese.
+  \item Pole v C úzce souvisí s ukazateli: jméno pole se často chová jako adresa prvního prvku. Ukazatelová aritmetika posouvá adresu po velikostech typu, ne po bajtech bez kontextu.
+  \item Uživatelské datové struktury, například spojový seznam, strom nebo hash tabulka, stojí na kombinaci struktur, ukazatelů a dynamické alokace.
+\end{itemize}
+
+\textbf{4. Debugging}
+\begin{itemize}
+  \item Debugging je systematické hledání příčiny chyby. Používá se reprodukce, breakpointy, krokování, kontrola proměnných, logy, sanitizery a minimální testovací případ.
+  \item Důležité je rozlišit symptom a příčinu: program může spadnout na jednom místě, ale paměť mohla být poškozena dávno předtím.
+\end{itemize}
+
+\textbf{5. Bezpečné programování}
+\begin{itemize}
+  \item Nejčastější nízkoúrovňová rizika jsou buffer overflow, use-after-free, integer overflow, formátovací řetězce, neinicializovaná paměť a chybějící kontrola návratových hodnot.
+  \item Bezpečný vývoj znamená validovat vstupy, kontrolovat hranice, používat bezpečnější funkce, dělat code review, testy, statickou analýzu a kompilátorové ochrany.
+\end{itemize}
+
+\itbox{\textbf{Rozsah:} strukturované programování v imperativním jazyce, paměťový model programu, správa paměti, dynamická alokace, uživatelské datové struktury, nízkoúrovňová práce s pamětí, ukazatele, pole, ukazatelová aritmetika, debugging a bezpečné programování.}
+
+\subsection*{Úvod: o čem u otázky mluvit}
+
+Tahle otázka je hlavně o tom, že v nízkoúrovňovém programování už nevidím program jen jako sadu abstraktních příkazů, ale také jako konkrétní práci s pamětí. V jazyce C proměnná, pole, struktura, \textbf{ukazatel} i řetězec někde fyzicky leží v adresním prostoru procesu.
+
+Programátor může s adresami přímo pracovat, a tím získává výkon a kontrolu, ale současně odpovědnost: C za něj běžně nehlídá meze pole, životnost objektů ani správné uvolnění dynamicky alokované paměti.
+
+Začal bych strukturovaným a imperativním programováním, protože to je \textbf{rámec} celé otázky. Imperativní jazyk popisuje, jak se má výpočet provést krok za krokem: příkazy mění stav programu, tedy hodnoty proměnných a obsah paměti. Strukturované programování se snaží, aby program nebyl chaotický skok mezi instrukcemi, ale aby byl složený ze sekvence, větvení, cyklů a podprogramů.
+
+Díky tomu jde problém rozdělit na menší funkce, každá funkce má jasnou odpovědnost, vstupy, výstupy a lokální proměnné.
+
+U C je důležité dodat, že předávání parametrů je typicky hodnotou. Když funkci předám int, dostane kopii. Pokud chci, aby funkce změnila proměnnou volajícího, předám adresu, tedy ukazatel. To vypadá jako předávání referencí, ale v C se pořád předává hodnota - jen tou hodnotou je adresa. Tím se přirozeně dostávám k paměťovému modelu.
+
+U strukturovaného programování je dobré zmínit také modularitu a čitelnost. Funkce by měla mít rozumně omezený účel, jasné parametry a dobře definovaný výsledek. V C se často rozlišuje vstupní parametr, který funkce jen čte, výstupní parametr, přes který funkce něco vrací pomocí ukazatele, a vstupně-výstupní parametr, který funkce čte i mění.
+
+To je praktické například u funkcí, které mají vrátit více hodnot nebo měnit existující datovou strukturu.
+
+\subsection*{Paměťový model procesu}
+
+Když spustím program, operační systém mu vytvoří \textbf{proces} a proces dostane vlastní virtuální adresní prostor. Program tedy pracuje s virtuálními adresami. Překlad na fyzickou paměť řeší hardware, hlavně \textbf{MMU}, a operační systém pomocí stránkových tabulek. V rámci procesu se paměť tradičně dělí na několik částí: text neboli code \textbf{segment}, read-only data, data segment, BSS, \textbf{heap} a stack.
+
+U zkoušky je dobré umět tento obrázek nakreslit a ukázat, kde bude lokální proměnná, globální proměnná a blok vrácený z mallocu.
+
+\newpage
+\begin{codebox}
+\small
+\begin{verbatim}
+vyšší adresy
++----------------------------------+
+| argumenty programu, prostředí    |
++----------------------------------+
+| stack - lokální proměnné, rámce  |  roste typicky dolů
++----------------------------------+
+| mapované oblasti, knihovny, mmap |
++----------------------------------+
+| heap - bloky z malloc/calloc     |  roste typicky nahoru
++----------------------------------+
+| BSS - neinicializované globální  |
++----------------------------------+
+| data - inicializované globální   |
++----------------------------------+
+| rodata - konstanty, literály     |
++----------------------------------+
+| text/code - instrukce programu   |
++----------------------------------+
+nižší adresy
+\end{verbatim}
+\end{codebox}
+
+Text segment obsahuje strojové instrukce programu. Tam leží kód funkcí, například main nebo vlastní funkce. Typicky je tato oblast jen pro čtení a spouštění, aby program nemohl omylem nebo útokem přepisovat svůj vlastní kód.
+
+Read-only data obsahují konstanty a často string literály, například text "ahoj". Data segment obsahuje inicializované globální a statické proměnné, například globální int nastavený na 10. BSS obsahuje globální a statické proměnné bez explicitní inicializace nebo inicializované nulou; při startu programu jsou vynulovány.
+
+\itpr{\textbf{Mini pomůcka: .data vs. .bss.} \textbf{.data} obsahuje globální/statické proměnné s konkrétní počáteční hodnotou, takže tato hodnota musí být uložená i v programu na disku. \textbf{.bss} obsahuje proměnné nulové nebo bez explicitní inicializace; v souboru je hlavně informace o velikosti tohoto bloku a loader při spuštění vyhradí RAM a celý blok vynuluje. Tím se šetří hlavně místo v souboru na disku, ne RAM za běhu. Jakmile program běží, .data i .bss jsou normální zapisovatelná paměť a proměnná z .bss se po změně chová úplně stejně jako jiná globální proměnná.}
+
+Stack neboli zásobník slouží hlavně pro volání funkcí. Při volání funkce vznikne stack frame, kde jsou lokální automatické proměnné, parametry, návratová adresa a často uložený stav předchozího rámce. Po návratu z funkce se její rámec zruší, a tím zaniknou její lokální proměnné. Heap neboli halda je oblast pro dynamickou alokaci. Pokud zavolám \textbf{malloc}, dostanu adresu bloku na heapu.
+
+Tento blok nezanikne návratem z funkce, ale až tehdy, když ho explicitně uvolním pomocí free.
+
+Správu paměti jde proto rozdělit na několik režimů. Statická paměť patří globálním a statickým objektům a existuje po celou dobu běhu programu. Automatická paměť patří lokálním proměnným na stacku a spravuje se automaticky podle běhu funkcí. Dynamická paměť je na heapu a její životnost řídí programátor. Právě dynamická paměť je nejčastějším zdrojem chyb, protože jazyk C za programátora nevykonává garbage collection.
+
+\begin{longtable}{p{0.475\linewidth}p{0.475\linewidth}}
+\toprule
+\textbf{Příklad v C} & \textbf{Kam patří} \\
+\midrule\endhead
+int g = 10; & inicializovaná globální proměnná - data segment \\
+\addlinespace
+int g2; & neinicializovaná globální proměnná - BSS \\
+\addlinespace
+static int x = 5; & statická proměnná - data segment nebo BSS podle inicializace \\
+\addlinespace
+int local; & lokální automatická proměnná - stack \\
+\addlinespace
+int *p = malloc(sizeof *p); & p je lokální proměnná na stacku, ale blok, na který ukazuje, je na heapu \\
+\addlinespace
+char *s = "ahoj"; & s je ukazatel, samotný literál je typicky v read-only datech \\
+\addlinespace
+\bottomrule
+\end{longtable}
+
+Typická zkoušková věta: rozdíl je mezi proměnnou ukazatele a objektem, na který ukazuje. Lokální proměnná int *p může ležet na stacku, ale hodnota v ní je adresa bloku na heapu. To je přesně důvod, proč se často ptají, kde leží p a kde leží *p.
+
+\subsection*{Stack vs. heap}
+
+Stack je automaticky spravovaný. Když vstoupím do funkce, vytvoří se rámec; když se funkce vrátí, rámec zmizí. Proto je stack rychlý: alokace je v principu posun stack pointeru. Zároveň je ale omezený velikostí. Přesná velikost závisí na systému, nastavení a vlákně, typicky jde spíše o jednotky až desítky MB, ne o libovolně velkou paměť. Proto není dobré dávat na stack obrovská pole a hluboká rekurze může skončit stack \textbf{overflow}.
+
+Heap je ručně spravovaný. Programátor explicitně řekne malloc nebo \textbf{calloc} a později musí říct free. Objekt na heapu může přežít návrat z funkce, což je užitečné například pro dynamické pole, spojový seznam nebo strom. Nevýhoda je, že programátor musí přesně vědět, kdo paměť vlastní a kdo ji uvolňuje. Pokud ji neuvolní, vzniká \textbf{memory leak}. Pokud ji uvolní dvakrát, vzniká \textbf{double free}.
+
+Pokud ji po uvolnění ještě používá, vzniká \textbf{use-after-free}.
+
+Vztah ke context switchi je takový, že každé \textbf{vlákno} má vlastní stack. Při přepnutí kontextu se uloží stav procesoru, zejména registry, program counter a stack pointer, aby se vlákno mohlo později vrátit přesně tam, kde skončilo. Heap je oproti tomu typicky sdílený všemi vlákny jednoho procesu. Proto když více vláken pracuje s daty na heapu, je potřeba synchronizace.
+
+Při přepnutí mezi procesy se navíc může měnit celý virtuální adresní prostor, tedy i stránkové tabulky.
+
+\subsection*{Dynamická alokace: malloc, calloc, realloc, free}
+
+Dynamická alokace v C je založena na knihovních funkcích ze stdlib.h. Nejdůležitější jsou malloc, calloc, \textbf{realloc} a free. Funkce malloc má prototyp void *malloc(size\_t size). Vrací obecný ukazatel void * na blok o zadaném počtu bajtů. Pokud se alokace nepovede, vrátí NULL. Paměť z mallocu není inicializovaná, takže čtení jejího obsahu před zápisem je chyba.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+#include <stdlib.h>
+int *arr = malloc(n * sizeof *arr);
+if (arr == NULL) {
+    /* alokace selhala */
+}
+\end{verbatim}
+\end{codebox}
+
+Výraz sizeof je operátor, ne funkce. Vrací velikost typu nebo objektu v bajtech a výsledek má typ size\_t. Praktické je psát malloc(n * sizeof *arr), protože kdyby se změnil typ ukazatele arr, výraz zůstane správný. Pozor na to, že sizeof pole dává velikost celého pole, ale sizeof ukazatele dává jen velikost adresy. Když pole předám do funkce, rozpadne se na ukazatel na první prvek, takže funkce automaticky nezná jeho délku.
+
+Funkce calloc alokuje paměť pro určitý počet prvků a vynuluje ji. Volání calloc(n, sizeof *arr) je tedy vhodné, když chci pole inicializované nulami. Funkce free uvolňuje blok, který byl získán z mallocu, callocu nebo reallocu. Do free se nesmí poslat adresa lokální proměnné ani ukazatel doprostřed bloku. free(NULL) je bezpečné a nic neudělá. Po free se obsah paměti nemaže spolehlivě a ukazatel se sám nenastaví na NULL.
+
+Realloc mění velikost existujícího bloku. Může blok zvětšit na místě, zmenšit, nebo přesunout jinam a obsah překopírovat. Bezpečný vzor je použít dočasný ukazatel. Kdyby realloc selhal a já rovnou přepsal původní ukazatel, ztratil bych adresu starého bloku a vytvořil memory leak.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+int *tmp = realloc(arr, new_n * sizeof *arr);
+if (tmp == NULL) {
+    /* arr je stale platny, muzeme ho uvolnit nebo dal pouzit */
+} else {
+    arr = tmp;
+}
+\end{verbatim}
+\end{codebox}
+
+\itbox{\textbf{Propojení s virtuální pamětí:} malloc je knihovní funkce v uživatelském prostoru. Pro malé alokace často používá oblast, kterou už má alokátor k dispozici. Když potřebuje více paměti, požádá operační systém například přes brk/sbrk nebo mmap. Vrácená adresa je virtuální adresa procesu. Fyzické stránky, stránkování a page fault řeší operační systém a MMU.}
+
+\subsection*{Typické chyby při práci s pamětí}
+
+Memory leak znamená, že program alokoval paměť a už ji neuvolní. Nejčastější varianta je, že lokální ukazatel na blok zanikne při návratu z funkce, ale blok na heapu zůstane alokovaný. U krátkého programu to nemusí být vidět, protože po skončení procesu operační systém paměť uklidí. U serveru nebo dlouho běžící aplikace je to vážná chyba.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+void f(void) {
+    int *p = malloc(sizeof *p);
+    *p = 10;
+} /* p zmizi, blok na heapu zustal: memory leak */
+\end{verbatim}
+\end{codebox}
+
+Double free je uvolnění stejného bloku dvakrát. Může poškodit interní metadata alokátoru a v bezpečnostním kontextu může být zneužitelné. Nastavení ukazatele na NULL po free pomáhá jen částečně, protože mohou existovat aliasy, tedy jiné ukazatele na stejný blok. Use-after-free znamená, že po free s pamětí dál pracuji.
+
+To je nedefinované chování: program může vypadat, že funguje, může spadnout, nebo může pracovat s pamětí, kterou už mezitím dostala jiná část programu.
+
+Přístup mimo alokovanou paměť je další klasická chyba. C nekontroluje meze pole. Když mám int arr[10], platné indexy jsou 0 až 9. Zápis arr[10] je už za konec pole. U char bufferu to vede k \textbf{buffer overflow}, což je typická chyba, na kterou se u této otázky může komise zeptat. U stringů je navíc nutné počítat s ukončovacím nulovým znakem, takže pro text délky n potřebuji n + 1 znaků.
+
+K typickým chybám patří i několik dalších, které je dobré umět pojmenovat. Integer overflow při výpočtu velikosti pro malloc nastane, když se velikost spočítá násobením, které přeteče rozsah typu; malloc pak alokuje menší blok, než program očekává, a následný zápis přeteče. S tím souvisí chyby signed/unsigned, kdy se záporné číslo přetypuje na velké kladné, například délka -1 uložená do size\_t se stane obrovským číslem.
+
+Null pointer dereference je přístup přes ukazatel, který je NULL, typicky po neúspěšném mallocu nebo u neinicializovaného ukazatele. Dangling pointer je ukazatel na paměť, která už neexistuje (uvolněný blok nebo lokální proměnná po návratu z funkce); jeho použití je právě use-after-free. Off-by-one je chyba o jedničku, typicky zápis na \textbf{index} rovný délce pole nebo zapomenutí na nulový znak u řetězce.
+
+Další skupina chyb souvisí s neopatrnou prací se vstupem a prostředím. Format string vulnerability vznikne, když se uživatelský vstup předá jako formátovací řetězec, například printf(vstup) místo printf("\%s", vstup); útočník pak může pomocí formátovacích značek číst nebo přepisovat paměť. Stack overflow je vyčerpání zásobníku, typicky příliš hlubokou nebo nekonečnou rekurzí.
+
+Neověřené návratové hodnoty znamenají, že program ignoruje, zda funkce jako malloc, fopen nebo read uspěla, a pokračuje s neplatnou hodnotou. TOCTOU (time-of-check to time-of-use) je souběhová chyba, kdy se mezi kontrolou a použitím zdroje, například souboru, jeho stav změní a útočník toho zneužije.
+
+Command injection vznikne, když se neověřený vstup vloží do příkazu pro shell, například přes system(); útočník tak může spustit vlastní příkazy.
+
+\subsection*{Nedefinované chování (undefined behavior)}
+
+Mnoho těchto chyb spadá pod takzvané nedefinované chování (\textbf{undefined behavior}, UB). To znamená, že \textbf{standard} jazyka pro danou situaci nepředepisuje vůbec nic: program může spadnout, vrátit nesmysl, nebo dokonce zdánlivě fungovat.
+
+Ošemetné je, že chování se může lišit podle překladače a úrovně optimalizace, protože překladač předpokládá, že UB nikdy nenastane, a podle toho kód optimalizuje; stejný program tak může v ladicím a v optimalizovaném sestavení fungovat jinak. Typické příklady UB jsou přístup mimo pole, use-after-free, přetečení znaménkového celého čísla (signed overflow) a čtení neinicializované hodnoty.
+
+Právě proto se na UB nelze spoléhat, ani když se kód zrovna "chová hezky".
+
+\subsection*{Ukazatele: adresa, dereference, void pointer}
+
+Ukazatel je proměnná, jejíž hodnota je adresa. Tedy ukazatel sám také někde leží v paměti, ale jeho obsahem je adresa jiného objektu. Operátor \& vrací adresu objektu. Operátor * při dereferenci zpřístupní hodnotu na adrese, na kterou ukazatel ukazuje.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+int x = 10;
+int *p = &x;
+*p = 20;     /* meni x na 20 */
+\end{verbatim}
+\end{codebox}
+
+\itpr{\textbf{Mini pomůcka k ukazatelům:} \texttt{p} je adresa, \texttt{*p} je objekt na této adrese. Když je \texttt{*p} vpravo od rovnítka, hodnotu čtu: \texttt{int y = *p;} vezme obsah krabičky. Když je \texttt{*p} vlevo od rovnítka, na tuto adresu zapisuji: \texttt{*p = 42;} přepíše původní hodnotu objektu. Naopak \texttt{p = 42;} by měnilo samotnou adresu uloženou v ukazateli, tedy kam ukazatel míří, ne hodnotu původní proměnné.}
+
+Je potřeba přesně rozlišovat p, *p a \&p.; Samotné p je hodnota ukazatele, tedy adresa proměnné x. Výraz *p je hodnota objektu, na který p ukazuje. Výraz \&p; je adresa samotné proměnné p. Velikost pointeru není velikost objektu, na který ukazuje. Na běžném 64bitovém systému má ukazatel často 8 bajtů, ale int, double nebo struktura mohou mít jiné velikosti.
+
+Void pointer, tedy void *, je obecný objektový ukazatel. Malloc ho vrací proto, aby mohl vrátit adresu paměti pro libovolný typ. V C se void * automaticky převede na konkrétní objektový pointer, například int *. Void pointer ale nejde standardně přímo dereferencovat, protože kompilátor neví, jaký typ objektu na adrese leží. A standardně s ním nelze dělat pointerovou aritmetiku, protože void nemá velikost.
+
+Některé překladače to dovolí jako rozšíření, ale správně se má pro bajtovou aritmetiku použít char * nebo unsigned char *.
+
+\subsection*{Pole, ukazatelová aritmetika a vícerozměrná pole}
+
+Pole v C je souvislá oblast prvků stejného typu. Když zapíšu int arr[5], v paměti za sebou leží pět hodnot typu int. Název pole se ve většině výrazů převádí na ukazatel na první prvek, takže arr se často chová jako \&arr;[0]. Proto platí, že arr[i] je totéž jako *(arr + i). Pole a ukazatel ale nejsou totéž: sizeof arr dá velikost celého pole, zatímco sizeof p u ukazatele dá velikost adresy.
+
+U pointerové aritmetiky je zásadní věta ke zkoušce: přičtení jedničky k ukazateli neznamená posun o jeden bajt, ale posun o jeden prvek daného typu. Pokud je p typu int *, pak p + 1 znamená posun o sizeof(int) bajtů. Pokud je p typu double *, posun je o sizeof(double) bajtů. U char * je posun o jeden bajt, protože sizeof(char) je 1.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+int arr[4] = {10, 20, 30, 40};
+int *p = arr;
+*p        == 10
+*(p + 1)  == 20     /* posun o jeden int, ne o jeden byte */
+arr[2]    == *(arr + 2)
+\end{verbatim}
+\end{codebox}
+
+Vícerozměrné pole, například int matrix[3][4], je v C uloženo po řádcích v souvislé paměti. Prvek matrix[row][col] odpovídá indexu row * počet\_sloupců + col v jednorozměrném pohledu. Při předávání dvourozměrného pole do funkce je potřeba znát počet sloupců, protože bez něj kompilátor neví, jak se má posunout na další řádek.
+
+Dynamické pole se typicky alokuje přes malloc. U dynamické 2D matice jsou dvě běžné varianty: jeden souvislý blok, kde indexuji ručně přes row * cols + col, nebo pole ukazatelů na řádky. Souvislý blok je jednodušší pro \textbf{cache} a uvolňuje se jedním free. Pole ukazatelů umožní nepravidelné řádky, ale musí se uvolňovat každý řádek zvlášť a pak pole ukazatelů.
+
+\subsection*{String v C}
+
+String v C není speciální objekt s vlastní délkou. Je to pole znaků zakončené nulovým znakem '\textbackslash{}0'. Například řetězec "ahoj" má čtyři viditelné znaky, ale v paměti zabírá pět znaků: a, h, o, j a nulový znak. Funkce strlen vrátí 4, protože počítá znaky před nulovým znakem, zatímco sizeof u pole char s[] = "ahoj" vrátí 5.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+char s[] = "ahoj";   /* modifikovatelne pole na stacku */
+char *t = "ahoj";    /* t ukazuje na string literal, typicky read-only */
+\end{verbatim}
+\end{codebox}
+
+Rozdíl mezi char s[] a char *t je zkouškově důležitý. Pole s obsahuje vlastní kopii znaků a můžu ho měnit. Ukazatel t ukazuje na string literál, který bývá v read-only paměti, a pokus o změnu t[0] je chyba. U stringů je typickým zdrojem bezpečnostních problémů buffer overflow, například při použití strcpy do příliš malého bufferu. Bezpečnější je pracovat s funkcemi, kde explicitně hlídám velikost bufferu, například fgets nebo snprintf.
+
+\subsection*{Uživatelské datové struktury}
+
+Do uživatelských datových struktur v C patří hlavně struct, union, enum a typedef. Struct spojuje více položek do jednoho typu. Například struktura uzlu spojového seznamu může obsahovat hodnotu a ukazatel na další uzel. Přístup k položce přes objekt se píše tečkou, přes ukazatel šipkou. Výraz p->next je zkratka za (*p).next. Velikost struktury nemusí být přesně součet velikostí položek, protože kompilátor může vložit zarovnávací mezery.
+
+\begin{codebox}
+\small
+\begin{verbatim}
+struct node {
+    int value;
+    struct node *next;
+};
+struct node *n = malloc(sizeof *n);
+n->value = 10;
+n->next = NULL;
+\end{verbatim}
+\end{codebox}
+
+Union je podobný structu, ale položky sdílejí stejnou oblast paměti. V jednu chvíli tedy smysluplně drží jednu z hodnot. Enum slouží pro pojmenované konstanty a zlepšuje čitelnost kódu. Typedef zavádí alternativní jméno typu. U dynamických datových struktur, jako je spojový seznam, strom nebo dynamické pole, je podstatné vlastnictví paměti: kdo uzel vytvořil přes malloc, musí zajistit jeho uvolnění přes free.
+
+U seznamu nestačí uvolnit jen hlavu, pokud tím ztratím odkazy na další uzly.
+
+U struktur je vhodné zmínit i mělkou a hlubokou kopii. Při prostém přiřazení struktury se zkopírují hodnoty jejích položek. Pokud je ale položkou ukazatel na dynamicky alokovanou paměť, zkopíruje se jen adresa, ne data na heapu. Pak dvě struktury ukazují na stejný blok. Hluboká kopie znamená, že se alokuje nový blok a obsah se skutečně zkopíruje, aby každá struktura vlastnila vlastní paměť.
+
+\subsection*{Debugging, testování a bezpečný vývoj}
+
+Ladění programu znamená najít, proč se program nechová podle očekávání. V C je nutné brát vážně už varování překladače. Rozumný překlad pro vývoj je například gcc -Wall -Wextra -Wpedantic -g, kde -g přidá ladicí informace. Debugger, například gdb, umožňuje spustit program krok po kroku, nastavit breakpoint, vypsat hodnoty proměnných, dereferencovat ukazatele a zobrazit backtrace po pádu programu.
+
+\textbf{Valgrind}, konkrétně nástroj Memcheck, pomáhá najít memory leak, čtení neinicializované hodnoty, neplatný zápis mimo blok, double free nebo use-after-free. Moderní alternativou jsou sanitizery, například AddressSanitizer přes volbu -fsanitize=address. Ty často velmi přesně ukážou, kde vznikl heap buffer overflow, stack buffer overflow nebo use-after-free.
+
+Bezpečné programování v C znamená hlavně omezovat \textbf{riziko} nedefinovaného chování. Prakticky to znamená: kontrolovat návratové hodnoty mallocu a dalších funkcí, inicializovat proměnné, předávat do funkcí délku pole nebo velikost bufferu, nepoužívat paměť po free, neuvolňovat stejný blok dvakrát, hlídat přetečení indexů a velikostí, nepoužívat nebezpečné funkce typu gets a u textu vždy počítat s nulovým znakem.
+
+U větších projektů k tomu patří unit testy, integrační testy, statická analýza a bezpečnostní testy v \textbf{CI/CD}.
+
+U většího nebo bezpečnostně citlivého software se k tomu přidávají postupy nad rámec jednoho programu. Threat modeling už při návrhu hledá, kdo a jak by mohl systém napadnout. Code review znamená, že kód čte ještě další člověk. Statická analýza hledá chyby v kódu bez jeho spuštění, zatímco \textbf{fuzzing} program automaticky krmí náhodnými či záludnými vstupy a hledá pády.
+
+Dependency scanning kontroluje použité knihovny na známé zranitelnosti a souvisí s pravidelnou aktualizací závislostí. Tyto kontroly se obvykle automaticky spouští v CI/CD. K bezpečnému provozu patří i správa tajemství (hesla a klíče nepatří do kódu, ale do správce tajemství), secure defaults (výchozí nastavení má být bezpečné už od začátku) a \textbf{least privilege} (program i jeho účet mají mít jen nutná oprávnění).
+
+\subsection*{Závěrečná odpověď, kterou lze říct u zkoušky}
+
+Kdybych měl otázku shrnout souvisle, řekl bych: V imperativním strukturovaném programování popisujeme výpočet krok za krokem pomocí sekvence, větvení, cyklů a funkcí. U nízkoúrovňového programování, typicky v C, je důležité chápat, že program pracuje s konkrétní pamětí.
+
+Běžící proces má virtuální adresní prostor rozdělený na text segment s instrukcemi, read-only data s konstantami a string literály, data segment s inicializovanými globálními a statickými proměnnými, BSS s neinicializovanými nebo nulovými globálními a statickými proměnnými, heap pro dynamickou alokaci a stack pro volání funkcí, lokální proměnné a návratové adresy.
+
+Stack je spravovaný automaticky, je rychlý, ale omezený velikostí a objekty na něm zanikají při návratu z funkce. Heap je spravovaný ručně přes malloc, calloc, realloc a free; objekty na něm žijí od alokace do uvolnění. Malloc vrací \textbf{void pointer} na neinicializovaný blok, calloc blok vynuluje, realloc mění velikost bloku a free ho uvolňuje. Při reallocu je bezpečné použít dočasný ukazatel.
+
+Malloc pracuje nad virtuální pamětí procesu a alokátor si od operačního systému bere větší oblasti, které pak rozděluje na menší bloky.
+
+Ukazatel je proměnná obsahující adresu. Operátor \& bere adresu, operátor * dereferencuje. Typ ukazatele určuje, jak se paměť interpretuje a jak funguje \textbf{ukazatelová aritmetika}. Přičtení jedničky k int pointeru není posun o jeden bajt, ale o velikost jednoho intu. Void pointer je obecný ukazatel, ale nelze ho standardně dereferencovat ani nad ním dělat aritmetiku bez převodu na konkrétní typ.
+
+Pole je souvislá oblast prvků a ve výrazech se často převádí na ukazatel na první prvek; arr[i] je totéž jako *(arr + i), ale pole a ukazatel nejsou totéž, například podle sizeof.
+
+String v C je pole znaků zakončené nulovým znakem. Proto musím vždy počítat s jedním znakem navíc. Typické chyby jsou memory leak, double free, use-after-free, přístup mimo pole, čtení neinicializované paměti a buffer overflow. Ladění se dělá pomocí varování překladače, gdb, Valgrindu, sanitizérů a testů.
+
+Bezpečný vývoj znamená kontrolovat vstupy, velikosti bufferů, návratové hodnoty, životnost paměti a mít jasné vlastnictví dynamicky alokovaných objektů.
+
+\itpr{\textbf{Na tabuli si pohlídat:} nakreslit paměť procesu; ukázat lokální proměnnou na stacku, globální v data/BSS a blok z mallocu na heapu; u pointerové aritmetiky říct, že +1 znamená posun o velikost typu; u stringu zmínit '\textbackslash{}0'; u chyb pojmenovat memory leak, double free, use-after-free a buffer overflow.}
+
+\newpage
+

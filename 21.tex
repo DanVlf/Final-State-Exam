@@ -1,0 +1,329 @@
+\otazka{21. Elektronické důkazy a jejich zajišťování}{Procesní instituty a jejich praktické využití, nakládání s elektronickými důkazy, elektronické dokumenty.}{BVV03K}
+
+\subsection*{21. Elektronické důkazy -- stručněji}
+Elektronický důkaz je digitální informace použitelná k prokázání skutečnosti v řízení. Může to být log, e-mail, IP adresa, chat, telefon, disk, cloudový účet, metadata, fotka, GPS stopa nebo kryptoměnová transakce.
+
+\textbf{1. Proč jsou elektronické důkazy zvláštní}
+\begin{itemize}
+  \item Jsou snadno změnitelné, rychle mizí, mohou být šifrované, často leží u poskytovatele a mohou být v zahraničí.
+  \item Nestačí říct "máme screenshot". Musí být jasné, odkud důkaz pochází, kdo s ním nakládal, kdy vznikl a zda nebyl změněn.
+\end{itemize}
+
+\textbf{2. Procesní instituty}
+\begin{itemize}
+  \item § 7b TŘ znamená uchování dat: rychlé zmrazení existujících dat, aby nezmizela. Neznamená automaticky jejich vydání ani přečtení.
+  \item § 78 TŘ je vydání věci nebo dat, § 79 TŘ odnětí věci nebo kopie dat, § 82 a násl. TŘ prohlídka prostor kvůli nalezení zařízení a stop.
+  \item § 113a TŘ řeší ohledání obsahu zajištěného zařízení nebo kopie dat. § 88a TŘ řeší provozní a lokalizační údaje, tedy metadata. § 88 TŘ řeší budoucí obsah komunikace jako odposlech.
+\end{itemize}
+
+\textbf{3. Metadata vs obsah}
+\begin{itemize}
+  \item Metadata říkají kdo, kdy, odkud, s kým a jak dlouho komunikoval. Obsah je samotný text zprávy, e-mail, hlas hovoru nebo soubor.
+  \item Starý e-mail uložený ve schránce není odposlech. Odposlech je zachycování budoucí komunikace za přísných podmínek.
+\end{itemize}
+
+\textbf{4. Forenzní práce}
+\begin{itemize}
+  \item Důkazní hodnota stojí na dokumentaci, forenzní kopii, hashi, chain of custody a práci s kopií místo originálu.
+  \item Hash dokazuje shodu kopie se zajištěnými daty. Nedokazuje pravdivost obsahu ani to, že data nebyla zmanipulována před zajištěním.
+\end{itemize}
+
+\textbf{5. Přeshraničnost a dokumenty}
+\begin{itemize}
+  \item U zahraničních poskytovatelů se používá MLA, evropský vyšetřovací příkaz, Budapešťská úmluva a e-evidence nástroje EPOC/EPOC-PR.
+  \item Elektronický dokument není slabší jen proto, že je elektronický. Řeší se autenticita, integrita a čas; pomáhá podpis, pečeť a časové razítko.
+\end{itemize}
+
+\subsection*{Kostra odpovědi}
+\begin{enumerate}
+  \item Definovat elektronický důkaz.
+  \item Vysvětlit, proč je zvláštní: volatilita, metadata, cloud, šifrování, přeshraničnost.
+  \item Projít procesní instituty a u každého říct příklad.
+  \item Rozlišit metadata, uložený obsah a budoucí komunikaci.
+  \item Popsat forenzní zásady: kopie, hash, dokumentace, chain of custody.
+  \item Zmínit přeshraniční důkazy a elektronické dokumenty.
+\end{enumerate}
+
+\subsection*{Co je elektronický důkaz}
+Elektronický důkaz je digitální informace použitelná k prokázání skutečnosti v řízení. Může to být e-mail, log, IP adresa, metadata, chat, fotka, soubor, databáze, cloudový účet, telefon, disk, kamerový záznam, GPS stopa, kryptoměnová transakce nebo konfigurace systému.
+
+Je zvláštní tím, že se snadno mění, rychle mizí, bývá šifrovaný, často leží u poskytovatele v zahraničí a jeho význam závisí na kontextu. Samotný screenshot nestačí; musí být jasné, odkud pochází, kdy vznikl, kdo s ním nakládal a zda nebyl změněn.
+
+\pozor{Zajištění notebooku není totéž co neomezené prohledání celého digitálního života. U elektronických důkazů pořád řeším zákonný titul, rozsah a proporcionalitu.}
+
+\subsection*{Procesní instituty s příklady}
+\begin{longtable}{p{0.16\linewidth}p{0.34\linewidth}p{0.42\linewidth}}
+\toprule
+\textbf{Institut} & \textbf{K čemu je} & \textbf{Příklad u zkoušky}\\
+\midrule
+\textbf{§ 78 TŘ - vydání věci nebo dat} & Osoba má věc nebo data a na výzvu je předloží nebo vydá. U elektronických dat lze místo nosiče pořídit kopii nebo poskytnout součinnost. & Firma dobrovolně vydá notebook bývalého administrátora, export VPN logů a zálohu e-mailové schránky. Do protokolu se přesně popíše, co bylo vydáno, v jakém stavu a kdo to převzal.\\
+\addlinespace
+\textbf{§ 79 TŘ - odnětí věci nebo kopie dat} & Použije se, když věc nebo data nejsou vydány dobrovolně. U dat lze místo fyzického nosiče pořídit kopii. & Podezřelý odmítne vydat telefon s komunikací k ransomware útoku. Telefon je odňat, izolován od sítě kvůli vzdálenému smazání a předán specialistovi k forenznímu postupu.\\
+\addlinespace
+\textbf{§ 82 a násl. TŘ - domovní prohlídka / prohlídka jiných prostor} & Slouží ke vstupu do obydlí, kanceláře, serverovny nebo jiných prostor a k nalezení věcí nebo stop. & Při zásahu u provozovatele phishingové infrastruktury se hledají notebooky, NAS, USB disky, seed fráze, hardwarové peněženky, poznámky s hesly a dokumentace k serverům.\\
+\addlinespace
+\textbf{§ 7b TŘ - uchování dat} & Rychlé "zmrazení" existujících dat, aby nezmizela nebo nebyla změněna. Neznamená automaticky vydání nebo přečtení dat. Příkaz může být až na 90 dnů. & Po phishingu se zjistí, že poskytovatel drží logy jen krátce. Orgán nařídí uchování logů k účtu a IP adresám, aby se nesmazaly dřív, než se získá titul k vydání.\\
+\addlinespace
+\textbf{§ 113a TŘ - ohledání obsahu zařízení} & Řeší nahlížení do dat v zajištěném přenosném zařízení nebo kopii dat, zejména když je zařízení chráněné uživatelem. & Policie zajistí telefon podezřelého. Nestačí říct "telefon máme"; pokud se má prohlížet obsah zpráv a aplikací, řeší se podmínky ohledání obsahu zařízení.\\
+\addlinespace
+\textbf{§ 88a TŘ - provozní a lokalizační údaje} & Metadata, ne obsah komunikace. Kdo, kdy, odkud, s kým, jak dlouho, jaká IP nebo poloha. & U přihlášení do cizího účtu policie potřebuje zjistit, komu patřila IP adresa a odkud se připojovalo. To je § 88a, ne odposlech.\\
+\addlinespace
+\textbf{§ 158d TŘ - sledování osob a věcí} & Utajované získávání poznatků o osobách a věcech technickými nebo jinými prostředky. Může jít o sledování pohybu, předání věci, zásilky nebo pořizování obrazových, zvukových či jiných záznamů podle zákonných podmínek. & U phishingu policie zjistí, že podezřelý si má převzít telefon nebo hotovost na konkrétním místě. Sledování může dokumentovat, kdo přišel, s kým se setkal, jakou věc převzal a kam odešel. Není to nástroj na čtení starého chatu ani na budoucí odposlech komunikace.\\
+\addlinespace
+\textbf{§ 88 TŘ - odposlech a záznam telekomunikačního provozu} & Obsah budoucí komunikace za přísných podmínek. Není to nástroj na staré e-maily nebo staré zprávy uložené v cloudu. & U organizované skupiny, která plánuje další vydírání, může soud povolit odposlech budoucí komunikace. Historický e-mail ve schránce se ale řeší jako uložený obsah, ne jako odposlech.\\
+\addlinespace
+\textbf{Znalec / odborné vyjádření} & Technická analýza, malware, časová osa, hash, logy, konfigurace, vazba stop na zařízení nebo účet. & Znalec porovná hash forenzní kopie, rekonstruuje průnik z logů, určí funkci malwaru a vysvětlí, zda nalezený nástroj sloužil k útoku nebo má legitimní administrátorské použití.\\
+\bottomrule
+\end{longtable}
+
+\pravobox{\textbf{Novinka § 113a TŘ od 1. 1. 2026:} zákon č. 270/2025 Sb. vložil do trestního řádu samostatný institut \emph{ohledání obsahu zařízení}. Dříve se obsah mobilů, notebooků nebo tabletů řešil spíše přes obecná pravidla ohledání věci, což bylo problematické kvůli zásahu do soukromí. Nově zákon výslovně říká, že jde o data v zajištěném přenosném zařízení umožňujícím oboustrannou komunikaci, včetně dat ve vzdáleném úložišti, pokud jsou ze zařízení dostupná bez překonání dalšího zabezpečení. Základní pravidlo je písemné a odůvodněné povolení soudce, v přípravném řízení na návrh státního zástupce; zákon ale zná i neodkladný postup s dodatečným souhlasem a výjimky, například souhlas oprávněného uživatele nebo zařízení zajištěné při domovní prohlídce. Pointa pro zkoušku: staré doručené zprávy v telefonu už nejsou jen "obyčejná věc k prohlédnutí"; spadají do přísnějšího režimu § 113a. Pořád ale nejde o budoucí komunikaci - tu řeší § 88 TŘ.}
+
+\pravobox{\textbf{Proč § 113a vznikl: telefon není nůž.} Před novou úpravou se mobil nebo počítač často ohledával podle obecného § 113 jako věc. U nože, auta nebo balíku to dává smysl: věc se prohlédne a popíše. U chytrého telefonu je ale zásah úplně jiný, protože v něm může být celý soukromý život člověka: staré zprávy, e-maily, fotografie, poloha, bankovnictví, zdravotní data, historie vyhledávání i komunikace s obhájcem. Kritika proto mířila na to, že policie mohla přes obecné ohledání věci získat historickou komunikaci bez stejné úrovně soudní kontroly, jaká se vyžaduje u odposlechu nebo jiných intenzivních zásahů. § 113a tuto "divokou kartu" omezuje: data už nejsou jen vedlejší vlastnost věci, ale samostatný zásah do soukromí. Proto se klade důraz na soudní povolení, subsidiaritu, proporcionalitu, cílenost vyhledávání a ochranu podstaty základních práv.}
+
+\pravobox{\textbf{Co přes který paragraf prakticky můžu udělat:}
+\begin{itemize}
+  \item \textbf{§ 7b TŘ} - můžu rychle \textbf{zmrazit existující data} u poskytovatele, aby se nesmazala. Ještě je ale nečtu ani nedostávám.
+  \item \textbf{§ 78 TŘ} - můžu vyzvat k \textbf{vydání věci nebo dat}, například telefon, notebook, export logů nebo datovou kopii, pokud osoba vydá dobrovolně.
+  \item \textbf{§ 79 TŘ} - můžu věc nebo kopii dat \textbf{odejmout}, když dobrovolně vydána není.
+  \item \textbf{§ 82 a násl. TŘ} - můžu \textbf{hledat a zajistit věci v prostoru}, například při domovní prohlídce najít telefon, notebook, SIM kartu, seed frázi nebo server.
+  \item \textbf{§ 113a TŘ} - můžu za podmínek tohoto ustanovení \textbf{prohlížet uložený obsah zajištěného telefonu/notebooku/tabletu nebo jeho kopie}: staré SMS, chaty, e-maily v aplikaci, fotky, historii prohlížeče, poznámky, aplikační data. Není to čtení budoucích zpráv.
+  \item \textbf{§ 88a TŘ} - můžu získat \textbf{provozní a lokalizační metadata}: komu patřila IP adresa, odkud se připojovalo, kdy, jak dlouho, případně poloha. Nečtu obsah komunikace.
+  \item \textbf{§ 158d TŘ} - můžu \textbf{sledovat osobu nebo věc} a dokumentovat poznatky, například předání telefonu nebo pohyb podezřelého. Není to čtení chatu ani odposlech.
+  \item \textbf{§ 88 TŘ} - můžu při splnění přísných podmínek \textbf{odposlouchávat a zaznamenávat budoucí obsah telekomunikační komunikace}. To je režim pro komunikaci, která teprve proběhne.
+\end{itemize}}
+
+\zkouska{Nejkratší rozlišení: § 7b = uchovat existující data, § 78/79 = vydat nebo odejmout věc/data, § 82 = najít věci při prohlídce, § 113a = podívat se do uloženého obsahu zajištěného zařízení, § 88a = metadata, § 158d = sledovat osobu nebo věc a dokumentovat poznatky, § 88 = obsah budoucí komunikace.}
+
+\subsection*{Metadata, obsah a data retention}
+\begin{itemize}
+  \item \textbf{Metadata} - kdo, kdy, odkud a jak komunikoval; typicky provozní a lokalizační údaje.
+  \item \textbf{Obsah} - samotný text zprávy, e-mail, hlas hovoru, soubor nebo obsah chatu.
+  \item \textbf{Uložený obsah} - starý e-mail v mailboxu nebo soubor v cloudu; není to odposlech.
+  \item \textbf{Budoucí komunikace} - živé zachycování obsahu do budoucna; typicky § 88.
+\end{itemize}
+
+\pravobox{Podle zákona o elektronických komunikacích musí osoba zajišťující veřejnou komunikační síť nebo poskytující veřejně dostupnou službu elektronických komunikací uchovávat \textbf{6 měsíců provozní a lokalizační údaje}. Jde o metadata: kdo, kdy, odkud, komu a jak dlouho komunikoval, případně jaká IP adresa byla přidělena. \textbf{Nejde o obsah zpráv}. Zákon o elektronických komunikacích tedy vysvětluje, proč operátor metadata má, ale sám o sobě není procesním titulem pro čtení obsahu ani pro odposlech. Procesní oprávnění musí přijít z trestního řádu: typicky § 88a pro metadata, § 113a pro uložený obsah v zajištěném zařízení nebo jeho kopii a § 88 pro budoucí obsah komunikace.}
+
+\subsection*{Pohádka: phishing přes Bazoš}
+\modelovy{Představ si jednoduchý český případ. Poškozený prodává telefon na Bazoši. Ozve se mu "kupující", pošle odkaz na falešnou platební bránu a poškozený zadá údaje ke kartě. Z účtu zmizí peníze a poškozený jde na policii. Policie si hned na začátku musí oddělit tři věci: \textbf{metadata}, \textbf{uložený obsah} a \textbf{budoucí komunikaci}. Když tohle rozlišíš, přestane se plést § 88a, § 113a a § 88.
+
+První krok je zachránit stopy dřív, než zmizí. Policie nechce, aby Bazoš, hosting falešné platební brány, e-mailový poskytovatel nebo jiný poskytovatel smazal logy rotací. Proto použije \textbf{§ 7b TŘ - uchování dat}. To je rychlé "zmrazení" existujících dat: údaje k inzerátu, účtu, zprávám v systému, přihlášením, IP adresám, časům a technickým logům. Důležité: § 7b ještě neznamená, že policie data dostala nebo přečetla. Jen zajistí, aby data nezmizela, než se získá další procesní titul k jejich vydání nebo zpřístupnění.
+
+Druhý krok je zjistit, kdo se za technickými stopami skrývá. Pokud Bazoš nebo platební brána ukáže IP adresu, ze které se pachatel přihlásil, policie potřebuje zjistit, komu byla tato IP adresa v daný čas přidělena. To jsou \textbf{provozní a lokalizační údaje}, tedy metadata. Použije se \textbf{§ 88a TŘ}. Do toho zapadá zákon o elektronických komunikacích: operátor veřejné komunikační sítě nebo poskytovatel veřejně dostupné služby elektronických komunikací musí uchovávat provozní a lokalizační údaje \textbf{6 měsíců}. Proto je možné se zpětně ptát na IP adresu, čas připojení, účastnické číslo, polohu nebo identifikaci zdroje a adresáta komunikace. Ale pořád platí: operátor podle tohoto režimu neuchovává obsah zpráv. Operátor typicky umí říct "tato IP byla v tento čas přidělena tomuto účastníkovi", ne "tady je text chatu pachatele".
+
+Třetí krok je jít po konkrétní osobě a zařízení. Když metadata ukážou na podezřelého v ČR, policie může potřebovat telefon, notebook, SIM kartu, hardwarovou peněženku, poznámky s hesly nebo zařízení, ze kterého se pachatel přihlašoval. Pokud podezřelý věc dobrovolně vydá, použije se \textbf{§ 78 TŘ - vydání věci nebo dat}. Pokud odmítne, může přijít \textbf{§ 79 TŘ - odnětí věci nebo kopie dat}. Pokud se věci teprve hledají v bytě, kanceláři nebo jiné místnosti, použije se \textbf{§ 82 a násl. TŘ - domovní prohlídka nebo prohlídka jiných prostor}.
+
+Čtvrtý krok je nejdůležitější pro tvoji otázku: \textbf{co když policie chce číst staré zprávy v telefonu?} Samotné zajištění telefonu neznamená automaticky neomezené prohlížení celého obsahu. Pokud má policie zajištěný telefon a chce se podívat do uložených dat, například do starých SMS, WhatsApp/Signal/Telegram konverzací, fotek, historie prohlížeče, uložených přihlášení, poznámek s hesly nebo aplikace banky, řeší se \textbf{§ 113a TŘ - ohledání obsahu zařízení}. Prakticky je to situace: "telefon už máme, teď potřebujeme zákonně a forenzně pracovat s uloženým obsahem". § 113a tedy míří na \textbf{data uchovávaná v zajištěném přenosném zařízení} nebo na kopii takových dat; vztahuje se i na data ve vzdáleném úložišti, pokud jsou ze zajištěného zařízení dostupná bez překonání dalšího zabezpečení.
+
+To znamená: ano, pokud jsou staré zprávy uložené v telefonu nebo v aplikaci, do které je telefon už přihlášený a data jsou dostupná bez dalšího prolomení, § 113a je typický institut pro jejich ohledání. Neznamená to ale "policie může do budoucna průběžně číst všechno, co do telefonu nově přijde". § 113a je ohledání uloženého obsahu zařízení, ne živý odposlech a ne dlouhodobé sledování budoucí komunikace. Když policie při ohledání najde historickou konverzaci z minulého týdne, je to uložený obsah. Když by chtěla sledovat, co si podezřelý bude psát zítra a pozítří v reálném čase jako komunikaci, už se pohybujeme v logice \textbf{§ 88 TŘ - odposlech a záznam telekomunikačního provozu}, pokud jsou splněny přísné podmínky.
+
+Pátý krok je rozlišit starý obsah v telefonu od starého obsahu u poskytovatele. Pokud jsou zprávy fyzicky nebo aplikačně dostupné v zajištěném telefonu, řeší se ohledání obsahu zařízení podle § 113a. Pokud ale policie telefon nemá nebo zprávy nejsou v telefonu, ale jen u poskytovatele služby, typicky v cloudu, v účtu nebo na serveru platformy, nejde automaticky o § 113a. Pak se řeší vydání nebo zpřístupnění uložených dat u poskytovatele příslušným procesním postupem, případně přes mezinárodní spolupráci, EIO nebo e-evidence. Pořád je to ale \textbf{uložený obsah}, ne odposlech.
+
+Šestý krok může být \textbf{§ 158d TŘ - sledování osob a věcí}. Ten se hodí, když policie potřebuje utajeně zjistit a zdokumentovat, co podezřelý dělá, kam chodí, s kým se schází, jaké zařízení používá nebo zda si jde převzít věc či peníze. U Bazoš phishingu může například poškozený domluvit osobní předání telefonu, dobírky nebo hotovosti a policie chce sledovat, kdo na místo přijde, jaký telefon používá, s kým komunikuje navenek, kam po předání odjede a zda u sebe má další věci důležité pro řízení. Podle povahy zásahu se řeší zákonné podmínky a povolení, zejména pokud se pořizují obrazové, zvukové nebo jiné záznamy nebo se zasahuje do soukromí. Důležité: § 158d není čtení obsahu starých zpráv a není to ani odposlech. Je to sledování osoby nebo věci a dokumentace poznatků.
+
+Sedmý krok je § 88. Ten se použije až tehdy, když policie nechce jen staré stopy nebo sledování pohybu, ale potřebuje zachytávat \textbf{budoucí obsah komunikace}. Například zjistí, že podezřelý není sám, ale je součástí skupiny, která právě domlouvá další phishingovou kampaň, převod výnosů nebo nátlak na další oběti. Pokud jsou splněny zákonné podmínky, soud může povolit odposlech a záznam telekomunikačního provozu. To je přísnější institut než § 113a, § 88a i § 158d. § 88 tedy není "chci starý chat z mobilu"; § 88 je "za přísných podmínek chci zachytávat komunikaci do budoucna".
+
+Krátká zkoušková věta: \textbf{§ 88a = metadata od operátora, § 113a = uložený obsah v zajištěném zařízení nebo jeho kopii, § 158d = sledování osob a věcí, § 88 = budoucí obsah komunikace}. Zákon o elektronických komunikacích vysvětluje, proč má operátor po dobu 6 měsíců metadata, ale nevytváří sklad starých zpráv a nenahrazuje trestní řád.
+
+Nakonec se všechno musí forenzně udržet: zařízení se zdokumentují, data se kopírují pokud možno forenzně, počítá se hash, vede se chain of custody a znalec nebo specialista vysvětlí, co logy, telefon, IP adresy, platební stopa, uložené zprávy a metadata dohromady dokazují.}
+
+\subsection*{Forenzní zásady}
+U elektronických důkazů musíš vždy říct, jak se udrží důkazní hodnota:
+\begin{itemize}
+  \item zdokumentovat výchozí stav: čas, obrazovka, zapojení, síť, přítomné osoby,
+  \item rozhodnout live vs dead forenziku: běžící šifrovaný systém může vyžadovat RAM,
+  \item pracovat pokud možno s kopií, originál zapečetit,
+  \item udělat forenzní obraz disku nebo relevantních dat,
+  \item spočítat hash, například SHA-256,
+  \item vést chain of custody: kdo, kdy, kde, proč a jak s důkazem nakládal,
+  \item držet se rozsahu příkazu a neprohledávat zbytečně vše.
+\end{itemize}
+
+\pozor{Hash dokazuje, že kopie odpovídá zajištěným datům. Nedokazuje pravdivost obsahu ani to, že data nebyla zmanipulována před zajištěním.}
+
+\priklad{Ransomware na běžícím šifrovaném serveru: nejdřív se zdokumentuje stav, zváží se RAM a síťová spojení, zajistí se SIEM, VPN, EDR a firewall logy, potom se pořídí forenzní kopie, spočítá hash a analyzuje se kopie. Když server bez rozmyslu vypnu, můžu ztratit klíče v paměti a důležité stopy.}
+
+\subsection*{Přeshraniční elektronické důkazy}
+U cloudu a velkých platforem se nejdřív ptám: kdo drží data, kde je poskytovatel, jaký typ dat chci, jak rychle mizí a jaký procesní nástroj použiji.
+
+\begin{itemize}
+  \item \textbf{MLA} - klasická vzájemná právní pomoc mimo EU nebo obecně mezi státy.
+  \item \textbf{EVP/EIO} - evropský vyšetřovací příkaz: orgán žádá orgán jiného členského státu.
+  \item \textbf{Budapešťská úmluva} - rychlé uchování dat a síť 24/7.
+  \item \textbf{EPOC/EPOC-PR} - od 18. 8. 2026 evropský příkaz k vydání a uchování uložených elektronických důkazů přímo vůči poskytovatelům nebo jejich určeným adresátům.
+\end{itemize}
+
+\pozor{EVP a EPOC nejsou totéž. EVP je "orgán žádá orgán". EPOC je "orgán míří na poskytovatele nebo jeho určeného adresáta" a týká se uložených elektronických důkazů. EPOC není živý odposlech a neprolamuje šifrování.}
+
+\subsection*{Elektronické dokumenty}
+Elektronický dokument není horší jen proto, že je elektronický. U důkazu řeším:
+\begin{itemize}
+  \item \textbf{autenticitu} - od koho dokument pochází,
+  \item \textbf{integritu} - zda se nezměnil,
+  \item \textbf{čas} - kdy existoval v dané podobě.
+\end{itemize}
+
+Elektronický podpis pomáhá prokázat vazbu osoby k dokumentu a integritu. Elektronická pečeť dokládá původ od právnické osoby. Časové razítko dokládá existenci dat v čase. Ani podpis, pečeť ani razítko nedokazují pravdivost obsahu.
+
+\subsection*{Co důkaz znehodnotí}
+\begin{itemize}
+  \item otevření originálu "jen pro kontrolu" a změna metadat,
+  \item chybějící hash nebo nejasný postup kopírování,
+  \item díra v chain of custody,
+  \item nezdokumentovaný zásah administrátora nebo specialisty,
+  \item nejasné časové pásmo a nesynchronizované časy,
+  \item překročení rozsahu příkazu,
+  \item směšování incident response a trestního zajištění bez záznamu.
+\end{itemize}
+
+\zkouska{Souvisle: elektronický důkaz je digitální stopa použitelná v řízení. U každého důkazu řeším zákonný titul, rozdíl metadata/obsah, rychlé uchování, forenzní integritu a přeshraničnost. U paragrafů řeknu: § 7b uchování, § 78 vydání, § 79 odnětí, § 82 prohlídka prostor, § 113a ohledání obsahu zařízení, § 88a metadata, § 158d sledování osob a věcí, § 88 budoucí obsah komunikace. Potom doplním hash, kopii, dokumentaci a chain of custody.}
+
+\zdroje{Trestní řád (§ 7b, § 78, § 79, § 82 a násl., § 88, § 88a, § 113a, § 158d); zákon č. 270/2025 Sb.; zákon o elektronických komunikacích; Budapešťská úmluva; evropský vyšetřovací příkaz; e-evidence nařízení 2023/1543 a směrnice 2023/1544; eIDAS; přiložený referenční text a starší výpisky.}
+
+\newpage
+
+\iffalse
+
+\otazka{21. Elektronické důkazy a jejich zajišťování}{Procesní instituty a jejich praktické využití, nakládání s elektronickými důkazy, elektronické dokumenty.}{BVV03K}
+
+\subsection*{Kostra odpovědi}
+\begin{enumerate}
+  \item Definovat elektronický důkaz.
+  \item Vysvětlit jeho vlastnosti: volatilita, objem, přeshraničnost, metadata, šifrování.
+  \item Popsat procesní instituty v trestním řádu: § 78, § 79, § 82 a násl., § 7b, § 88a, § 88.
+  \item Doplnit zákon o elektronických komunikacích: metadata vs obsah, role operátorů a ČTÚ.
+  \item Vysvětlit přeshraniční režimy: MLA, EVP, Budapešť, EPOC/EPOC-PR.
+  \item Vysvětlit forenzní zásady: live/dead forenzika, integrita, dokumentace, hash, chain of custody.
+  \item Popsat elektronické dokumenty, podpisy, pečetě a časová razítka.
+\end{enumerate}
+
+\subsection*{Co je elektronický důkaz}
+Elektronický důkaz je jakákoli digitální informace použitelná k prokázání skutečnosti v řízení. Může jít o soubor, e-mail, log, metadata, databázi, fotografii, zprávu v aplikaci, záznam přihlášení, IP adresu, cookies, data z telefonu, cloudový účet, kamerový záznam, GPS stopu, síťový provoz, kryptoměnovou transakci nebo konfiguraci systému.
+
+Elektronické důkazy jsou zvláštní tím, že jsou snadno změnitelné, volatilní, často u třetích stran, šifrované, objemné a přeshraniční. Obsah RAM zmizí vypnutím, logy rotují, cloudová data mohou být v jiné zemi a časové údaje mohou být v různých časových pásmech. Proto nestačí důkaz "mít"; je potřeba prokázat, že byl získán zákonně, že nebyl změněn a že interpretace dává smysl.
+
+Zkouškově je klíčové rozlišit \textbf{fyzický nosič} a \textbf{data}. Zajištění notebooku nebo telefonu neznamená automaticky neomezené oprávnění prohledat celý digitální život člověka. Jiný zásah je zajistit zařízení, jiný vytvořit forenzní kopii, jiný prohledávat obsah, jiný vyžádat data u poskytovatele a jiný zachycovat budoucí komunikaci. Stejně tak je rozdíl mezi \textbf{historicky uloženými daty} a \textbf{živou nebo budoucí komunikací}: starý e-mail uložený ve schránce se nezískává jako odposlech, zatímco budoucí obsah komunikace už spadá do přísnějšího režimu odposlechu.
+
+Při zajišťování se vždy řeší rozsah a proporcionalita. Příkaz má být co nejpřesnější podle účelu řízení, aby se z trestního zajištění nestalo plošné prohledání všeho. Zvláštní opatrnost vyžadují privilegovaná data, zejména komunikace s obhájcem nebo advokátní tajemství, zdravotnická dokumentace, novinářské zdroje a soukromí třetích osob. V praxi proto pomáhá filtrovat data, dokumentovat kroky, oddělit irelevantní obsah a vždy umět vysvětlit, proč byl zásah nezbytný.
+
+\pozor{Elektronický důkaz není automaticky slabší než listina. Slabý je tehdy, když neumím prokázat původ, integritu, čas, zákonnost získání nebo souvislost s dokazovanou skutečností.}
+
+\subsection*{Procesní instituty trestního řádu}
+Je potřeba rozlišovat, co chci získat: zařízení, uložená data, metadata, historický obsah u poskytovatele, nebo budoucí komunikaci.
+\begin{itemize}
+  \item \textbf{§ 78 TŘ - vydání věci} - osoba vydá věc důležitou pro trestní řízení; může jít o telefon, disk, notebook, token, dokumentaci nebo nosič.
+  \item \textbf{§ 79 TŘ - odnětí věci} - když věc není vydána dobrovolně, lze ji odňat procesním postupem.
+  \item \textbf{§ 82 a násl. TŘ - domovní prohlídka a prohlídka jiných prostor} - typicky zajištění techniky, serverů, listinných poznámek, seed frází, hardwarových peněženek a přístupových údajů.
+  \item \textbf{§ 7b TŘ - uchování dat} - rychlé "zmrazení" dat, aby nezmizela dřív, než se opatří další procesní titul k vydání; věcně podobné quick freeze logice Budapešťské úmluvy.
+  \item \textbf{§ 88a TŘ - provozní a lokalizační údaje} - metadata: kdo s kým, kdy, jak dlouho, odkud; ne obsah komunikace.
+  \item \textbf{§ 88 TŘ - odposlech a záznam telekomunikačního provozu} - obsah budoucí komunikace, jen za přísných podmínek a zpravidla na příkaz soudu.
+  \item \textbf{znalecké zkoumání} - forenzní analýza, interpretace stop, posouzení malwaru, časové osy, zařízení nebo logů.
+\end{itemize}
+
+\subsubsection*{Jak se instituty používají prakticky}
+U procesních institutů nestačí umět paragraf. U zkoušky je potřeba říct, jaký problém daný institut řeší a co ještě neumožňuje. V praxi se často kombinuje několik kroků: rychle uchovat volatilní data, zajistit zařízení, vytvořit forenzní kopii, vyžádat data od poskytovatele, získat metadata a až při splnění přísných podmínek zachycovat budoucí komunikaci.
+
+\priklad{Modelový příklad - § 78 TŘ: firma sama vydá notebook bývalého administrátora, export přístupových logů a hardwarový token, protože mohou prokázat neoprávněné přihlášení. Praktický postup je protokolovat, co přesně bylo vydáno, v jakém stavu, kdo s tím nakládal a zda jde o originál nebo kopii. Samotné "dobrovolné vydání notebooku" ale neznamená, že lze bez omezení procházet všechna soukromá data nesouvisející s věcí.}
+
+\priklad{Modelový příklad - § 79 TŘ: podezřelý odmítne vydat telefon, na kterém může být komunikace s dalšími členy skupiny a seed fráze ke kryptopeněžence. Orgán proto věc odnímá, izoluje ji od sítě kvůli riziku vzdáleného smazání, zdokumentuje stav obrazovky a předá zařízení specialistovi. Smysl institutu je překonat odmítnutí vydání věci, ne obejít požadavky na zákonnost následného zkoumání dat.}
+
+\priklad{Modelový příklad - § 82 a násl. TŘ: při domovní prohlídce u osoby podezřelé z provozu ransomwarové infrastruktury se hledají notebooky, NAS, USB disky, hardwarové peněženky, poznámky s hesly, seed fráze, záložní telefony a dokumentace k serverům. Klíčové je řešit běžící šifrované systémy, vzdálené mazání a privilegovaná data. Prohlídka je fyzický zásah, ale u digitálních stop musí být předem promyšlen rozsah a forenzní postup.}
+
+\priklad{Modelový příklad - § 7b TŘ: po phishingu banka zjistí IP adresu a e-mailovou schránku útočníka, ale poskytovatel logy drží jen krátkou dobu. § 7b slouží k rychlému uchování existujících dat, aby se nesmazala rotací logů. Není to příkaz k jejich přečtení nebo vydání; na to je potřeba další procesní titul. Ke zkoušce: § 7b je "zmrazení", ne "získání obsahu".}
+
+\priklad{Modelový příklad - § 88a TŘ: policie potřebuje zjistit, komu v určitém čase patřila IP adresa použitá při přihlášení do kompromitovaného účtu. Žádá provozní a lokalizační údaje, tedy metadata. Výsledek může ukázat účastníka služby nebo místo připojení, ale sám o sobě neprokazuje, kdo fyzicky seděl u klávesnice a co bylo obsahem komunikace.}
+
+\priklad{Modelový příklad - § 88 TŘ: pokud jde o organizovanou skupinu, která plánuje další vydírání nebo převod výkupného a jsou splněny zákonné podmínky, může přicházet v úvahu odposlech budoucí komunikace. Je to přísnější institut než získání starých e-mailů nebo metadat. Proto se u běžného historického phishingového e-mailu neřekne automaticky "odposlech"; nejdřív se řeší uložený obsah a metadata.}
+
+\priklad{Modelový příklad - znalecké zkoumání: znalec nebo specialista rekonstruuje časovou osu z logů, posoudí malware, ověří hash forenzní kopie, porovná konfiguraci serveru a vysvětlí, zda nástroj na zařízení sloužil k útoku nebo může mít legitimní administrátorské použití. Znalec má vysvětlit technické stopy; právní kvalifikaci skutku dělá orgán činný v trestním řízení a soud.}
+
+\zkouska{§ 88 = obsah budoucí komunikace. § 88a = metadata. § 7b = uchování existujících dat. § 78/79 = vydání nebo odnětí věci/dat. Tohle rozlišení je u otázky 21 klíčové.}
+
+\subsection*{Zákon o elektronických komunikacích}
+Zákon o elektronických komunikacích (č. 127/2005 Sb.) je důležitý proto, že velká část stop leží u operátorů. Upravuje sítě a služby elektronických komunikací, chrání důvěrnost komunikace, stanoví povinnosti součinnosti a dohledovou roli Českého telekomunikačního úřadu.
+
+Nejdůležitější je rozdíl mezi \textbf{metadaty} a \textbf{obsahem}. Metadata jsou provozní a lokalizační údaje: kdo komunikoval, kdy, odkud, jak dlouho a přes jakou službu. Obsah je text zprávy, zvuk hovoru nebo samotný obsah komunikace. Operátor běžně uchovává metadata v zákonném režimu, ale neukládá obsah minulých hovorů jen proto, aby ho později vydal policii. Naopak cloudová nebo e-mailová služba může mít historický obsah uložený na serveru; ten se pak získává vydáním/uchováním dat, ne odposlechem.
+
+\pravobox{Data retention podle zákona o elektronických komunikacích: právnická nebo fyzická osoba zajišťující veřejnou komunikační síť nebo poskytující veřejně dostupnou službu elektronických komunikací je povinna uchovávat po dobu \textbf{6 měsíců} provozní a lokalizační údaje vytvářené nebo zpracovávané při zajišťování sítě nebo poskytování služby. Zákon zároveň stanoví, že při této povinnosti nesmí být uchováván obsah zpráv. Po uplynutí retenční doby se údaje likvidují, pokud nebyly poskytnuty oprávněnému orgánu, nebyl vydán příkaz k jejich uchování nebo zákon nestanoví jinak.}
+
+\pozor{Zákon o elektronických komunikacích sám o sobě policii "nedává odposlech". Stanoví povinnosti operátorů a součinnost, ale procesní oprávnění musí přijít z trestního řádu nebo jiného zvláštního zákona.}
+
+\subsection*{Přeshraniční elektronické důkazy}
+U cloudu, e-mailu, sociálních sítí a globálních poskytovatelů je otázka často přeshraniční. Používají se:
+\begin{itemize}
+  \item \textbf{vzájemná právní pomoc (MLA)} - klasická žádost mezi státy,
+  \item \textbf{evropský vyšetřovací příkaz (EVP/EIO)} - v EU orgán žádá orgán druhého státu o zajištění nebo předání důkazu,
+  \item \textbf{Budapešťská úmluva} - zejména rychlé uchování uložených dat a provozních údajů a síť 24/7,
+  \item \textbf{Europol/Eurojust} - koordinace, analytická a justiční podpora,
+  \item \textbf{e-evidence} - EPOC a EPOC-PR od 18. 8. 2026.
+\end{itemize}
+
+\pravobox{EPOC/EPOC-PR v otázce 21: nařízení 2023/1543 zavádí evropský vydávací příkaz a evropský uchovávací příkaz pro elektronické důkazy v trestních věcech; k 18. 6. 2026 jde stále o budoucí režim použitelný od 18. 8. 2026. EPOC míří na vydání uložených dat, standardně do 10 dnů a v naléhavém případě do 8 hodin. EPOC-PR míří na uchování dat bez odkladu po dobu 60 dnů, s možností prodloužení o 30 dnů. Směrnice 2023/1544 řeší určené provozovny a právní zástupce poskytovatelů, aby bylo komu příkazy doručovat. Data se dělí na údaje o účastníkovi/službě, údaje sloužící výlučně k identifikaci uživatele, provozní údaje a obsah. Čím citlivější kategorie, tím přísnější vydání nebo validace příkazu. Režim chrání základní práva, profesní tajemství a umožňuje odmítnutí nebo přezkum v zákonných situacích. Nevztahuje se na Dánsko, neznamená živý odposlech a neprolamuje šifrování.}
+
+\pozor{EVP a EPOC nejsou totéž. EVP je model "orgán žádá orgán" a může se týkat různých vyšetřovacích úkonů. EPOC je model "orgán míří přímo na poskytovatele nebo jeho určeného adresáta" a týká se uložených elektronických důkazů.}
+
+\priklad{Modelový přeshraniční scénář: česká oběť přijde o účet přes phishing, doména je registrovaná u zahraničního registrátora, e-mail je u amerického poskytovatele, server běží v Irsku a výnos jde přes kryptopeněženku. První krok je rychle uchovat data, například logy, registrační údaje, obsah schránky a údaje k účtu. Potom se volí nástroj podle toho, kde data jsou a kdo je drží: v EU typicky EVP, od 18. 8. 2026 pro uložené elektronické důkazy e-evidence, mimo EU MLA nebo Budapešťská úmluva a síť 24/7. Ke zkoušce: nejdřív urč držitele dat, stát, kategorii dat a naléhavost.}
+
+\priklad{Aktuální příklad z praxe - mezinárodní zajištění infrastruktury: u Operation Endgame orgány neřešily jen jeden počítač pachatele, ale servery, domény, databáze, přihlašovací údaje a kryptopeněženky v několika jurisdikcích. U First VPN šlo zase o službu, jejíž provozní data mohla ukazovat, kdo infrastrukturu používal a k jakým útokům. Tyto příklady jsou vhodné u otázky 21 proto, že ukazují elektronický důkaz jako síť stop: zařízení, logy, účty, domény, platební toky a mezinárodní procesní spolupráci.}
+
+\subsection*{Nakládání s elektronickými důkazy}
+Forenzní postup má dva cíle: zajistit relevantní data a zároveň udržet jejich důkazní hodnotu. Základní zásady:
+\begin{itemize}
+  \item \textbf{zdokumentovat výchozí stav} - fotografie, zapojení, čas, obrazovka, síťové připojení, kdo byl přítomen,
+  \item \textbf{rozhodnout live vs dead forenziku} - běžící šifrovaný systém může vyžadovat RAM a síťová spojení; jindy je lepší řízené vypnutí,
+  \item \textbf{minimalizovat změny} - pokud možno analyzovat kopii, originál zapečetit,
+  \item \textbf{vytvořit forenzní obraz} - bitová kopie zařízení nebo relevantních dat; u klasických nosičů ideálně přes write-blocker,
+  \item \textbf{hashovat} - například SHA-256 originálu a kopie, aby bylo možné prokázat integritu kopie,
+  \item \textbf{dokumentovat nástroje a metodu} - název, verze, nastavení, časové pásmo, postup,
+  \item \textbf{chain of custody} - nepřerušený řetězec držení: kdo, kdy, kde, proč a jak s důkazem nakládal,
+  \item \textbf{respektovat rozsah příkazu} - nepřiměřené "prohledání všeho" může narazit na zákonnost, soukromí, advokátní tajemství nebo privilegovaná data.
+\end{itemize}
+
+Hash prokazuje, že kopie odpovídá tomu, co bylo zajištěno. Nedokazuje ale pravdivost obsahu, autenticitu původce ani to, že data nebyla zmanipulována před zajištěním. To se prokazuje dalšími důkazy, kontextem, logy, podpisy, svědeckými výpověďmi a znaleckým posouzením.
+
+\priklad{Běžící server je šifrovaný. Pokud ho vyšetřovatel bez rozmyslu vypne, může přijít o klíče v paměti a data už neotevře. Někdy je proto vhodná živá akvizice: zajistit RAM, síťová spojení a běžící procesy, potom pořídit obraz disku, spočítat hash a analyzovat kopii.}
+
+\subsection*{Co důkaz znehodnotí}
+\begin{itemize}
+  \item rychlé otevření originálu "jen pro kontrolu", protože se změní metadata,
+  \item chybějící hash nebo nejasný postup kopírování,
+  \item díra v chain of custody,
+  \item nezdokumentovaný zásah specialisty,
+  \item nesynchronizovaný čas nebo chybějící časové pásmo,
+  \item nevalidovaná metoda bez možnosti opakování,
+  \item překročení rozsahu příkazu nebo nepřiměřený zásah do soukromí,
+  \item směšování incident response a trestního zajištění důkazu bez jasného záznamu.
+\end{itemize}
+
+\subsection*{Modelové situace}
+\begin{enumerate}
+  \item \textbf{Ransomware na běžícím šifrovaném serveru}: řešit live forenziku, RAM, síťová spojení, IoC, logy ze SIEM, potom forenzní obraz, hash a analýza kopie.
+  \item \textbf{Mobil podezřelého}: izolace od sítě kvůli riziku vzdáleného smazání, ale postup volí specialista; Faradayův obal nebo režim letadlo nejsou magická univerzální řešení.
+  \item \textbf{Data v cloudu}: nejprve uchování dat, potom vydání dat správným procesním titulem; přeshraničně MLA/EVP/EPOC podle situace.
+  \item \textbf{Metadata od operátora}: § 88a, ne § 88; jde o provozní a lokalizační údaje, ne obsah komunikace.
+  \item \textbf{Historický e-mail}: není to odposlech budoucí komunikace; jde o uložený obsah u poskytovatele nebo v zařízení.
+\end{enumerate}
+
+\subsection*{Forenzní model od incidentu k důkazu}
+U ransomwaru v nemocnici se dá postup popsat jako krátká osa. Nejprve se oddělí incident response od trestního dokazování: technici musí obnovit službu, ale zároveň nesmí zničit stopy. Zaznamená se čas zjištění, dotčené systémy, obrazovky, síťová spojení, běžící procesy, účty s podezřelou aktivitou a komunikace útočníka. U šifrovaných běžících systémů se zvažuje live akvizice RAM a síťových spojení. Potom se pořídí forenzní kopie relevantních disků nebo virtuálních serverů, spočítají se hashe, zajistí se SIEM, firewallové, VPN, EDR, cloudové a aplikační logy, stáhnou se ransom notes a případná komunikace s útočníkem. Paralelně se přes § 7b nebo mezinárodní nástroje uchovají data u poskytovatelů. Teprve potom se analyzuje prvotní vektor, lateral movement, exfiltrace a rozsah škody. Ke zkoušce: důkazní hodnota nevzniká tím, že "máme screenshot", ale tím, že umíme doložit původ, integritu, čas a zákonný způsob získání.
+
+\subsection*{Civilní a správní řízení}
+Elektronické důkazy se nepoužívají jen v trestním řízení. V civilním sporu může být důkazem e-mail, elektronická smlouva, log z informačního systému, datová zpráva nebo elektronicky podepsaný dokument. Ve správním řízení může jít o spisovou službu, datové schránky, kamerové záznamy nebo dokumenty ve veřejné správě. Důležitý rozdíl je, že civilní nebo správní orgán nemá automaticky trestněprocesní donucovací nástroje typu odposlechu, domovní prohlídky nebo zajištění dat u poskytovatele podle trestního řádu. I tam se ale hodnotí autenticita, integrita, původ, čas a zákonnost získání.
+
+\subsection*{Elektronické dokumenty}
+Elektronický dokument není méněcenný jen proto, že je elektronický. eIDAS stanoví, že elektronickému dokumentu a elektronickému podpisu nelze upírat právní účinky pouze kvůli elektronické formě. Důkazní hodnota ale závisí na tom, zda lze prokázat autenticitu, integritu a čas.
+
+Elektronický podpis dokládá vazbu osoby k dokumentu a integritu od podpisu. Elektronická pečeť dokládá původ u právnické osoby nebo instituce. Časové razítko dokládá, že data existovala v určité podobě v určitém čase. Ani podpis, ani pečeť, ani razítko nedokazují pravdivost obsahu. Dokazují pouze původ, integritu a časové souvislosti.
+
+U dokumentu jako důkazu řeším tři otázky: \textbf{autenticita} - od koho dokument pochází, \textbf{integrita} - zda se nezměnil, \textbf{čas} - kdy existoval v dané podobě. Kvalifikovaný podpis má účinky vlastnoručního podpisu, kvalifikovaná pečeť zakládá domněnku integrity a původu od právnické osoby a kvalifikované časové razítko podporuje důkaz o existenci dat v čase. U dlouhodobé archivace je potřeba myslet na stárnutí certifikátů a algoritmů, proto se používají validační data a navazující časová razítka.
+
+\pozor{Kvalifikovaný podpis má účinky vlastnoručního podpisu, ale neznamená to, že obsah dokumentu je pravdivý. Podepsat lze i nepravdivé prohlášení.}
+
+\zkouska{U elektronických důkazů propoj právo a techniku: procesní titul podle trestního řádu, rozdíl metadata/obsah, přeshraniční nástroj, a potom forenzní integrita přes kopii, hash, dokumentaci a chain of custody.}
+
+\zdroje{Trestní řád (§ 7b, § 78, § 79, § 82 a násl., § 88, § 88a); zákon o elektronických komunikacích (č. 127/2005 Sb.); směrnice 2014/41/EU; Budapešťská úmluva čl. 16, 17, 29, 30, 35; e-evidence nařízení 2023/1543 a směrnice 2023/1544; eIDAS; ISO/IEC 27037; přiložený referenční text a starší výpisky.}
+
+\fi
+
+\newpage
+
