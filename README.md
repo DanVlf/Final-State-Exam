@@ -15,7 +15,7 @@ Study material for MUNI BCS state exam - IT
 
 Názvy souborů jsou kvůli spolehlivosti LaTeXu bez diakritiky a bez mezer. Přesné názvy otázek jsou v tabulkách níže a v nadpisech uvnitř souborů.
 
-Čísla v nadpisech uvnitř souborů jsou ponechaná z původních materiálů. Oficiální pořadí určuje pořadí v `main.tex` a tabulky výše.
+Číslování v nadpisech uvnitř souborů odpovídá oficiálnímu pořadí v rámci každé kategorie. Kategorie jsou v PDF oddělené samostatnými part stránkami.
 
 ## Kontrola podle oficiálního seznamu
 
