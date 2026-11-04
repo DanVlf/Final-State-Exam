@@ -12,6 +12,7 @@ Study material for MUNI BCS state exam - IT
 - `pravo-a-politika/` obsahuje otázky z okruhu **Právo a politika pro kyberbezpečnost**.
 - `uvod-IT.tex`, `uvod-BSS.tex`, `stavova-tabulka.tex` a `zaverecne-poznamky.tex` obsahují původní úvodní a závěrečné části.
 - `assets/` obsahuje obrázky použité v otázkách.
+- `mindmap/` obsahuje samostatné TikZ šablony pro mind mapy a jeden vyplněný příklad. Návod je v `mindmap/README.md`.
 
 Názvy souborů jsou kvůli spolehlivosti LaTeXu bez diakritiky a bez mezer. Přesné názvy otázek jsou v tabulkách níže a v nadpisech uvnitř souborů.
 

@@ -1,0 +1,78 @@
+\documentclass[11pt,a4paper,landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[czech]{babel}
+\usepackage{lmodern}
+\usepackage[margin=1.2cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{mindmap,trees,shadows,shapes.geometric}
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\begin{tikzpicture}[
+  mindmap,
+  grow cyclic,
+  every node/.style={
+    concept,
+    ellipse,
+    circular drop shadow,
+    align=center,
+    font=\small
+  },
+  level 1/.append style={level distance=4.5cm, sibling angle=60},
+  level 2/.append style={level distance=3.2cm, sibling angle=40},
+  root/.style={
+    concept,
+    ellipse,
+    concept color=blue!60!black,
+    text=white,
+    font=\Large\bfseries,
+    minimum width=5cm,
+    minimum height=2.4cm
+  },
+  branch/.style={
+    concept,
+    ellipse,
+    concept color=blue!35,
+    text=white,
+    font=\bfseries
+  },
+  detail/.style={
+    concept,
+    ellipse,
+    concept color=blue!12,
+    text=black,
+    font=\footnotesize
+  }
+]
+\node[root] {TÉMA\\OTÁZKY}
+  child { node[branch] {ČÁST 1}
+    child { node[detail] {detail A} }
+    child { node[detail] {detail B} }
+  }
+  child { node[branch] {ČÁST 2}
+    child { node[detail] {detail C} }
+    child { node[detail] {detail D} }
+    child { node[detail] {detail E} }
+  }
+  child { node[branch] {ČÁST 3}
+    child { node[detail] {detail F} }
+    child { node[detail] {detail G} }
+  }
+  child { node[branch] {ČÁST 4}
+    child { node[detail] {detail H} }
+    child { node[detail] {detail I} }
+  }
+  child { node[branch] {ČÁST 5}
+    child { node[detail] {detail J} }
+    child { node[detail] {detail K} }
+  }
+  child { node[branch] {ČÁST 6}
+    child { node[detail] {detail L} }
+    child { node[detail] {detail M} }
+  }
+;
+\end{tikzpicture}
+\end{center}
+\end{document}

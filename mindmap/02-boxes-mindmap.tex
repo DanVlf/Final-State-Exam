@@ -1,0 +1,103 @@
+\documentclass[11pt,a4paper,landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[czech]{babel}
+\usepackage{lmodern}
+\usepackage[margin=1.2cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,positioning}
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\begin{tikzpicture}[
+  font=\small,
+  center/.style={
+    ellipse,
+    draw=blue!60!black,
+    fill=blue!12,
+    very thick,
+    minimum width=6cm,
+    minimum height=2.6cm,
+    align=center,
+    font=\Large\bfseries
+  },
+  branch/.style={
+    rectangle,
+    rounded corners=4pt,
+    draw=blue!55!black,
+    fill=blue!8,
+    thick,
+    minimum width=3.8cm,
+    minimum height=1.2cm,
+    align=center,
+    font=\bfseries
+  },
+  detail/.style={
+    rectangle,
+    rounded corners=2pt,
+    draw=gray!55,
+    fill=white,
+    minimum width=3.4cm,
+    minimum height=0.9cm,
+    align=center,
+    font=\footnotesize
+  },
+  edge/.style={thick, draw=blue!45!black}
+]
+
+% Pozice středu, větví a detailů
+\coordinate (c) at (0,0);
+
+\coordinate (b1) at (-5.6,2.6);
+\coordinate (b2) at (-5.6,-2.6);
+\coordinate (b3) at (5.6,2.6);
+\coordinate (b4) at (5.6,-2.6);
+
+\coordinate (d11) at (-9.8,4.1);
+\coordinate (d12) at (-9.8,1.1);
+\coordinate (d21) at (-9.8,-1.1);
+\coordinate (d22) at (-9.8,-4.1);
+
+\coordinate (d31) at (9.8,4.1);
+\coordinate (d32) at (9.8,1.1);
+\coordinate (d41) at (9.8,-1.1);
+\coordinate (d42) at (9.8,-4.1);
+
+% Spojení se kreslí před uzly, aby čáry nebyly vidět přes výplně boxů
+\draw[edge] (c) -- (b1);
+\draw[edge] (c) -- (b2);
+\draw[edge] (c) -- (b3);
+\draw[edge] (c) -- (b4);
+
+\draw[edge] (b1) -- (d11);
+\draw[edge] (b1) -- (d12);
+\draw[edge] (b2) -- (d21);
+\draw[edge] (b2) -- (d22);
+
+\draw[edge] (b3) -- (d31);
+\draw[edge] (b3) -- (d32);
+\draw[edge] (b4) -- (d41);
+\draw[edge] (b4) -- (d42);
+
+% Uzly se kreslí až po spojích
+\node[center] at (c) {TÉMA\\OTÁZKY};
+
+\node[branch] at (b1) {ČÁST 1};
+\node[branch] at (b2) {ČÁST 2};
+\node[branch] at (b3) {ČÁST 3};
+\node[branch] at (b4) {ČÁST 4};
+
+\node[detail] at (d11) {detail A};
+\node[detail] at (d12) {detail B};
+\node[detail] at (d21) {detail C};
+\node[detail] at (d22) {detail D};
+
+\node[detail] at (d31) {detail E};
+\node[detail] at (d32) {detail F};
+\node[detail] at (d41) {detail G};
+\node[detail] at (d42) {detail H};
+
+\end{tikzpicture}
+\end{center}
+\end{document}

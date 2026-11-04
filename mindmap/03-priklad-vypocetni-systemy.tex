@@ -1,0 +1,78 @@
+\documentclass[11pt,a4paper,landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[czech]{babel}
+\usepackage{lmodern}
+\usepackage[margin=1.2cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{mindmap,trees,shadows,shapes.geometric}
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\begin{tikzpicture}[
+  mindmap,
+  grow cyclic,
+  every node/.style={
+    concept,
+    ellipse,
+    circular drop shadow,
+    align=center,
+    font=\small
+  },
+  level 1/.append style={level distance=4.5cm, sibling angle=72},
+  level 2/.append style={level distance=3.2cm, sibling angle=38},
+  root/.style={
+    concept,
+    ellipse,
+    concept color=blue!60!black,
+    text=white,
+    font=\Large\bfseries,
+    minimum width=5cm,
+    minimum height=2.4cm
+  },
+  branch/.style={
+    concept,
+    ellipse,
+    concept color=blue!35,
+    text=white,
+    font=\bfseries
+  },
+  detail/.style={
+    concept,
+    ellipse,
+    concept color=blue!12,
+    text=black,
+    font=\footnotesize
+  }
+]
+\node[root] {Výpočetní\\systémy}
+  child { node[branch] {Číselné soustavy}
+    child { node[detail] {dvojková / hex} }
+    child { node[detail] {doplňkový kód} }
+    child { node[detail] {IEEE 754} }
+  }
+  child { node[branch] {Kódy}
+    child { node[detail] {vnitřní / vnější} }
+    child { node[detail] {ASCII / Unicode} }
+    child { node[detail] {detekční / opravné} }
+  }
+  child { node[branch] {Procesory}
+    child { node[detail] {ALU, CU, registry} }
+    child { node[detail] {pipeline} }
+    child { node[detail] {CISC / RISC} }
+  }
+  child { node[branch] {Paměti}
+    child { node[detail] {cache / RAM} }
+    child { node[detail] {hierarchie} }
+    child { node[detail] {volatilita} }
+  }
+  child { node[branch] {V/V zařízení}
+    child { node[detail] {polling / přerušení} }
+    child { node[detail] {DMA} }
+    child { node[detail] {USB / PCIe} }
+  }
+;
+\end{tikzpicture}
+\end{center}
+\end{document}
