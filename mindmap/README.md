@@ -43,7 +43,7 @@ pdflatex mindmap/03-priklad-vypocetni-systemy.tex
 - **Velikost centra:** uprav `minimum width` a `minimum height` u stylu `center` nebo `root`.
 - **Vzdálenosti větví:** u radiální mapy uprav `level distance` a `sibling angle`.
 - **Počet větví:** přidej nebo uber `child { ... }` bloky. U radiální mapy pak uprav `sibling angle` tak, aby součet úhlů seděl (např. 6 větví = 60, 5 větví = 72).
-- **Boxy:** u šablony s boxy stačí měnit souřadnice `at (x,y)` a texty uzlů.
+- **Boxy:** šablona s boxy nepoužívá pevné souřadnice `at (x,y)`. Větve jsou umístěné relativně přes `above left=of c` apod. Vzdálenosti měníš jedním parametrem `node distance=3.0cm and 4.5cm`; detaily se posouvají podle svých větví.
 
 ## Poznámka
 

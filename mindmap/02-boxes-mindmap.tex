@@ -5,13 +5,14 @@
 \usepackage{lmodern}
 \usepackage[margin=1.2cm]{geometry}
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric,positioning}
+\usetikzlibrary{shapes.geometric,positioning,backgrounds}
 \pagestyle{empty}
 
 \begin{document}
 \begin{center}
 \begin{tikzpicture}[
   font=\small,
+  node distance=3.0cm and 4.5cm,
   center/.style={
     ellipse,
     draw=blue!60!black,
@@ -46,57 +47,45 @@
   edge/.style={thick, draw=blue!45!black}
 ]
 
-% Pozice středu, větví a detailů
-\coordinate (c) at (0,0);
+% Střed mapy
+\node[center] (c) {Technologie};
 
-\coordinate (b1) at (-5.6,2.6);
-\coordinate (b2) at (-5.6,-2.6);
-\coordinate (b3) at (5.6,2.6);
-\coordinate (b4) at (5.6,-2.6);
+% Hlavní větve jsou jen relativně ke středu
+\node[branch, above left=of c]  (b1) {Výpočetní systémy};
+\node[branch, below left=of c]  (b2) {Operační systémy};
+\node[branch, above right=of c] (b3) {Souborové systémy};
+\node[branch, below right=of c] (b4) {Sítě a síťové aplikace};
 
-\coordinate (d11) at (-9.8,4.1);
-\coordinate (d12) at (-9.8,1.1);
-\coordinate (d21) at (-9.8,-1.1);
-\coordinate (d22) at (-9.8,-4.1);
+% Detaily jsou relativně ke svým větvím
+\node[detail, above=0.8cm of b1] (d11) {detail A};
+\node[detail, left=1.0cm of b1]  (d12) {detail B};
 
-\coordinate (d31) at (9.8,4.1);
-\coordinate (d32) at (9.8,1.1);
-\coordinate (d41) at (9.8,-1.1);
-\coordinate (d42) at (9.8,-4.1);
+\node[detail, below=0.8cm of b2] (d21) {detail C};
+\node[detail, left=1.0cm of b2]  (d22) {detail D};
 
-% Spojení se kreslí před uzly, aby čáry nebyly vidět přes výplně boxů
-\draw[edge] (c) -- (b1);
-\draw[edge] (c) -- (b2);
-\draw[edge] (c) -- (b3);
-\draw[edge] (c) -- (b4);
+\node[detail, above=0.8cm of b3] (d31) {detail E};
+\node[detail, right=1.0cm of b3] (d32) {detail F};
 
-\draw[edge] (b1) -- (d11);
-\draw[edge] (b1) -- (d12);
-\draw[edge] (b2) -- (d21);
-\draw[edge] (b2) -- (d22);
+\node[detail, below=0.8cm of b4] (d41) {detail G};
+\node[detail, right=1.0cm of b4] (d42) {detail H};
 
-\draw[edge] (b3) -- (d31);
-\draw[edge] (b3) -- (d32);
-\draw[edge] (b4) -- (d41);
-\draw[edge] (b4) -- (d42);
+% Spojení kreslíme na pozadí, aby čáry nebyly vidět přes výplně boxů
+\begin{scope}[on background layer]
+  \draw[edge] (c) -- (b1);
+  \draw[edge] (c) -- (b2);
+  \draw[edge] (c) -- (b3);
+  \draw[edge] (c) -- (b4);
 
-% Uzly se kreslí až po spojích
-\node[center] at (c) {TÉMA\\OTÁZKY};
+  \draw[edge] (b1) -- (d11);
+  \draw[edge] (b1) -- (d12);
+  \draw[edge] (b2) -- (d21);
+  \draw[edge] (b2) -- (d22);
 
-\node[branch] at (b1) {ČÁST 1};
-\node[branch] at (b2) {ČÁST 2};
-\node[branch] at (b3) {ČÁST 3};
-\node[branch] at (b4) {ČÁST 4};
-
-\node[detail] at (d11) {detail A};
-\node[detail] at (d12) {detail B};
-\node[detail] at (d21) {detail C};
-\node[detail] at (d22) {detail D};
-
-\node[detail] at (d31) {detail E};
-\node[detail] at (d32) {detail F};
-\node[detail] at (d41) {detail G};
-\node[detail] at (d42) {detail H};
+  \draw[edge] (b3) -- (d31);
+  \draw[edge] (b3) -- (d32);
+  \draw[edge] (b4) -- (d41);
+  \draw[edge] (b4) -- (d42);
+\end{scope}
 
 \end{tikzpicture}
 \end{center}
