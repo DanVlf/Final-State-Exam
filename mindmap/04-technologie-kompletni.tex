@@ -1,0 +1,122 @@
+\documentclass[11pt,a4paper,landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[czech]{babel}
+\usepackage{lmodern}
+\usepackage[margin=1.2cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,trees}
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\begin{tikzpicture}[
+  grow=right,
+  level 1/.style={level distance=3.6cm, sibling distance=2.5cm},
+  level 2/.style={level distance=3.6cm},
+  edge from parent/.style={draw=blue!45!black, thick},
+  center/.style={
+    ellipse,
+    draw=blue!60!black,
+    fill=blue!12,
+    very thick,
+    minimum width=5.2cm,
+    minimum height=2.4cm,
+    align=center,
+    font=\Large\bfseries
+  },
+  branch/.style={
+    rectangle,
+    rounded corners=4pt,
+    draw=blue!55!black,
+    fill=blue!8,
+    thick,
+    minimum width=4.2cm,
+    minimum height=1.4cm,
+    align=center,
+    font=\small\bfseries
+  },
+  detail/.style={
+    rectangle,
+    rounded corners=2pt,
+    draw=gray!55,
+    fill=white,
+    text width=8.2cm,
+    align=left,
+    inner sep=3pt,
+    font=\tiny
+  }
+]
+
+\node[center] {Technologie}
+  child { node[branch] {Výpočetní systémy\\{\footnotesize PB151}}
+    child { node[detail] {
+      Číselné soustavy, vztahy mezi soustavami,\\
+      zobrazení celého čísla, aritmetika\\
+      Kódy: vnitřní, vnější, detekční a opravné\\
+      Procesory: parametry a architektury\\
+      Vnitřní a vnější paměti, principy funkce\\
+      V/V zařízení a jejich připojování
+    } }
+  }
+  child { node[branch] {Operační systémy\\{\footnotesize PB152, PV004}}
+    child { node[detail] {
+      Architektura OS a jádra, režimy procesoru\\
+      Programovací rozhraní, knihovny\\
+      Uživatel, přístupová práva, virtualizace\\
+      Virtuální paměť, proces, stránkové tabulky\\
+      Vlákna, plánování, souběžnost, uváznutí\\
+      POSIX, vznik procesu, copy-on-write
+    } }
+  }
+  child { node[branch] {Souborové systémy\\{\footnotesize PB152, PV004}}
+    child { node[detail] {
+      Blokové zařízení, bloková vrstva\\
+      I/O plánovač, RAID, šifrování disku\\
+      Soubory, alokace volného místa, fragmentace\\
+      Adresářová struktura, reprezentace na disku\\
+      Vstup a výstup mapovaný do paměti
+    } }
+  }
+  child { node[branch] {Sítě a síťové aplikace\\{\footnotesize PB156, PB156cv}}
+    child { node[detail] {
+      ISO/OSI, TCP/IP, vrstvy, adresace\\
+      Fyzická vrstva, signály, kódování, přístup k médiu\\
+      Propojování sítí, přepínání, směrování, multicast\\
+      Transportní protokoly, zajištěný přenos, spojení\\
+      Aplikační protokoly: pošta, soubory, web, DNS\\
+      QoS, multimédia, zabezpečení komunikace
+    } }
+  }
+  child { node[branch] {Principy programování\\{\footnotesize PB071, PV080}}
+    child { node[detail] {
+      Strukturované programování, imperativní jazyk\\
+      Paměťový model, správa paměti, dynamická alokace\\
+      Uživatelské datové struktury\\
+      Nízkoúrovňová práce s pamětí, ukazatele, pole\\
+      Ladění (debugging), bezpečné programování
+    } }
+  }
+  child { node[branch] {Databáze\\{\footnotesize PB154 || PB168}}
+    child { node[detail] {
+      Relační model, schéma, klíče, integritní omezení\\
+      Relační algebra, spojování relací\\
+      SQL: select, spojování, agregační funkce\\
+      Zpracování dotazů, indexování\\
+      Transakce, vlastnosti transakčního zpracování
+    } }
+  }
+  child { node[branch] {Softwarové a informační systémy\\{\footnotesize PB007, PV028}}
+    child { node[detail] {
+      Vývoj a provoz softwarových systémů\\
+      UML při vývoji software\\
+      Aplikované informační systémy\\
+      Architektury rozsáhlých informačních systémů\\
+      Metody vedení projektů, řízení provozu IS
+    } }
+  }
+;
+
+\end{tikzpicture}
+\end{center}
+\end{document}

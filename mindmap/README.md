@@ -9,6 +9,7 @@ Složka obsahuje samostatné šablony pro rychlé kreslení mind map k jednotliv
 | `01-radialni-mindmap.tex` | Radiální mind mapu s centrální elipsou a barevnými větvemi. Hodí se pro rychlý přehled pojmů. |
 | `02-boxes-mindmap.tex` | Centrální elipsu, hlavní větve jako zaoblené boxy a detaily jako menší boxy. Hodí se pro strukturovanější odpověď. |
 | `03-priklad-vypocetni-systemy.tex` | Vyplněný příklad pro otázku **Výpočetní systémy**. Ukazuje, jak šablonu naplnit skutečným obsahem. |
+| `04-technologie-kompletni.tex` | Kompletní přehled všech sedmi otázek z okruhu **Technologie** v jedné horizontální mind mapě. |
 
 Všechny soubory jsou samostatné dokumenty. Lze je přeložit přímo:
 
@@ -16,6 +17,7 @@ Všechny soubory jsou samostatné dokumenty. Lze je přeložit přímo:
 pdflatex mindmap/01-radialni-mindmap.tex
 pdflatex mindmap/02-boxes-mindmap.tex
 pdflatex mindmap/03-priklad-vypocetni-systemy.tex
+pdflatex mindmap/04-technologie-kompletni.tex
 ```
 
 ## Jak šablonu použít v otázce
