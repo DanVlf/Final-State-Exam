@@ -10,7 +10,7 @@ Složka obsahuje samostatné šablony pro rychlé kreslení mind map k jednotliv
 | `02-boxes-mindmap.tex` | Centrální elipsu, hlavní větve jako zaoblené boxy a detaily jako menší boxy. Hodí se pro strukturovanější odpověď. |
 | `03-priklad-vypocetni-systemy.tex` | Vyplněný příklad pro otázku **Výpočetní systémy**. Ukazuje, jak šablonu naplnit skutečným obsahem. |
 | `04-technologie-kompletni.tex` | Kompletní přehled všech sedmi otázek z okruhu **Technologie** v jedné horizontální mind mapě. |
-| `05-technologie-radialni-mindmap.tex` | Kompletní radiální mind mapa celého okruhu **Technologie** – centrální elipsa, 6 hlavních větví (Databáze a SW/IS sloučeny), detaily a subdetaily. Větve jsou na pravidelném šestiúhelníku kolem středu. |
+| `05-technologie-radialni-mindmap.tex` | Kompletní radiální mind mapa celého okruhu **Technologie** – centrální elipsa, 6 hlavních větví (Databáze a SW/IS sloučeny), detaily a subdetaily. Větve jsou na pravidelném šestiúhelníku kolem středu. Tato mapa je také vložená do `main.tex` přes `technologie/mindmap.tex`. |
 
 Všechny soubory jsou samostatné dokumenty. Lze je přeložit přímo:
 

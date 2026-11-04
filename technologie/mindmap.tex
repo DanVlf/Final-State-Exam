@@ -1,0 +1,254 @@
+\clearpage
+\section*{Mind mapa: Technologie}
+\addcontentsline{toc}{section}{Mind mapa: Technologie}
+
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  font=\small,
+  node distance=2.5cm and 4.5cm,
+  center/.style={
+    ellipse,
+    draw=blue!60!black,
+    fill=blue!12,
+    very thick,
+    minimum width=6.0cm,
+    minimum height=2.6cm,
+    align=center,
+    font=\Large\bfseries
+  },
+  branch/.style={
+    rectangle,
+    rounded corners=5pt,
+    draw=blue!55!black,
+    fill=blue!8,
+    thick,
+    minimum width=4.5cm,
+    minimum height=1.3cm,
+    align=center,
+    font=\bfseries\large
+  },
+  detail/.style={
+    rectangle,
+    rounded corners=3pt,
+    draw=gray!55,
+    fill=white,
+    thick,
+    minimum width=3.8cm,
+    minimum height=1.0cm,
+    align=center,
+    font=\small\bfseries
+  },
+  subdetail/.style={
+    rectangle,
+    rounded corners=2pt,
+    draw=gray!45,
+    fill=gray!8,
+    minimum width=3.4cm,
+    minimum height=0.8cm,
+    align=center,
+    font=\footnotesize
+  },
+  edge/.style={thick, draw=blue!45!black}
+]
+
+% Střed mapy
+\node[center] (c) at (0,0) {Technologie};
+
+% =============================================================
+% HLAVNÍ VĚTVE (6 hlavních okruhů)
+% =============================================================
+\node[branch, fill=orange!60] at (150:11cm)  (b1) {Výpočetní systémy};
+\node[branch, fill=lime]      at (90:10cm)   (b2) {Operační systémy};
+\node[branch, fill=cyan!78!black] at (30:11cm) (b3) {Souborové systémy};
+\node[branch, fill=purple!85] at (-30:11cm)  (b4) {Sítě a síťové aplikace};
+\node[branch, fill=blue!42]   at (-150:10.2cm) (b5) {Principy programování};
+\node[branch, fill=olive!57] at (-90:10cm)   (b6) {SW/IS a Databáze};
+
+% =============================================================
+% 1. VÝPOČETNÍ SYSTÉMY
+% =============================================================
+\node[detail, above left={2.82cm and 6.2cm} of b1] (d11) {Číselné soustavy};
+\node[subdetail, above left=0.5cm and 1.5cm of d11] (s111) {Vztahy mezi soustavami};
+\node[subdetail, left=1.5cm of d11] (s112) {Zobrazení celého čísla};
+\node[subdetail, below left=0.5cm and 1.5cm of d11] (s113) {Aritmetika};
+
+\node[detail, below left={1.32cm and 5.2cm} of b1] (d12) {Procesory};
+\node[subdetail, above left={2.71cm and 1.64cm} of d12] (s121) {Parametry};
+\node[subdetail, above left={0.74cm and 1.04cm} of d12] (s122) {Architektury};
+
+\node[detail, below left={3.52cm and 5.02cm} of b1] (d13) {Paměti};
+\node[subdetail, above left={0.28cm and 2.19cm} of d13] (s131) {Vnitřní};
+\node[subdetail, left=1.5cm of d13] (s132) {Vnější};
+\node[subdetail, below left=0.5cm and 1.5cm of d13] (s133) {Principy a funkce};
+
+\node[detail, above right=2.0cm and 1.0cm of b1] (d14) {Kódy};
+\node[subdetail, above left=0.5cm and 1.5cm of d14] (s141) {Vnitřní};
+\node[subdetail, above right=0.5cm and 1.5cm of d14] (s142) {Vnější};
+\node[subdetail, below left=0.5cm and 1.5cm of d14] (s143) {Detekční};
+\node[subdetail, below right=0.5cm and 1.5cm of d14] (s144) {Opravné};
+
+\node[detail, above left={4.7cm and 6.54cm} of b1] (d15) {Zařízení};
+\node[subdetail, above left=1.5cm and 0.5cm of d15] (s151) {Vstupní};
+\node[subdetail, above=1.5cm of d15] (s152) {Výstupní};
+\node[subdetail, above right=1.5cm and 0.5cm of d15] (s153) {Připojování};
+
+% =============================================================
+% 2. OPERAČNÍ SYSTÉMY
+% =============================================================
+\node[detail, above left={1.32cm and 4.36cm} of b2] (d21) {Architektura OS};
+\node[subdetail, above left=0.3cm and 1.5cm of d21] (s211) {Architektura jádra};
+\node[subdetail, below left=0.3cm and 1.5cm of d21] (s212) {Režimy procesoru};
+
+\node[detail, above left=2.0cm and 2.0cm of b2] (d22) {Rozhraní a práva};
+\node[subdetail, above left=0.5cm and 1.5cm of d22] (s221) {Knihovny};
+\node[subdetail, above=1.5cm of d22] (s222) {Uživatel a práva};
+\node[subdetail, above right=0.5cm and 1.5cm of d22] (s223) {Virtualizace};
+
+\node[detail, above right=2.0cm and 2.0cm of b2] (d23) {Paměť a procesy};
+\node[subdetail, above left=0.5cm and 1.5cm of d23] (s231) {Virtuální paměť};
+\node[subdetail, above=1.5cm of d23] (s232) {Stránkové tabulky};
+\node[subdetail, above right=0.5cm and 1.5cm of d23] (s233) {POSIX a COW};
+
+\node[detail, right=4.0cm of b2] (d24) {Souběžnost};
+\node[subdetail, above right=0.5cm and 1.5cm of d24] (s241) {Vlákna a procesy};
+\node[subdetail, right=1.5cm of d24] (s242) {Plánování};
+\node[subdetail, below right=0.5cm and 1.5cm of d24] (s243) {Uváznutí a zdroje};
+
+% =============================================================
+% 3. SOUBOROVÉ SYSTÉMY
+% =============================================================
+\node[detail, above left=2.0cm and 1.0cm of b3] (d31) {Bloková vrstva};
+\node[subdetail, above left=1.2cm and 0.5cm of d31] (s311) {Blokové zařízení};
+\node[subdetail, above=1.2cm of d31] (s312) {I/O plánovač};
+\node[subdetail, above right=0.5cm and 1.2cm of d31] (s313) {RAID};
+\node[subdetail, right=1.2cm of d31] (s314) {Šifrování disku};
+
+\node[detail, above right=1.5cm and 2.0cm of b3] (d32) {Obyčejné soubory};
+\node[subdetail, above left=0.3cm and 1.5cm of d32] (s321) {Alokace volného místa};
+\node[subdetail, above right=0.3cm and 1.5cm of d32] (s322) {Fragmentace};
+
+\node[detail, right=3.5cm of b3] (d33) {Adresáře};
+\node[subdetail, right=1.5cm of d33] (s331) {Reprezentace na disku};
+
+\node[detail, below right=1.5cm and 2.0cm of b3] (d34) {Paměťový I/O};
+\node[subdetail, right=1.5cm of d34] (s341) {Vstup/Výstup mapovaný do paměti};
+
+% =============================================================
+% 4. SÍTĚ A SÍŤOVÉ APLIKACE
+% =============================================================
+\node[detail, above right=1.5cm and 2.0cm of b4] (d41) {Síťové modely};
+\node[subdetail, above right=0.3cm and 1.5cm of d41] (s411) {ISO/OSI, TCP/IP};
+\node[subdetail, right=1.5cm of d41] (s412) {Součinnost a adresace};
+
+\node[detail, right=3.5cm of b4] (d42) {Fyzická a síťová v.};
+\node[subdetail, above right=0.5cm and 1.5cm of d42] (s421) {Signály a kódování};
+\node[subdetail, right=1.5cm of d42] (s422) {Přepínání a směrování};
+\node[subdetail, below right=0.5cm and 1.5cm of d42] (s423) {Multicast};
+
+\node[detail, below right=1.5cm and 2.0cm of b4] (d43) {Transportní vrstva};
+\node[subdetail, above right=0.5cm and 1.5cm of d43] (s431) {Zajištěný přenos};
+\node[subdetail, right=1.5cm of d43] (s432) {Sestavení/ukončení spojení};
+\node[subdetail, below right=0.5cm and 1.5cm of d43] (s433) {Kvalita služby (QoS)};
+
+\node[detail, below left=2.0cm and 1.0cm of b4] (d44) {Aplikační protokoly};
+\node[subdetail, below left=0.5cm and 1.5cm of d44] (s441) {Mail (Doručování pošty)};
+\node[subdetail, below=1.5cm of d44] (s442) {Přenos souborů, Web, DNS};
+
+\node[detail, below=2.0cm of b4] (d45) {Bezpečnost sítí};
+\node[subdetail, below right=0.5cm and 1.5cm of d45] (s451) {Autentizace a šifrování};
+\node[subdetail, below left=0.5cm and 1.5cm of d45] (s452) {Zabezpečení vrstev};
+
+% =============================================================
+% 5. PRINCIPY PROGRAMOVÁNÍ
+% =============================================================
+\node[detail, above left=1.5cm and 2.0cm of b5] (d51) {Strukturované prog.};
+\node[subdetail, left=1.5cm of d51] (s511) {Imperativní jazyk};
+
+\node[detail, left=3.5cm of b5] (d52) {Paměťový model};
+\node[subdetail, above left=0.5cm and 1.5cm of d52] (s521) {Správa paměti};
+\node[subdetail, left=1.5cm of d52] (s522) {Dynamická alokace};
+\node[subdetail, below left=0.5cm and 1.5cm of d52] (s523) {Uživatelské datové struktury};
+
+\node[detail, below left=1.5cm and 2.0cm of b5] (d53) {Ukazatele a pole};
+\node[subdetail, above left=0.3cm and 1.5cm of d53] (s531) {Nízkoúrovňová paměť};
+\node[subdetail, below left=0.3cm and 1.5cm of d53] (s532) {Ukazatelová aritmetika};
+
+\node[detail, below right=0.5cm and 3.0cm of b5] (d54) {Vývoj a ladění};
+\node[subdetail, below=2.5cm of d54] (s541) {Debugging (Metody ladění)};
+\node[subdetail, below right=0.5cm and 1.5cm of d54] (s542) {Bezpečné programování};
+
+% =============================================================
+% 6. SW/IS A DATABÁZE
+% =============================================================
+\node[detail, left=4.0cm of b6] (d61) {Relační model};
+\node[subdetail, above left=0.3cm and 1.5cm of d61] (s611) {Schéma, klíče a omezení};
+\node[subdetail, below left=0.3cm and 1.5cm of d61] (s612) {Relační algebra a spojování};
+
+\node[detail, below left=2.0cm and 2.0cm of b6] (d62) {SQL a Transakce};
+\node[subdetail, below left=0.5cm and 1.5cm of d62] (s621) {SELECT a agregační funkce};
+\node[subdetail, below=1.5cm of d62] (s622) {Zpracování dotazů a indexace};
+\node[subdetail, below right=0.5cm and 1.5cm of d62] (s623) {Vlastnosti transakcí};
+
+\node[detail, below right=2.0cm and 2.0cm of b6] (d63) {Vývoj SW a UML};
+\node[subdetail, below left=0.5cm and 1.5cm of d63] (s631) {Použití UML při vývoji};
+\node[subdetail, below right=0.5cm and 1.5cm of d63] (s632) {Metody vedení projektů};
+
+\node[detail, right=4.0cm of b6] (d64) {Informační systémy};
+\node[subdetail, above right=0.3cm and 1.5cm of d64] (s641) {Aplikované IS a architektury};
+\node[subdetail, below right=0.3cm and 1.5cm of d64] (s642) {Řízení provozu IS};
+
+% =============================================================
+% HRANY
+% =============================================================
+\begin{scope}[on background layer, xshift=4pt]
+  \draw[edge] (c) -- (b1);
+  \draw[edge] (c) -- (b2);
+  \draw[edge] (c) -- (b3);
+  \draw[edge] (c) -- (b4);
+  \draw[edge] (c) -- (b5);
+  \draw[edge] (c) -- (b6);
+
+  % Větev 1
+  \draw[edge] (b1) -- (d11); \draw[edge] (d11) -- (s111); \draw[edge] (d11) -- (s112); \draw[edge] (d11) -- (s113);
+  \draw[edge] (b1) -- (d12); \draw[edge] (d12) -- (s121); \draw[edge] (d12) -- (s122);
+  \draw[edge] (b1) -- (d13); \draw[edge] (d13) -- (s131); \draw[edge] (d13) -- (s132); \draw[edge] (d13) -- (s133);
+  \draw[edge] (b1) -- (d14); \draw[edge] (d14) -- (s141); \draw[edge] (d14) -- (s142); \draw[edge] (d14) -- (s143); \draw[edge] (d14) -- (s144);
+  \draw[edge] (b1) -- (d15); \draw[edge] (d15) -- (s151); \draw[edge] (d15) -- (s152); \draw[edge] (d15) -- (s153);
+
+  % Větev 2
+  \draw[edge] (b2) -- (d21); \draw[edge] (d21) -- (s211); \draw[edge] (d21) -- (s212);
+  \draw[edge] (b2) -- (d22); \draw[edge] (d22) -- (s221); \draw[edge] (d22) -- (s222); \draw[edge] (d22) -- (s223);
+  \draw[edge] (b2) -- (d23); \draw[edge] (d23) -- (s231); \draw[edge] (d23) -- (s232); \draw[edge] (d23) -- (s233);
+  \draw[edge] (b2) -- (d24); \draw[edge] (d24) -- (s241); \draw[edge] (d24) -- (s242); \draw[edge] (d24) -- (s243);
+
+  % Větev 3
+  \draw[edge] (b3) -- (d31); \draw[edge] (d31) -- (s311); \draw[edge] (d31) -- (s312); \draw[edge] (d31) -- (s313); \draw[edge] (d31) -- (s314);
+  \draw[edge] (b3) -- (d32); \draw[edge] (d32) -- (s321); \draw[edge] (d32) -- (s322);
+  \draw[edge] (b3) -- (d33); \draw[edge] (d33) -- (s331);
+  \draw[edge] (b3) -- (d34); \draw[edge] (d34) -- (s341);
+
+  % Větev 4
+  \draw[edge] (b4) -- (d41); \draw[edge] (d41) -- (s411); \draw[edge] (d41) -- (s412);
+  \draw[edge] (b4) -- (d42); \draw[edge] (d42) -- (s421); \draw[edge] (d42) -- (s422); \draw[edge] (d42) -- (s423);
+  \draw[edge] (b4) -- (d43); \draw[edge] (d43) -- (s431); \draw[edge] (d43) -- (s432); \draw[edge] (d43) -- (s433);
+  \draw[edge] (b4) -- (d44); \draw[edge] (d44) -- (s441); \draw[edge] (d44) -- (s442);
+  \draw[edge] (b4) -- (d45); \draw[edge] (d45) -- (s451); \draw[edge] (d45) -- (s452);
+
+  % Větev 5
+  \draw[edge] (b5) -- (d51); \draw[edge] (d51) -- (s511);
+  \draw[edge] (b5) -- (d52); \draw[edge] (d52) -- (s521); \draw[edge] (d52) -- (s522); \draw[edge] (d52) -- (s523);
+  \draw[edge] (b5) -- (d53); \draw[edge] (d53) -- (s531); \draw[edge] (d53) -- (s532);
+  \draw[edge] (b5) -- (d54); \draw[edge] (d54) -- (s541); \draw[edge] (d54) -- (s542);
+
+  % Větev 6
+  \draw[edge] (b6) -- (d61); \draw[edge] (d61) -- (s611); \draw[edge] (d61) -- (s612);
+  \draw[edge] (b6) -- (d62); \draw[edge] (d62) -- (s621); \draw[edge] (d62) -- (s622); \draw[edge] (d62) -- (s623);
+  \draw[edge] (b6) -- (d63); \draw[edge] (d63) -- (s631); \draw[edge] (d63) -- (s632);
+  \draw[edge] (b6) -- (d64); \draw[edge] (d64) -- (s641); \draw[edge] (d64) -- (s642);
+\end{scope}
+
+\end{tikzpicture}
+%
+}
+\end{center}
